@@ -1,0 +1,34 @@
+body{
+  background: url("../img/background.jpg") no-repeat;
+  height:100%;
+  width:100%;
+  background-size:cover;
+  margin: 0;
+  padding-top: 4rem;
+}
+body>img{
+	width: 2rem;
+	position: absolute;
+	right: 1rem;
+	top: 1rem;
+}
+div{
+	background-color: rgba(57,57,57,.25);
+	margin:0.8rem 1.5rem;
+	padding: 1.5em;
+	border-radius: .5rem;
+}
+div:hover{
+	background-color: rgba(57,57,57,.4);
+}
+div img{
+	width: 3rem;
+	vertical-align: middle;
+	margin-left: 1rem;
+}
+div span{
+	font-size: x-large;
+	color: white;
+	margin-left: 1rem;
+	vertical-align: middle;
+}

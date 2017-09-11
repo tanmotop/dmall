@@ -1,0 +1,100 @@
+body{
+    background: url("../img/background.jpg") no-repeat;
+    margin: 0;
+    padding: 0;
+    background-size:100% 20rem;
+    height: 50%;
+}
+.summary{
+    overflow: hidden;
+    background-size:100% 30rem;
+}
+body>span{
+    position: absolute;
+    font-weight: bold;
+    color: white;
+    font-size: x-large;
+    top:1rem ;
+    display: block;
+    left: .5rem;
+}
+.summary{
+    padding:2rem 2rem 2rem 1.2rem;
+}
+.summary p{
+    color: white;
+}
+.num-{
+    float: right;
+    border: 1px solid #178DCB;
+    border-radius: .5rem;
+    width: 2rem;
+    text-align: center;
+    color: #178DCB;
+    margin-right: 2rem;
+}
+*{
+    /*border:solid 1px red*/
+}
+.content{
+    background-color: white;
+    border-top-left-radius:1em;
+    border-top-right-radius:1em;
+    /*-moz-border-radius-topleft: 2rem;
+    -moz-border-radius-topright: 2rem;*/
+    height: 100%;
+}
+.content div{
+    background-color: #EDB2AE;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    position: relative;
+    left: 1rem;
+    top:1rem;
+    width:1rem;
+    padding:.5rem;
+    height: 100%;
+
+}
+.content .num2{
+    background-color: #F4E4C3;
+}
+.content .num3{
+    background-color: #B1CDD1;
+}
+.content p{
+    -webkit-margin-before: 0;
+    margin-left:4rem ;
+    padding-top:1rem ;
+}
+.content table{
+    float: right;
+    margin-right: 2rem;
+}
+.content:after{
+    content:'';
+    display:block;
+    clear:both;
+    height:0;
+    overflow:hidden;
+}
+.red{
+    color: red;
+}
+hr{
+    border :solid 1px #EAEFF2;
+    width: 80%;
+}
+
+.hr2{
+    margin-top: 0
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+.img-circle {
+    border-radius: 50%;
+    width: 100px;
+}

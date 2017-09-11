@@ -1,0 +1,256 @@
+/****************勾选框样式*********************/
+.zh-check{
+    text-align: center;
+    width: 2em;
+    margin-top: 2%;
+    float: left;
+}
+
+.chk_1 {
+    display: none;
+}
+.chk_1 + label {
+    background-color: #FFF;
+    border: 1px solid #C1CACA;
+    display: inline-block;
+    position: relative;
+    border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+}
+.chk_1:checked + label {
+    background-color:#FC6F5D;
+    color:#fff;
+    border:0;
+}
+.chk_1:checked + label:after {
+    content: '\2714'; /*勾选符号*/
+    position: absolute;
+    top:0px;
+    left: 0px;
+    color:#fff;
+    width: 100%;
+    text-align: center;
+    font-size: 1.1em;
+    padding: 1px 0 0 0;
+    vertical-align: text-top;
+}
+/*-------样式------*/
+span.active-kw{
+    color:#fff ;
+    background: #1B8DCC;
+}
+.sp-list-top{
+    width: 100%;
+    overflow: hidden;
+    background: #FFFFFF;
+    font-size: 1.01em;
+    height: 3.04em;
+    line-height: 3.34em;
+    margin: 1em 0 1.5em 0em;
+    -ms-touch-action: none;
+    position: relative;
+    z-index: 1;
+}
+.sp-list-top li{
+    width: 25%;
+    text-align: center;
+    overflow: hidden;
+    float: left;
+}
+.sp-list-top li span.sp-list-active{
+    color: #FC6F5D;
+    padding-bottom: .6em;
+    border-bottom: 1px solid #FC6F5D;
+}
+.sp-list-bottom{
+    overflow: hidden;
+    background: #fff;
+    margin: .897em .897em .897em .897em;
+    border-radius: .4em;
+    padding: .4em 0 0 0;
+}
+.up{
+    overflow: hidden;
+    width: 100%;
+    margin: 0 .3em .15em 1em;
+    border-bottom: 1px solid #E9EFF0;
+    position: relative;
+}
+.up h4{
+    display: inline-block;
+    font-size: 1.06em;
+    line-height: 2.3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.up .up-right{
+    width: 34%;
+    position: absolute;
+    display: inline-block;
+    line-height: 2.04em;
+    height: 2.04em;
+    right: 2%;
+    top: 3%;
+}
+
+.up .up-right img{
+    width: 2em;
+}
+.up .up-right span{
+    border-left: 1px solid #BFBFBF;
+    border-right: 1px solid #BFBFBF;
+    padding: 0 .8em;
+    line-height: 2em;
+    height: 2em;
+    display: inline-block;
+}
+.down{
+    width: 100%;
+    overflow: hidden;
+}
+.down .down-left{
+    float: left;
+    width: 35%;
+    text-align: center;
+    padding: 0em .5em;
+    border-right: 1px solid #E9EFF0;
+    margin: .7em 0;
+}
+.down .down-left img{
+    width: 45px;
+    margin: 3px;
+}
+.down .down-right{
+    float: left;
+    width: 54%;
+    padding: .7em .8em;
+    position: relative;
+}
+.down .down-right li{
+    line-height: 1.4em;
+}
+.down .down-right li p{
+    font-size: .8em;
+}
+.down .down-right li p em,i{
+    font-size: 1.1em;
+}
+.down .down-right li p em{
+    color: #FC6F5D;
+}
+.down .down-right li  span{
+    border: 1px solid #1B8DCC;
+    padding: 0em .5em;
+    margin-right: .2em;
+    border-radius: 1em;
+    font-size: .4em
+}
+
+/*--------------我的购物车后--------------------------*/
+
+.up .up-right-delet{
+    width: 34%;
+    position: absolute;
+    display: inline-block;
+    line-height: 2.04em;
+    height: 2.04em;
+    right: 7%;
+    top: 3%;
+}
+.up .up-right-delet button {
+    color: #FFF;
+    outline: none;
+    border: none;
+    font-size: 1.05em;
+    line-height: .7em;
+    border-radius: 1.05em;
+    padding: .6em 0;
+    float: right;
+}
+.up .up-right-delet button.sc-btn {
+    background: #fff;
+    border: 1px solid #1B8DCC;
+    color: #1B8DCC;
+    width: 5.3em;
+}
+.mycart-bottom{
+    overflow: hidden;
+    /* width: 100%; */
+    padding: 0 1em .15em .3em;
+    border-top: 1px solid #E9EFF0;
+    height: 3em;
+    line-height: 3em;
+}
+.mycart-bottom p{
+    text-align: right;
+    font-size: .87em;
+}
+.mycart-bottom p em{
+    color: #808080;
+    margin-left: .4em;
+}
+.mycart-bottom p span i{
+    color: #FC6F5D;
+    font-size: 1.2em;
+}
+.mycart-number{
+    position: absolute;
+    right: 12%;
+    top: 12%;
+    font-size: .86em;
+}
+/*-----------------------*/
+.up-right-all{
+    width: 14%;
+    position: absolute;
+    display: inline-block;
+    line-height: 2.04em;
+    height: 2.04em;
+    right: 7%;
+    top: 3%;
+    color: #FC6F5D;
+}
+.down-right li.sp-all{
+    line-height: 1.9em;
+}
+.mysale-bottom{
+    overflow: hidden;
+    /* width: 100%; */
+    padding: 1em .5em 1em .8em;
+    border-top: 1px solid #E9EFF0;
+    /* height: 3em; */
+    line-height: 1.2em;
+}
+.mysale-btn{
+    overflow: hidden;
+    /* width: 100%; */
+    padding: 0 1.8em .15em .3em;
+    border-top: 1px solid #E9EFF0;
+    height: 3.2em;
+    line-height: 3.2em;
+    position: relative;
+}
+button {
+    color: #FFF;
+    outline: none;
+    border: none;
+    font-size: 1.05em;
+    line-height: .7em;
+    border-radius: 1.05em;
+    padding: .6em 0;
+    float: right;
+}
+button.btn{
+    background: #fff;
+    border: 1px solid #1B8DCC;
+    color: #1B8DCC;
+    width: 5.3em;
+    position: absolute;
+    right: 7%;
+    top: 18%;
+}
+button.btn.left-btn{
+    right: 34%;
+}

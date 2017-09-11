@@ -1,0 +1,73 @@
+.wjhdls-bottom{
+	background: #fff;
+	margin: .897em .897em .897em .897em;
+	border-radius: .4em;
+	padding: .3em .8em;
+	position: relative;
+}
+.wjhdls-bottom .wjhdls-bottom-left{
+	line-height: 1.8em;
+	color: #000;
+	width: 72%;
+	display: inline-block;
+}
+.wjhdls-bottom .wjhdls-bottom-left h4{
+	font-size: 1.5em;
+	line-height: 2em;
+}
+.wjhdls-bottom .wjhdls-bottom-left p{
+	line-height: 2em;
+}
+.wjhdls-bottom-right{
+	width: 28%;
+	/* float: right; */
+	text-align: center;
+	position: absolute;
+	right: 3%;
+	top: 38%;
+}
+/*--------------------邀请码发放---------------------------*/
+.yqmff-bottom{
+	background: #fff;
+	width: 100%;
+	margin: .897em 0em 1em 0em;
+	/*border-radius: .4em;*/
+	padding: .3em 2em;
+	position: relative;
+}
+.yqmff-bottom .yqmff-bottom-left{
+	line-height: 1.8em;
+	color: #000;
+	width: 72%;
+	display: inline-block;
+}
+.yqmff-bottom .yqmff-bottom-left p{
+	line-height: 3em;
+}
+.yqmff-bottom-right{
+	width: 28%;
+	/* float: right; */
+	text-align: center;
+	position: absolute;
+	right: 10%;
+	top: 35%;
+}
+.sp-list-bottom{
+	overflow: hidden;
+	background: #fff;
+	margin: .897em .897em .897em .897em;
+	border-radius: .4em;
+	padding: .4em 0 0 0;
+	font-size: 1.1em;
+}
+
+.yqmff-bottom-left p input{
+	border: none;
+	border-radius: 3px;
+	line-height: 2em;
+	outline: none;
+	width: 70%;
+	/* margin-bottom: 10px; */
+	font-size: 1.1em;
+	color: #000;
+}
