@@ -40,6 +40,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapWebRoutes();
 
         //
+        $this->mapAuthRoutes();
     }
 
     /**
@@ -69,5 +70,15 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * 认证路由
+     */
+    public function mapAuthRoutes()
+    {
+        Route::prefix('auth')
+            ->namespace('App\Http\Controllers\Auth')
+            ->group(base_path('routes/auth.php'));
     }
 }
