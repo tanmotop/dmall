@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.2 on 2017-09-12.
+ * Generated for Laravel 5.5.3 on 2017-09-13.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -5090,6 +5090,17 @@ namespace Illuminate\Support\Facades {
         public static function abilities()
         {
             return \Illuminate\Auth\Access\Gate::abilities();
+        }
+        
+        /**
+         * Get all of the defined policies.
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function policies()
+        {
+            return \Illuminate\Auth\Access\Gate::policies();
         }
          
     }
@@ -13110,8 +13121,8 @@ namespace  {
              *
              * @param string $table
              * @param string $first
-             * @param string $operator
-             * @param string $second
+             * @param string|null $operator
+             * @param string|null $second
              * @param string $type
              * @param bool $where
              * @return $this 
@@ -13143,8 +13154,8 @@ namespace  {
              *
              * @param string $table
              * @param string $first
-             * @param string $operator
-             * @param string $second
+             * @param string|null $operator
+             * @param string|null $second
              * @return \Illuminate\Database\Query\Builder|static 
              * @static 
              */ 
@@ -13173,8 +13184,8 @@ namespace  {
              *
              * @param string $table
              * @param string $first
-             * @param string $operator
-             * @param string $second
+             * @param string|null $operator
+             * @param string|null $second
              * @return \Illuminate\Database\Query\Builder|static 
              * @static 
              */ 
@@ -13202,9 +13213,9 @@ namespace  {
              * Add a "cross join" clause to the query.
              *
              * @param string $table
-             * @param string $first
-             * @param string $operator
-             * @param string $second
+             * @param string|null $first
+             * @param string|null $operator
+             * @param string|null $second
              * @return \Illuminate\Database\Query\Builder|static 
              * @static 
              */ 
@@ -13678,8 +13689,8 @@ namespace  {
              * Add a "having" clause to the query.
              *
              * @param string $column
-             * @param string $operator
-             * @param string $value
+             * @param string|null $operator
+             * @param string|null $value
              * @param string $boolean
              * @return $this 
              * @static 
@@ -13693,8 +13704,8 @@ namespace  {
              * Add a "or having" clause to the query.
              *
              * @param string $column
-             * @param string $operator
-             * @param string $value
+             * @param string|null $operator
+             * @param string|null $value
              * @return \Illuminate\Database\Query\Builder|static 
              * @static 
              */ 
@@ -14099,7 +14110,7 @@ namespace  {
              * Insert a new record and get the value of the primary key.
              *
              * @param array $values
-             * @param string $sequence
+             * @param string|null $sequence
              * @return int 
              * @static 
              */ 
