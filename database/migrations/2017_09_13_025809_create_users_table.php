@@ -13,6 +13,7 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
+        ///
     	$usersTable = 'users';
         Schema::create($usersTable, function (Blueprint $table) {
             $table->increments('id');
@@ -29,8 +30,19 @@ class CreateUsersTable extends Migration
 	        $table->timestamp('active_at')->nullable()->comment('激活时间');
             $table->timestamps();
         });
+	    DB::statement("ALTER TABLE `{$usersTable}` comment '用户表'");
 
-	    DB::statement("ALTER TABLE `$usersTable` comment '用户表'");
+	    ///
+	    $userCodesTable = 'user_codes';
+	    Schema::create($userCodesTable, function (Blueprint $table) {
+	        $table->increments('id');
+	        $table->unsignedInteger('create_uid')->comment('创建者ID');
+	        $table->unsignedInteger('use_uid')->default(0)->comment('使用者ID，0表示未使用');
+	        $table->char('code', 10)->comment('邀请码');
+	        $table->timestamp('create_at')->comment('创建时间');
+	        $table->timestamp('use_at')->nullable()->comment('使用时间');
+        });
+	    DB::statement("ALTER TABLE `{$userCodesTable}` comment '用户邀请码表'");
     }
 
     /**
