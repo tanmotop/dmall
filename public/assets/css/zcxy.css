@@ -1,0 +1,23 @@
+
+.zcxy-body{
+	background: #fff !important;
+}
+.zcxy-top{
+	color: #000000;
+    text-indent: 2em;
+    padding: .5em 1.5em;
+    line-height: 1.8em;
+}
+.zcxy-bottom{
+	color: #666666;
+	padding: .5em 1.5em;
+	text-indent: 0em;
+}
+.zcxy-bottom span{
+	color: #000;
+}
+.zcxy-bottom p{
+	color: #666;
+	text-indent:2em ;
+	line-height: 1.8em;
+}

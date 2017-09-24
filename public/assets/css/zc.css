@@ -1,0 +1,39 @@
+input::-webkit-input-placeholder { /* WebKit browsers */  
+    color:    #CFCFD1;
+}  
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */  
+    color:    #CFCFD1;
+}  
+input::-moz-placeholder { /* Mozilla Firefox 19+ */  
+    color:    #CFCFD1;
+}  
+input:-ms-input-placeholder { /* Internet Explorer 10+ */  
+    color:    #CFCFD1;
+}    
+.zc-bottom{
+	background: #fff;
+    margin: .897em .897em .897em .897em;
+    border-radius: .4em;
+}
+.zc-bottom ul{
+	/* padding: .3em .897em .3em .897em; */
+}
+.zc-bottom ul li {
+    font-size: 1em;
+    line-height: 1.8em;
+    border-bottom: 1px solid #E9EFF0;
+    margin: .3em 0em .3em .897em;
+}
+.zc-bottom ul li:last-child{
+	border-bottom: none;
+}
+.zc-bottom ul li input{
+	border: none;
+	border-radius: 3px;
+	line-height: 3em;
+	outline: none;
+	width: 70%;
+	/* margin-bottom: 10px; */
+    font-size: 1em;
+	color: #000;
+}

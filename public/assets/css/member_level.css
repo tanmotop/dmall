@@ -1,0 +1,88 @@
+body{
+  margin: 0;
+  padding: 0;
+  background-color: #EAEFF2;
+}
+.summary{
+  background: url("../img/background.jpg") no-repeat;
+  overflow: hidden;
+  background-size:100% 20rem;
+}
+body>span{
+	position: absolute;
+	font-weight: bold;
+	color: white;
+	font-size: x-large;
+	top:1rem ;
+	display: block;
+	left: .5rem;
+}
+.summary{
+	padding:2rem 2rem 2rem 3rem;
+}
+.summary p{
+	color: white;
+}
+.num-{
+	float: right;
+	border: 1px solid #178DCB;
+	border-radius: .5rem;
+	width: 2rem;
+	text-align: center;
+	color: #178DCB;
+	margin-right: 2rem;
+}
+*{
+	/*border:solid 1px red*/
+}
+.content{
+	margin:-2rem 1.5rem;
+	background-color: white;
+	border-radius: .3rem;
+}
+.content div{
+	background-color: #EDB2AE;
+	color: white;
+	font-weight: bold;
+	border-radius: 50%;
+	position: relative;
+	left: 1rem;
+	top:1rem;
+	width:1rem;
+	padding:.5rem;
+}
+.content .num2{
+	background-color: #F4E4C3;
+}
+.content .num3{
+	background-color: #B1CDD1;
+}
+.content p{
+	-webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    margin-left:4rem ;
+    margin-top: -.5rem;
+    margin-bottom:2rem;
+}
+.content table{
+	float: right;
+	margin-right: 2rem;
+}
+.content:after{ 
+	content:'';
+	display:block;
+	clear:both;
+	height:0;
+	overflow:hidden;
+}
+.red{
+	color: red;
+}
+hr{
+	margin-top: 7rem;
+    border :solid 1px #EAEFF2;
+}
+
+.hr2{
+	margin-top: 0
+}
