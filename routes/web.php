@@ -12,3 +12,9 @@
 */
 
 Route::get('/', 'HomeController@home')->name('home');
+
+/// 邀请码
+Route::get('/inviteCode', 'UserController@makeInviteCode')->name('makeInviteCode');
+Route::post('/inviteCode', 'UserController@grantInviteCode')->name('grantInviteCode');
+
+///
