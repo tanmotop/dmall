@@ -9074,6 +9074,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+<<<<<<< HEAD
          * Static version of prepareResponse.
          *
          * @param \Symfony\Component\HttpFoundation\Request $request
@@ -9087,6 +9088,8 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+=======
+>>>>>>> 131b41fefd889b59f059b26d68a8d11a40db6831
          * Substitute the route bindings onto the route.
          *
          * @param \Illuminate\Routing\Route $route
@@ -10740,6 +10743,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+<<<<<<< HEAD
          * Get a temporary URL for the file at the given path.
          *
          * @param \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter
@@ -10770,6 +10774,8 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+=======
+>>>>>>> 131b41fefd889b59f059b26d68a8d11a40db6831
          * Get an array of all files in a directory.
          *
          * @param string|null $directory
@@ -14296,6 +14302,7 @@ namespace  {
             /**
              * Clone the query without the given properties.
              *
+<<<<<<< HEAD
              * @param array $properties
              * @return static 
              * @static 
@@ -14303,6 +14310,15 @@ namespace  {
             public static function cloneWithout($properties)
             {    
                 return \Illuminate\Database\Query\Builder::cloneWithout($properties);
+=======
+             * @param array $except
+             * @return static 
+             * @static 
+             */ 
+            public static function cloneWithout($except)
+            {    
+                return \Illuminate\Database\Query\Builder::cloneWithout($except);
+>>>>>>> 131b41fefd889b59f059b26d68a8d11a40db6831
             }
          
             /**

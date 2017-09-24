@@ -1,0 +1,48 @@
+.tdglxt-body{
+    overflow: hidden;
+    margin: 0 1.2em;
+}
+.tdglxt-body li{
+    /* padding: 0 1.2em; */
+    width: 48%;
+    text-align: center;
+    color: #fff;
+    font-size:1.2em;
+    margin: .8em .8em 0 0;
+    float: left;
+}
+.tdglxt-body li:nth-child(2n){
+    margin-right: 0;
+}
+.tdglxt-body li a{
+    color: #fff;
+    display: block;
+}
+.tdglxt-body li p{
+    padding: 1.5em 0 1.2em 0;
+    font-size: 1.2em;
+}
+.tdglxt-body li img{
+    width: 4.25em;
+    height: 4.25em;
+    border-radius: 50%;
+    margin-top: 2.3em;
+}
+.tdglxt-body li.one{
+    background: #B2CED1;
+}
+.tdglxt-body li.two{
+    background: #F4D3C4;
+}
+.tdglxt-body li.three{
+    background: #EDB2AE;
+}
+.tdglxt-body li.four{
+    background: #F4D3C3;
+}
+.tdglxt-body li.five{
+    background: #EDB2AD;
+}
+.tdglxt-body li.six{
+    background: #B2CDD1;
+}

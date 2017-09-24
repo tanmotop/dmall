@@ -268,7 +268,7 @@ function pjax(options) {
       container.url = url.href
     }
 
-    // If there is a layouts version mismatch, hard load the new url
+    // If there is a layout version mismatch, hard load the new url
     if (currentVersion && latestVersion && currentVersion !== latestVersion) {
       locationReplace(container.url)
       return

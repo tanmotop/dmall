@@ -1,0 +1,56 @@
+/*--------------邀请码查询、团队成员名单--------------------*/
+input::-webkit-input-placeholder { /* WebKit browsers */  
+    color:    #999;  
+}  
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */  
+    color:    #999;  
+}  
+input::-moz-placeholder { /* Mozilla Firefox 19+ */  
+    color:    #999;  
+}  
+input:-ms-input-placeholder { /* Internet Explorer 10+ */  
+    color:    #999;   
+}    
+.yqmcx-bottom{
+	background: #fff;
+	margin: .897em .897em .897em .897em;
+	border-radius: .4em;
+	padding: .6em .8em;
+	position: relative;
+}
+.yqmcx-bottom p{
+	line-height: 2em;
+	color: #1A1A1A;
+
+}
+.yqmcx-bottom p:first-child{
+	display: inline-block;
+}
+.yqmcx-bottom .line{
+    width: 1px;
+    height: .7em;
+    display: inline-block;
+    background: #bfbfbf;
+    margin: 0.28em 0 0 .4em;
+}
+.yqmcx-bottom  span{
+    color: #4D4D4D;
+    margin-left: 0em;
+    /* padding-left: .3em; */
+    /* vertical-align: bottom; */
+}
+.yqmcx-bottom  span.wsy-color{
+	color: #FC6F5D;
+}
+.yqmcx-bottom em{
+	padding-left: .3em;
+}
+
+.sp-list-bottom{
+    overflow: hidden;
+    background: #fff;
+    margin: .897em .897em .897em .897em;
+    border-radius: .4em;
+    padding: .4em 0 0 0;
+    font-size: 1.1em;
+}

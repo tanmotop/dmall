@@ -134,13 +134,18 @@ return [
     /*
     |---------------------------------------------------------|
     |LAYOUT OPTIONS | fixed                                   |
+<<<<<<< HEAD
     |               | layouts-boxed                            |
     |               | layouts-top-nav                          |
+=======
+    |               | layout-boxed                            |
+    |               | layout-top-nav                          |
+>>>>>>> 131b41fefd889b59f059b26d68a8d11a40db6831
     |               | sidebar-collapse                        |
     |               | sidebar-mini                            |
     |---------------------------------------------------------|
      */
-    'layouts'  => ['sidebar-mini'],
+    'layout'  => ['sidebar-mini'],
 
     /*
      * Version displayed in footer.

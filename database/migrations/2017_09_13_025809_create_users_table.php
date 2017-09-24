@@ -29,8 +29,7 @@ class CreateUsersTable extends Migration
 	        $table->timestamp('active_at')->nullable()->comment('激活时间');
             $table->timestamps();
         });
-
-	    DB::statement("ALTER TABLE `$usersTable` comment '用户表'");
+	    DB::statement("ALTER TABLE `{$usersTable}` comment '用户表'");
     }
 
     /**

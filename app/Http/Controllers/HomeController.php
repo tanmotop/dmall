@@ -11,6 +11,7 @@ class HomeController extends Controller
     {
         return view('home', ['title' => '团队管理系统']);
     }
+<<<<<<< HEAD
 
     /**
      * 代理商管理页面
@@ -43,4 +44,6 @@ class HomeController extends Controller
     {
         return view('service');
     }
+=======
+>>>>>>> 131b41fefd889b59f059b26d68a8d11a40db6831
 }
