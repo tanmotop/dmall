@@ -11,3 +11,9 @@ npm-debug.log
 yarn-error.log
 .env
 .DS_Store
+
+storage/app/*
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/view/*
