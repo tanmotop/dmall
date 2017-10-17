@@ -42,10 +42,27 @@
             </div>
         </div>
         <div id="code_list">
-            <div class="sk-spinner sk-spinner-double-bounce">
+        	@foreach($codes as $code)
+        		<div class="yqmcx-bottom">
+	                <p>
+	                	邀请码： {{ $code->code }} <div class="line"></div>
+	                	@if ($code->stat == 1)
+						    <span style="color: green;">{{ $code->use_uname }}</span>
+						@elseif ($code->stat == 2)
+						    <span style="color: red;">已失效</span>
+						@else
+						    <span class="wsy-color">未使用</span>
+						@endif
+	                </p>
+	                <p>编号：{{ $code->create_uid }}</p>
+	                <p>发放时间：{{ $code->created_at }} </p>
+	                <p>有效时间：{{ $code->expired_at }} </p>
+	            </div>
+        	@endforeach
+            {{-- <div class="sk-spinner sk-spinner-double-bounce">
                 <div class="sk-double-bounce1"></div>
                 <div class="sk-double-bounce2"></div>
-            </div>
+            </div> --}}
         </div>
     </div>
     <br/><br/>

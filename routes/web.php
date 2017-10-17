@@ -10,6 +10,14 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::namespace('Auth')->prefix('auth')->group(function() {
+	Route::get('login', 'LoginController@index')->name('login');
+	Route::post('login/submit', 'LoginController@submit')->name('login_submit');
+	Route::get('register', 'RegisterController@index')->name('register');
+	Route::get('contract', 'RegisterController@contract')->name('contract');
+	Route::post('code/check', 'RegisterController@checkInvitationCode')->name('auth_check_code');
+	Route::post('register/submit', 'RegisterController@submit')->name('register_submit');
+});
 
 Route::group(['middleware' => ['auth:user']], function () {
 	Route::get('/', 'HomeController@home')->name('home');
@@ -23,6 +31,10 @@ Route::group(['middleware' => ['auth:user']], function () {
 		Route::get('inactive', 'AgentsController@inactive')->name('agents_inactive');
 		Route::get('code/sending', 'AgentsController@codeSending')->name('agents_code_sending');
 		Route::get('codes', 'AgentsController@codes')->name('agents_codes');
+
+		Route::post('code/generation', 'AgentsController@generateCode')->name('agents_code_generation');
+		Route::post('code/issue', 'AgentsController@issueCode')->name('agents_code_issue');
+
 		// 团队
 		Route::get('teams/members', 'TeamsController@members')->name('teams_members');
 		Route::get('teams/levels', 'TeamsController@levels')->name('teams_levels');
@@ -31,6 +43,7 @@ Route::group(['middleware' => ['auth:user']], function () {
 	Route::namespace('Mall')->prefix('mall')->group(function() {
 		// 商品
 		Route::get('goods', 'GoodsController@index')->name('goods');
+		Route::any('goods/getGoodsList', 'GoodsController@getGoodsList')->name('goods_list');
 		// 订单
 		Route::get('orders', 'OrdersController@index')->name('orders');
 		// 购物车

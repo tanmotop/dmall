@@ -129,23 +129,18 @@ return [
     /*
      * @see https://adminlte.io/docs/2.4/layout
      */
-    'skin'    => 'skin-blue',
+    'skin'    => 'skin-blue-light',
 
     /*
     |---------------------------------------------------------|
     |LAYOUT OPTIONS | fixed                                   |
-<<<<<<< HEAD
-    |               | layouts-boxed                            |
-    |               | layouts-top-nav                          |
-=======
     |               | layout-boxed                            |
     |               | layout-top-nav                          |
->>>>>>> 131b41fefd889b59f059b26d68a8d11a40db6831
     |               | sidebar-collapse                        |
     |               | sidebar-mini                            |
     |---------------------------------------------------------|
      */
-    'layout'  => ['sidebar-mini'],
+    'layout'  => ['sidebar-mini', 'sidebar-collapse'],
 
     /*
      * Version displayed in footer.

@@ -10,6 +10,7 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\UserCode;
 
 class User extends Model
 {
@@ -24,7 +25,7 @@ class User extends Model
      * @var array
      */
     protected $fillable = [
-        'username', 'password', 'realname', 'avatar', 'id_card_num', 'wechat', 'phone',
+        'username', 'password', 'realname', 'avatar', 'id_card_num', 'wechat', 'phone', 'email', 'level', 'invitation_code', 'actived_at', 'parent_id',
     ];
 
     /**

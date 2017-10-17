@@ -23,10 +23,12 @@ class CreateUsersTable extends Migration
 	        $table->string('id_card_num', 20)->comment('身份证号');
 	        $table->string('wechat', 100)->comment('微信号');
 	        $table->string('phone', 20)->comment('手机号');
-	        $table->unsignedInteger('parent_id')->default(0)->comment('上级ID:0表示最顶级');
-	        $table->unsignedTinyInteger('level')->default(1)->comment('等级');
+            $table->string('email', 64)->comment('邮箱');
+	        $table->unsignedTinyInteger('level')->comment('等级');
 	        $table->rememberToken();
-	        $table->timestamp('active_at')->nullable()->comment('激活时间');
+            $table->string('invitation_code', 10)->comment('激活码');
+	        $table->timestamp('actived_at')->nullable()->comment('激活时间');
+            $table->unsignedInteger('parent_id')->default(0)->comment('上级ID:0表示最顶级');
             $table->timestamps();
         });
 	    DB::statement("ALTER TABLE `{$usersTable}` comment '用户表'");

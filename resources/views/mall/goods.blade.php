@@ -114,9 +114,9 @@
             <div id="scroller">
                 <ul>
                     <li><span onclick="select_cat( this, 'all' )" class="sp-list-active">全部</span></li>
-                    <foreach name="caData" item="v">
-                        <li><span onclick="select_cat( this, {$v.id} )">{$v.cat_name}</span></li>
-                    </foreach>
+                    @foreach($cats as $cat)
+                        <li><span onclick="select_cat( this, {{ $cat->id }} )">{{ $cat->name}}</span></li>
+                    @endforeach
                 </ul>
             </div>
         </div>
@@ -174,8 +174,8 @@
             loaded();
             //setScrollerW();
             $.ajax( {
-                url: "{:U( 'Goods/getGoodsList' )}",
-                type: 'POST',
+                url: "{{ route('goods_list') }}",
+                type: 'GET',
                 data: { 'cat_id': 'all' },
                 dataType: 'json',
                 success: function ( json ) {
@@ -184,6 +184,7 @@
                         if( json.data != '' ){
                             data.push( json.data );
                             $.each( json.data, function ( k, v ){
+                                console.log(k,v)
                                 totalNumber++;
                                 if( k < singleNumber ){
                                     var goods = v.id + '-' + v.goods_attr_id;
@@ -193,14 +194,14 @@
                                             '<input name="cart[' + goods + '][check]" value="Y" onclick="add_goods( this, ' + v.level_price + ' )" type="checkbox" class="chk_1" id="check_a' + eachNumber + '">' +
                                             '<label for="check_a' + eachNumber + '"></label>' +
                                             '</div>' +
-                                            '<h4>' + v.goods_name + '</h4>' +
+                                            '<h4>' + v.name + '</h4>' +
                                             '<div class="up-right">' +
-                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_del.png">' +
+                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
                                             '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_add.png">' +
+                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
                                             '</div>' +
                                             '</div>' +
-                                            '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.goods_pv + '"/>' +
+                                            '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.pv + '"/>' +
                                             '<input type="hidden" name="cart[' + goods + '][price]" value="' + v.level_price + '"/>' +
                                             '<div class="down">' +
                                             '<div class="down-left">' +
@@ -269,8 +270,8 @@
                     '<div class="sk-double-bounce2"></div></div>';
             list.html( spinner );
             $.ajax( {
-                url: "{:U( 'Goods/getGoodsList' )}",
-                type: 'POST',
+                url: "{{ route('goods_list') }}",
+                type: 'GET',
                 data: { 'cat_id': id },
                 dataType: 'json',
                 success: function ( json ) {
@@ -290,9 +291,9 @@
                                             '</div>' +
                                             '<h4>' + v.goods_name + '</h4>' +
                                             '<div class="up-right">' +
-                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_del.png">' +
+                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
                                             '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_add.png">' +
+                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
                                             '</div>' +
                                             '</div>' +
                                             '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.goods_pv + '"/>' +
@@ -366,9 +367,9 @@
                                 '</div>' +
                                 '<h4>' + v.goods_name + '</h4>' +
                                 '<div class="up-right">' +
-                                '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_del.png">' +
+                                '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
                                 '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_add.png">' +
+                                '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
                                 '</div>' +
                                 '</div>' +
                                 '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.goods_pv + '"/>' +
@@ -492,8 +493,8 @@
                     '<div class="sk-double-bounce2"></div></div>';
             list.html( spinner );
             $.ajax( {
-                url: "{:U( 'Goods/getGoodsList' )}",
-                type: 'POST',
+                url: "{{ route('goods_list') }}",
+                type: 'GET',
                 data: { 'cat_id': 'all', 'keywords': val },
                 dataType: 'json',
                 success: function ( json ){
@@ -513,9 +514,9 @@
                                             '</div>' +
                                             '<h4>' + v.goods_name + '</h4>' +
                                             '<div class="up-right">' +
-                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_del.png">' +
+                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
                                             '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="__PUBLIC__/Home/default/img/goods_add.png">' +
+                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
                                             '</div>' +
                                             '</div>' +
                                             '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.goods_pv + '"/>' +

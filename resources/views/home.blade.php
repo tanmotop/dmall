@@ -5,7 +5,6 @@
     <meta name="viewport" content="initial-scale=1,
 			maximum-scale=3, minimum-scale=1, user-scalable=no">
     <title>{!! $title !!}</title>
-<<<<<<< HEAD
     <link rel="stylesheet" href="/assets/css/index.css"/>
 </head>
 <style type="text/css">
@@ -14,17 +13,10 @@
     }
 </style>
 <body>
-<<<<<<< HEAD
 <img onclick="personal_index()" src="/assets/img/index_personal.png" >
 <a href="{{ route('agents') }}">
     <div>
         <img src="/assets/img/index_member.png">
-=======
-<img onclick="personal_index()" src="/img/index_personal.png" >
-<a href="#">
-    <div>
-        <img src="/img/index_member.png">
->>>>>>> 131b41fefd889b59f059b26d68a8d11a40db6831
         <span>代理商管理</span>
     </div>
 </a>

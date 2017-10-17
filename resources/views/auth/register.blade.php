@@ -22,14 +22,15 @@
         <div class="zc-bottom">
             <form id="register_form">
                 <ul>
+                    {{ csrf_field() }}
                     <li>邀请码：<input type="text" name="invitation_code" placeholder="将检测可用性" id="invitation_code"></li>
                     <li>用户名：<input type="text" name="username" placeholder="数字与字母的组合并且至少三位"></li>
                     <li>登录密码：<input type="password" name="password"></li>
-                    <li>确认密码：<input type="password" name="cpassword"></li>
-                    <li>真实姓名：<input type="text" name="real_name"></li>
-                    <li>身份证号：<input type="text" name="id_card" placeholder="身份证为18位"></li>
+                    <li>确认密码：<input type="password" name="repasswd"></li>
+                    <li>真实姓名：<input type="text" name="realname"></li>
+                    <li>身份证号：<input type="text" name="id_card_num" placeholder="身份证为18位"></li>
                     <li>邮箱：<input type="text" name="email" placeholder="请输入正确的邮箱格式"></li>
-                    <li>微信号：<input type="text" name="weichat_id"></li>
+                    <li>微信号：<input type="text" name="wechat"></li>
                     <li>手机：<input type="text" name="phone" placeholder="手机号为11位"></li>
                     <li class="notice" style="height: 30px;text-align: center;font-size: 1.1em;color: red;display: none;"></li>
                 </ul>
@@ -37,7 +38,7 @@
         </div>
 
         <div class="btn" style="display: block">
-            <button class="style btn-register" value="" onclick="location='{{route('home')}}'">完成注册</button>
+            <button class="style btn-register">完成注册</button>
         </div>
     </div>
     <br/><br/>
@@ -49,17 +50,20 @@
 @section('scripts')
 <script>
 	/* 邀请码可用性验证 */
-    $( '#invitation_code1' ).change( function (){
+    $( '#invitation_code' ).change( function (){
         var value = $( this ).val();
         var notice = $( '.notice' );
         if( value != '' ){
             $.ajax( {
-                url: "{:U( 'Login/checkCode' )}",
+                url: '{{ route('auth_check_code') }}',
                 type: 'POST',
-                data: 'invitation_code='+value,
+                data: {
+                    code: value,
+                    _token: '{{ csrf_token() }}'
+                },
                 dataType: 'json',
                 success: function ( json ) {
-                    if( json.code == 'success' ){
+                    if( json.code == '10000' ){
                         $( '.btn' ).show();
                         notice.css( {'display': 'block', 'color': 'green' } ).html( json.msg );
                     }else{
@@ -74,15 +78,16 @@
     } );
 
     /* 注册验证 */
-    $( '.btn-register1' ).click( function (){
+    $( '.btn-register' ).click( function (){
         var notice = $( '.notice' );
         $.ajax( {
-            url: "{:U( 'Login/register' )}",
+            url: "{{ route('register_submit') }}",
             type: 'POST',
             data: $( '#register_form' ).serialize(),
             dataType: 'json',
             success: function ( json ) {
-                if( json.code == 'success' ){
+                if( json.code == '10000' ){
+                    notice.css( {'display': 'none'});
                     var html = '<div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
                             '<div class="modal-dialog">' +
                             '<div class="out-zx">' +
@@ -101,14 +106,22 @@
                     /* 关闭模态框 */
                     $( '.btn-close' ).click( function () {
                         $( '#register_dialog' ).html( '' );
+                        location = location.href;
                     } );
 
                     /* 去登录页 */
                     $( '.btn-login' ).click( function () {
-                        window.location.href = "{:U('Login/login')}";
+                        window.location.href = "{{ route('login') }}?relogin=1";
                     } );
                 }else{
                     notice.css( {'display': 'block', 'color': 'red' } ).html( json.msg );
+                }
+            },
+            error: function(json) {
+                var errors = json.responseJSON.errors;
+                for (i in errors) {
+                    notice.css( {'display': 'block', 'color': 'red' } ).html(errors[i][0]);
+                    break;
                 }
             }
         } );

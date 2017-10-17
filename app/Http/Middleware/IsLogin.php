@@ -18,11 +18,9 @@ class IsLogin
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        return $next($request);
-
         $authService = new AuthService;
         if (! $authService->role($guard)->check()) {
-            return redirect('/login');
+            return redirect('/auth/login');
         }
 
         return $next($request);

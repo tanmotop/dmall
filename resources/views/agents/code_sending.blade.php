@@ -42,19 +42,20 @@
         </div>
         <form id="code_form">
             <div class="yqmff-bottom">
+                {{ csrf_field() }}
                 <div class="yqmff-bottom-left ">
-                    <p>编号：<input name="create_member_id" value="{$Think.session.m_id}"/></p>
-                    <p>邀请码：<input name="invitation_code" id="code" placeholder="点击刷新生成邀请码"/></p>
-                    <p>有效时间：<input name="time" class="" id="time" placeholder="点我设置时间"/></p>
+                    <p>编号：<input name="create_uid" value="{{ $user->id }}"/></p>
+                    <p>邀请码：<input name="code" id="code" placeholder="点击刷新生成邀请码"/></p>
+                    <p>有效时间：<input name="expire_time" class="" id="time" placeholder="点我设置时间"/></p>
                 </div>
                 <div class="yqmff-bottom-right">
-                    <button onclick="reflash();" type="button" class="sx-btn">刷新</button>
+                    <button onclick="getInvitationCode();" type="button" class="sx-btn">刷新</button>
                 </div>
 
             </div>
             <div align="center" class="sp-list-bottom notice" style="display: none;"><span></span></div>
             <div class="btn">
-                <button onclick="/*add_code();*/location='{{ route('agents_codes') }}'" class="style" type="button">确认发放</button>
+                <button onclick="add_code();" class="style" type="button">确认发放</button>
             </div>
         </form>
     </div>
@@ -66,13 +67,16 @@
     <script src="/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <script>
         /* 刷新验证码 */
-        function reflash() {
+        function getInvitationCode() {
             $.ajax({
-                url: "{:U( 'Member/ajaxMakeCode' )}",
+                url: "{{ route('agents_code_generation') }}",
                 type: 'POST',
                 dataType: 'json',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
                 success: function ( json ){
-                    if( json.code == 'success' ){
+                    if( json.code == 10000 ){
                         $( '#code' ).val( json.data );
                     }
                 }
@@ -83,15 +87,15 @@
         function add_code() {
             var notice = $( '.notice' );
             $.ajax({
-                url: "{:U( 'Member/ajaxAddCode' )}",
+                url: '{{ route('agents_code_issue') }}',
                 type: 'POST',
                 data: $( '#code_form' ).serialize(),
                 dataType: 'json',
                 success: function ( json ){
-                    if( json.code == 'success' ){
+                    if( json.code == 10000 ){
                         notice.css( {'display': 'block', 'color': 'green' } ).html( json.msg );
-                        window.location.href = "{:U('Member/query_code')}";
-                    }else{
+                        window.location.href = '{{ route('agents_codes') }}';
+                    } else {
                         notice.css( {'display': 'block', 'color': 'red' } ).html( json.msg );
                     }
                 }
