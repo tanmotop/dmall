@@ -86,124 +86,76 @@
 	        </div>
 	    </div>
 	    <div id="member_list">
-	        <div class="sk-spinner sk-spinner-double-bounce">
-	            <div class="sk-double-bounce1"></div>
-	            <div class="sk-double-bounce2"></div>
-	        </div>
+            @forelse($users as $user)
+                <div class="wjhdls-bottom">
+                    <div class="wjhdls-bottom-left">
+                        <h4>{{ $user->username }}</h4>
+                        <p>编号：{{ $user->id }}</p>
+                        <p>邀请码：{{ $user->invitation_code }}</p>
+                        <p>注册时间：{{ $user->created_at }}</p>
+                    </div>
+                    <div class="wjhdls-bottom-right"></div>
+                </div>
+            @empty
+                <div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>暂无数据</span></div>
+            @endforelse
 	    </div>
+        @if ($users->currentPage() != $users->lastPage())
+            <div align="center" onclick="getMoreUsers()" class="sp-list-bottom"><span>上拉/点击获取更多用户</span></div>
+        @endif
 	</div>
 	<br/><br/>
 @endsection
 
 @section('scripts')
-<script type="text/javascript">
-	/* 定义总的加载的订单个数 */
-    totalNumber = 0;
-    /* 定义每次加载的订单个数 */
-    singleNumber = 10; // （只能修改此处）
-    /* 定义当前总共加载多少个 */
-    eachNumber = 0;
-    /* 缓存数据 */
-    var data = [];
-    /* 缓存网页数据 */
-    var cache = [];
-    /* 是否还能下拉 */
-    status = 'true';
-
-    /* 默认加载 */
-    $( function () {
-        $.ajax( {
-            url: "{:U( 'Member/ajaxGetUam' )}",
-            type: 'POST',
-            dataType: 'json',
-            success: function ( json ) {
-                if( json.code == 'success' ){
-                    var html = '';
-                    if( json.data != '' ){
-                        data.push( json.data );
-                        $.each( json.data, function ( k, v ){
-                            totalNumber++;
-                            if( k < singleNumber ){
-                                html += '<div class="wjhdls-bottom">' +
-                                        '<div class="wjhdls-bottom-left">' +
-                                        '<h4>' + v.real_name + '</h4>' +
-                                        '<p>编号：' + v.id + '</p>' +
-                                        '<p>邀请码：' + v.invitation_code + '</p>' +
-                                        '<p>注册时间：' + v.register_time + '</p>' +
-                                        '</div>' +
-                                        '<div class="wjhdls-bottom-right">' +
-                                        '</div>' +
-                                        '</div>';
-                                // '<button onclick="activation( ' + v.id + ' );" type="button" class="jh-btn">激活</button>' +
-                                eachNumber++;
-                            }
-                        } );
-                        if( totalNumber > eachNumber ){
-                            html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多成员</span></div>';
-                        }else{
-                            html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多成员了</span></div>';
-                            status = 'false';
-                        }
-                    }else{
-                        html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的成员</span></div>';
-                    }
-                    $( '#member_list' ).html( html );
-                }
+    <script>
+        var currentPage = parseInt('{{ $users->currentPage() }}')
+        var lastPage = parseInt('{{ $users->lastPage() }}')
+        function getMoreUsers()
+        {
+            if (currentPage == lastPage) {
+                return false;
             }
-        } );
-    } );
+            $('.sp-list-bottom span').html('正在获取 <i class="fa fa-spinner fa-spin"></i>');
+            $.get('{{ route('agents_inactive') }}', {
+                page: currentPage + 1,
+                dataType: 'json'
+            }, function(json) {
+                currentPage = json.current_page
+                var data = json.data
+                var html = ''
+                for (var i in data) {
+                    html += ''
+                    + '<div class="wjhdls-bottom">'
+                    + '    <div class="wjhdls-bottom-left">'
+                    + '        <h4>' + data[i].username + '</h4>'
+                    + '        <p>编号：' + data[i].id + '</p>'
+                    + '        <p>邀请码：' + data[i].invitation_code + '</p>'
+                    + '        <p>注册时间：' + data[i].created_at + '</p>'
+                    + '    </div>'
+                    + '    <div class="wjhdls-bottom-right"></div>'
+                    + '</div>';
+                }
+                setTimeout(function() {
+                    if (json.current_page == json.last_page) {
+                        $('.sp-list-bottom').remove();
+                        $('.wjhdls-body').append('<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多了</span></div>');
+                    } else {
+                        $('.sp-list-bottom span').html('上拉/点击获取更多用户');
+                    }
+                    $('#member_list').append(html)
+                },500)
+                    
+            });
+        }
+    </script>
 
-    /* 获取更多邀请码 */
-    $(document).ready(function() {
+    <script type="text/javascript">
         $(window).scroll(function() {
-            //$(document).scrollTop() 获取垂直滚动的距离
-            //$(document).scrollLeft() 这是获取水平滚动条的距离
             if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-                getNewGoods();
+                getMoreUsers();
             }
         });
-    });
-
-    /* 获取新邀请码 */
-    function getNewGoods() {
-        var list = $( '#member_list' );
-        var html = '';
-        if( status == 'true' ){
-            $( '.goods-last-notice span' ).html( '正在获取 <i class="fa fa-spinner fa-spin"></i>' );
-            var minNumber = eachNumber;
-            var maxNumber = Number(eachNumber) + Number( singleNumber );
-            $.each( data[0], function ( k, v ){
-                if( ( minNumber <= k && k < maxNumber ) && k < totalNumber ){
-                    html += '<div class="wjhdls-bottom">' +
-                            '<div class="wjhdls-bottom-left">' +
-                            '<h4>' + v.real_name + '</h4>' +
-                            '<p>编号：' + v.id + '</p>' +
-                            '<p>邀请码：' + v.invitation_code + '</p>' +
-                            '<p>注册时间：' + v.register_time + '</p>' +
-                            '</div>' +
-                            '<div class="wjhdls-bottom-right">' +
-                            '</div>' +
-                            '</div>';
-                    // '<button onclick="activation( ' + v.id + ' );" type="button" class="jh-btn">激活</button>' +
-                    eachNumber++;
-                }
-            } );
-            if( totalNumber > eachNumber ){
-                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多成员</span></div>';
-                cache.push( html );
-            }else{
-                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多成员了</span></div>';
-                status = 'false';
-            }
-            list.children( '.goods-last-notice' ).remove();
-            list.append( html );
-        }
-    }
-
-    /* 前往激活 */
-    /*function activation( id ) {
-        window.location.href = "{:U('/', '', false)}/id/"+id;
-    }*/
-</script>
+    </script>
 @endsection
 

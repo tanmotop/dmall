@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('invitation_code', 10)->comment('激活码');
 	        $table->timestamp('actived_at')->nullable()->comment('激活时间');
             $table->unsignedInteger('parent_id')->default(0)->comment('上级ID:0表示最顶级');
+            $table->tinyInteger('status')->default(0)->comment('商品状态：1正常0未激活');
             $table->timestamps();
         });
 	    DB::statement("ALTER TABLE `{$usersTable}` comment '用户表'");

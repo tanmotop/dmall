@@ -10,13 +10,13 @@
     <link href="/plugins/bootstrap/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
 </head>
 <body>
-<span style="margin-left: 10px;" onclick="/*jump_url();*/location='{{route('agents')}}'"><i class="fa fa-chevron-left"></i></span>
+<span style="margin-left: 10px;" onclick="jump_url();"><i class="fa fa-chevron-left"></i></span>
 <div class="summary">
-    <p>{$data.real_name} | {$data['parent']} | {$data.phone}</p>
-    <p>编号：{$data.id}</p>
-    <p>激活时间：{$data.activation_time|date='Y-m-d H:i:s', ###}</p>
-    <p>团队人数：{$data.m_number}</p>
-    <p>业绩合计：{$data.all_pv}<if condition="$data['children']"><span onclick="show_content( this );" class="num-">-</span></if></p>
+    <p>{{ $teamLevelInfo['my']->realname }} | {{ $teamLevelInfo['my']->parent_realname }} | {{ $teamLevelInfo['my']->phone }}</p>
+    <p>编号：{{ $teamLevelInfo['my']->id }}</p>
+    <p>激活时间：{{ $teamLevelInfo['my']->actived_at }}</p>
+    <p>团队人数：{{ $teamLevelInfo['my']->team_count }}</p>
+    <p>业绩合计：{{ $teamLevelInfo['my']->team_pv }}<if condition="$data['children']"><span onclick="show_content( this );" class="num-">-</span></if></p>
 </div>
 <div class="content">
     该页面等有数据再处理
@@ -55,7 +55,7 @@
 
     /* 跳转到代理商页面 */
     function jump_url() {
-        window.location.href = "{:U('Member/index')}";
+        window.location.href = '{{route('agents')}}';
     }
 
     /* 显示下级代理商 */

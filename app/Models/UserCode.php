@@ -73,7 +73,7 @@ class UserCode extends Model
             $query = $query->where('use_uid', '=', '');
         }
 
-        $codes = $query->paginate(15);
+        $codes = $query->paginate(5);
 
         $codes->each(function ($item, $i) {
             if ($item->use_uid) {

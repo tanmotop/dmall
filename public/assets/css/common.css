@@ -202,7 +202,7 @@ a:hover, a:focus, a:visited, a:active {
 	float: left;
 	width: 24%;
 }
-.body-top .yqmcx-top-center li span.active-color{
+.body-top .yqmcx-top-center li a.active-color{
 	color: #FC6F5D;
 	border-bottom: 1px solid #FC6F5D;
 	padding-bottom: .6em;

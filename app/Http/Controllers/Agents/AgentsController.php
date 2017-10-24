@@ -6,22 +6,37 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\CodeService;
 use App\Models\UserCode;
+use App\Models\User;
 
 class AgentsController extends Controller
 {
     public $userCodeModel;
 
-    public function __construct(UserCode $userCode)
+    public $userModel;
+
+    public function __construct(UserCode $userCode, User $user)
     {
         $this->userCodeModel = $userCode;
+        $this->userModel = $user;
     }
 
     /**
      * @return view
      */
-    public function inactive()
+    public function inactive(Request $request)
     {
-        return view('agents/inactive', ['title' => '未激活代理商']);
+        $uid = session('auth_user')->id;
+        $users = $this->userModel->getInactiveUsers($uid);
+
+         // 获取更多/分页数据 => 直接返回json
+        if ($request->has('dataType') && $request->dataType == 'json') {
+            return $users;
+        }
+
+        return view('agents/inactive', [
+            'title' => '未激活代理商',
+            'users' => $users,
+        ]);
     }
 
     /**
@@ -49,9 +64,15 @@ class AgentsController extends Controller
         $createUid = session('auth_user')->id;
         $codes = $this->userCodeModel->getCodesByType($createUid, $codeType);
 
+        // 获取更多/分页数据 => 直接返回json
+        if ($request->has('dataType') && $request->dataType == 'json') {
+            return $codes;
+        }
+
         return view('agents/codes', [
             'title' => '邀请码查询',
             'codes' => $codes,
+            'codeType' => $codeType,
         ]);
     }
 

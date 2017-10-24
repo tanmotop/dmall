@@ -51,6 +51,6 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */
     background: #fff;
     margin: .897em .897em .897em .897em;
     border-radius: .4em;
-    padding: .4em 0 0 0;
+    padding: .4em 0;
     font-size: 1.1em;
 }

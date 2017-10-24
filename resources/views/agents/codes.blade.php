@@ -30,9 +30,9 @@
             </div>
             <div style="margin-left: 20px;" class="yqmcx-top-center">
                 <ul>
-                    <li><span onclick="select_cat( this, 'all' )" class="active-color">全部</span></li>
-                    <li><span onclick="select_cat( this, 'Y' )">已使用</span></li>
-                    <li><span onclick="select_cat( this, 'N' )">未使用</span></li>
+                    <li><a href="{{ route('agents_codes', ['type' => 0]) }}" @if($codeType==0) class="active-color" @endif>全部</a></li>
+                    <li><a href="{{ route('agents_codes', ['type' => 1]) }}" @if($codeType==1) class="active-color" @endif>已使用</a></li>
+                    <li><a href="{{ route('agents_codes', ['type' => 2]) }}" @if($codeType==2) class="active-color" @endif>未使用</a></li>
                 </ul>
             </div>
             <div style="margin-top: 8px;margin-right: 10px;" class="top-right">
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div id="code_list">
-        	@foreach($codes as $code)
+        	@forelse($codes as $code)
         		<div class="yqmcx-bottom">
 	                <p>
 	                	邀请码： {{ $code->code }} <div class="line"></div>
@@ -58,175 +58,69 @@
 	                <p>发放时间：{{ $code->created_at }} </p>
 	                <p>有效时间：{{ $code->expired_at }} </p>
 	            </div>
-        	@endforeach
-            {{-- <div class="sk-spinner sk-spinner-double-bounce">
-                <div class="sk-double-bounce1"></div>
-                <div class="sk-double-bounce2"></div>
-            </div> --}}
+	        @empty
+				<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>暂无数据</span></div>
+        	@endforelse
         </div>
+        @if ($codes->currentPage() != $codes->lastPage())
+        	<div align="center" onclick="getMoreCodes()" class="sp-list-bottom"><span>上拉/点击获取更多邀请码</span></div>
+        @endif
     </div>
     <br/><br/>
 @endsection
 
 @section('scripts')
+	<script>
+		var currentPage = parseInt('{{ $codes->currentPage() }}')
+		var lastPage = parseInt('{{ $codes->lastPage() }}')
+		function getMoreCodes()
+		{
+			if (currentPage == lastPage) {
+				return false;
+			}
+			$('.sp-list-bottom span').html('正在获取 <i class="fa fa-spinner fa-spin"></i>');
+			$.get('{{ route('agents_codes', ['type' => $codeType]) }}', {
+				page: currentPage + 1,
+				dataType: 'json'
+			}, function(json) {
+				currentPage = json.current_page
+				var data = json.data
+				var html = ''
+				for (var i in data) {
+					if (data[i].stat == 1) {
+						tmp = '<span style="color: green;">' + data[i].use_uname + '</span>'
+					} else if (data[i].stat == 2) {
+						tmp = '<span style="color: red;">已失效</span>'
+					} else {
+						tmp = '<span class="wsy-color">未使用</span>'
+					}
+					html += '<div class="yqmcx-bottom">'
+					+ '<p>邀请码： ' + data[i].code + ' <div class="line"></div> ' + tmp + '</p>'
+	                + '<p>编号：' + data[i].create_uid + '</p>'
+	                + '<p>发放时间：' + data[i].created_at + '</p>'
+	                + '<p>有效时间：' + data[i].expired_at + '</p>'
+	                + '</div>'
+				}
+				setTimeout(function() {
+					if (json.current_page == json.last_page) {
+						$('.sp-list-bottom').remove();
+						$('.zc-body').append('<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多了</span></div>');
+					} else {
+						$('.sp-list-bottom span').html('上拉/点击获取更多邀请码');
+					}
+					$('#code_list').append(html)
+				},500)
+					
+			});
+		}
+	</script>
+
 	<script type="text/javascript">
-		/* 定义总的加载的订单个数 */
-	    totalNumber = 0;
-	    /* 定义每次加载的订单个数 */
-	    singleNumber = 5; // （只能修改此处）
-	    /* 定义当前总共加载多少个 */
-	    eachNumber = 0;
-	    /* 缓存数据 */
-	    var data = [];
-	    /* 缓存网页数据 */
-	    var cache = [];
-	    /* 是否还能下拉 */
-	    status = 'true';
-
-	    /* 默认加载未发货订单 */
-	    $( function () {
-	        $.ajax( {
-	            url: "{:U( 'Member/ajaxGetCode' )}",
-	            type: 'POST',
-	            dataType: 'json',
-	            success: function ( json ) {
-	                if( json.code == 'success' ){
-	                    var html = '';
-	                    if( json.data != '' ){
-	                        data.push( json.data );
-	                        $.each( json.data, function ( k, v ){
-	                            totalNumber++;
-	                            if( k < singleNumber ){
-	                                html += '<div class="yqmcx-bottom">' +
-	                                        '<p>邀请码：' + v.invitation_code + '</p>' +
-	                                        '<div class="line"></div> ' +
-	                                        v.span +
-	                                        '<p>编号：' + v.create_member_id + '</p>' +
-	                                        '<p>发放时间：' + v.add_time + '</p>' +
-	                                        '<p>有效时间：' + v.life_time + '</p>' +
-	                                        '</div>';
-	                                eachNumber++;
-	                            }
-	                        } );
-	                        if( totalNumber > eachNumber ){
-	                            html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多邀请码</span></div>';
-	                        }else{
-	                            html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多邀请码了</span></div>';
-	                            status = 'false';
-	                        }
-	                    }else{
-	                        html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的邀请码</span></div>';
-	                    }
-	                    $( '#code_list' ).html( html );
-	                }
-	            }
-	        } );
-	    } );
-
-
-	    /* 选择激活码状态 */
-	    function select_cat( span, type ) {
-	        /* 定义总的加载的订单个数 */
-	        totalNumber = 0;
-	        /* 定义当前总共加载多少个 */
-	        eachNumber = 0;
-	        /* 缓存数据 */
-	        data = [];
-	        /* 缓存网页数据 */
-	        cache = [];
-	        /* 是否还能下拉 */
-	        status = 'true';
-
-	        $( '.yqmcx-top-center' ).find( 'li span' ).removeClass( 'active-color' );
-	        $( span ).addClass( 'active-color' );
-
-	        var list = $( '#code_list' );
-	        var spinner = '<div class="sk-spinner sk-spinner-double-bounce">' +
-	                '<div class="sk-double-bounce1"></div>' +
-	                '<div class="sk-double-bounce2"></div></div>';
-	        list.html( spinner );
-	        $.ajax( {
-	            url: "{:U( 'Member/ajaxGetCode' )}",
-	            type: 'POST',
-	            data: { 'type': type },
-	            dataType: 'json',
-	            success: function ( json ) {
-	                if( json.code == 'success' ){
-	                    var html = '';
-	                    if( json.data != '' ){
-	                        data.push( json.data );
-	                        $.each( json.data, function ( k, v ){
-	                            totalNumber++;
-	                            if( k < singleNumber ){
-	                                html += '<div class="yqmcx-bottom">' +
-	                                        '<p>邀请码：' + v.invitation_code + '</p>' +
-	                                        '<div class="line"></div> ' +
-	                                        v.span +
-	                                        '<p>编号：' + v.create_member_id + '</p>' +
-	                                        '<p>发放时间：' + v.add_time + '</p>' +
-	                                        '<p>有效时间：' + v.life_time + '</p>' +
-	                                        '</div>';
-	                                eachNumber++;
-	                            }
-	                        } );
-	                        if( totalNumber > eachNumber ){
-	                            html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多邀请码</span></div>';
-	                        }else{
-	                            html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多邀请码了</span></div>';
-	                            status = 'false';
-	                        }
-	                    }else{
-	                        html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的邀请码</span></div>';
-	                    }
-	                    list.html( html );
-	                }
-	            }
-	        } );
-	    }
-
-	    /* 获取更多邀请码 */
-	    $(document).ready(function() {
-	        $(window).scroll(function() {
-	            //$(document).scrollTop() 获取垂直滚动的距离
-	            //$(document).scrollLeft() 这是获取水平滚动条的距离
-	            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-	                getNewGoods();
-	            }
-	        });
-	    });
-
-	    /* 获取新邀请码 */
-	    function getNewGoods() {
-	        var list = $( '#code_list' );
-	        var html = '';
-	        if( status == 'true' ){
-	            $( '.goods-last-notice span' ).html( '正在获取 <i class="fa fa-spinner fa-spin"></i>' );
-	            var minNumber = eachNumber;
-	            var maxNumber = Number(eachNumber) + Number( singleNumber );
-	            $.each( data[0], function ( k, v ){
-	                if( ( minNumber <= k && k < maxNumber ) && k < totalNumber ){
-	                    html += '<div class="yqmcx-bottom">' +
-	                            '<p>邀请码：' + v.invitation_code + '</p>' +
-	                            '<div class="line"></div> ' +
-	                            v.span +
-	                            '<p>编号：' + v.create_member_id + '</p>' +
-	                            '<p>发放时间：' + v.add_time + '</p>' +
-	                            '<p>有效时间：' + v.life_time + '</p>' +
-	                            '</div>';
-	                    eachNumber++;
-	                }
-	            } );
-	            if( totalNumber > eachNumber ){
-	                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多邀请码</span></div>';
-	                cache.push( html );
-	            }else{
-	                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多邀请码了</span></div>';
-	                status = 'false';
-	            }
-	            list.children( '.goods-last-notice' ).remove();
-	            list.append( html );
-	        }
-	    }
+	    $(window).scroll(function() {
+            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                getMoreCodes();
+            }
+        });
 	</script>
 @endsection
 
