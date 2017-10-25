@@ -47,6 +47,6 @@
 <script type="text/javascript">
     /* 去个人中心 */
     function personal_index() {
-        window.location.href = "{{route('home')}}";
+        window.location.href = "{{route('ucenter')}}";
     }
 </script>
