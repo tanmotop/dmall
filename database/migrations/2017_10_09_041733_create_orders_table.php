@@ -27,7 +27,7 @@ class CreateOrdersTable extends Migration
             $table->double('total_price', 15, 2)->comment('总价');
             $table->string('postid')->comment('快递单号');
             $table->timestamp('canceled_at')->comment('订单取消时间');
-            $table->timestamp('completed_at')->comment('订单完成时间');
+            $table->timestamp('completed_at')->nullable()->comment('订单完成时间');
             $table->tinyInteger('status')->default(0)->comment('订单状态：0:未发货; 1:已发货; 2:交易完成; 3已取消');
             $table->timestamps();
         });

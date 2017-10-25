@@ -20,7 +20,7 @@ class IsLogin
     {
         $authService = new AuthService;
         if (! $authService->role($guard)->check()) {
-            return redirect('/auth/login');
+            return redirect()->route('login');
         }
 
         return $next($request);
