@@ -21,7 +21,10 @@ class UserController
      */
     public function center()
     {
-        return view('user/ucenter', ['title' => '个人中心']);
+        $user = session()->get('auth_user');
+        $user = User::find($user->id);
+
+        return view('user/ucenter', ['title' => '个人中心', 'user' => $user]);
     }
 
     /**

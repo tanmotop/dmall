@@ -159,8 +159,8 @@
             <img onclick="edit_face( this );" data-id="{$data.id}" style="width: 100px;height: 100px;" class="img-circle" src="{$data.mid_face|showImg=###, 'member/', 'face/'}"/>
         </div>
         <div style="float: left;margin-left: 10px;">
-            <p>{$data.real_name} | <span style="color: deepskyblue">{$data.member_level_id}</span></p>
-            <p style="font-size: small">代理商编号：{$data.id}</p>
+            <p>{{$user->realname}} | <span style="color: deepskyblue">{{$user->level}}</span></p>
+            <p style="font-size: small">代理商编号：{{$user->id}}</p>
             <p style="font-size: small"><a style="color: #1b8dcc;" href="{{route('info')}}">我的资料 <i class="fa fa-chevron-right"></i></a></p>
         </div>
     </div>

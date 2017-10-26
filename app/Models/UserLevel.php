@@ -13,6 +13,7 @@ class UserLevel extends Model
 
     public function getLevelNameArray()
     {
+        $levels = [];
     	foreach ($this->all() as $item) {
             $levels[$item->id] = $item->name;
         }
