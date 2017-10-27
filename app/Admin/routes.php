@@ -12,6 +12,12 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
 
+    // 基本设置
+    $router->resource('/base/couriers', Base\CourierController::class);
+    $router->resource('/base/regions', Base\RegionController::class);
+    $router->resource('/base/freights', Base\FreightController::class);
+    $router->resource('/base/protocol', Base\ProtocolController::class);
+
     // 商品
 	$router->resource('/goods/sale', Goods\SaleController::class);
 	$router->resource('/goods/down', Goods\DownController::class);
