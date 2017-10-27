@@ -9,12 +9,14 @@
 namespace App\Models;
 
 
+use Encore\Admin\Traits\AdminBuilder;
+use Encore\Admin\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\UserCode;
-use App\Models\UserLevel;
 
 class User extends Model
 {
+    use ModelTree, AdminBuilder;
+
     /**
      * @var string
      */
@@ -37,6 +39,14 @@ class User extends Model
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->setTitleColumn('realname');
+        $this->setOrderColumn('level');
+    }
 
     /**
      * 获取未激活的用户

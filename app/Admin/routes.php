@@ -27,4 +27,5 @@ Route::group([
     // 用户/代理商
     $router->resource('/users/levels', Users\LevelController::class);
     $router->resource('/users/agents', Users\AgentController::class);
+    $router->resource('/users/tree', Users\TreeController::class);
 });

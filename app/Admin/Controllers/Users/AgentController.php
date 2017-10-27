@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 use App\Models\UserLevel;
 use App\Models\User;
-use Illuminate\Support\MessageBag;
 
 class AgentController extends Controller
 {
@@ -24,8 +23,7 @@ class AgentController extends Controller
     public function index()
     {
         return Admin::content(function (Content $content) {
-            $content->header('商品分类');
-            $content->description('分类列表');
+            $content->header('代理商列表');
             $content->body($this->grid()->render());
         });
     }
@@ -91,8 +89,8 @@ class AgentController extends Controller
             $grid->phone('手机号');
             $grid->created_at('注册时间');
             $grid->actived_at('激活时间');
-            $grid->status('激活状态')->display(function($status) {
-                return $status == 1 ? '已激活' : '未激活';
+            $grid->column('激活状态')->display(function($status) {
+                return !empty($this->actived_at) ? '已激活' : '未激活';
             });
         });
 
@@ -103,7 +101,8 @@ class AgentController extends Controller
 
         $grid->filter(function($filter){
             $filter->disableIdFilter(); // 去掉默认的id过滤器
-            $filter->like('name', 'name'); // 在这里添加字段过滤器
+            $filter->equal('username', '用户名');
+            $filter->like('realname', '真实姓名'); // 在这里添加字段过滤器
             // 设置created_at字段的范围查询
             $filter->equal('status', '激活状态')->select([
                 1 => '已激活',

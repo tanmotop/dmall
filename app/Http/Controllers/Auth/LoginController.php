@@ -25,6 +25,12 @@ class LoginController extends Controller
         return view('auth/login', ['title' => '登录']);
     }
 
+    /**
+     * 登录
+     *
+     * @param Request $request
+     * @return int
+     */
     public function submit(Request $request)
     {
     	$username = $request->username;
@@ -39,5 +45,17 @@ class LoginController extends Controller
         } else {
             return 0;
         }
+    }
+
+    /**
+     * 退出登录
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function cancel()
+    {
+       session()->forget('auth_user');
+
+       return redirect()->route('login');
     }
 }

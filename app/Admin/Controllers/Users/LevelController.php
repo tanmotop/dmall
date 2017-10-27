@@ -22,8 +22,8 @@ class LevelController extends Controller
     public function index()
     {
         return Admin::content(function (Content $content) {
-            $content->header('商品分类');
-            $content->description('分类列表');
+            $content->header('等级列表');
+//            $content->description('分类列表');
             $content->body($this->grid()->render());
         });
     }
@@ -75,7 +75,7 @@ class LevelController extends Controller
     {
         $grid = Admin::grid(UserLevel::class, function (Grid $grid) {
             // 第一列显示id字段，并将这一列设置为可排序列
-            $grid->id('ID');
+//            $grid->id('ID');
             $grid->level('等级');
             $grid->name('等级名称');
             $grid->upgrade_condition('升级说明');

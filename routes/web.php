@@ -13,6 +13,7 @@
 Route::namespace('Auth')->prefix('auth')->group(function() {
 	Route::get('login', 'LoginController@index')->name('login');
 	Route::post('login/submit', 'LoginController@submit')->name('login_submit');
+	Route::get('logout', 'LoginController@cancel')->name('logout');
 	Route::get('register', 'RegisterController@index')->name('register');
 	Route::get('contract', 'RegisterController@contract')->name('contract');
 	Route::post('code/check', 'RegisterController@checkInvitationCode')->name('auth_check_code');
@@ -25,6 +26,12 @@ Route::group(['middleware' => ['auth:user']], function () {
 	Route::get('/mall', 'HomeController@mall')->name('mall');
 	Route::get('/finances', 'HomeController@finances')->name('finances');
 	Route::get('/service', 'HomeController@service')->name('service');
+
+	Route::namespace('User')->prefix('user')->group(function () {
+        Route::get('/ucenter', 'UserController@center')->name('ucenter');
+        Route::get('/info', 'UserController@info')->name('info');
+        Route::put('/info', 'UserController@update')->name('edit_user');
+    });
 
 	Route::namespace('Agents')->prefix('agents')->group(function() {
 		// 代理商
