@@ -79,7 +79,7 @@ class AgentsController extends Controller
     public function generateCode()
     {
         $codeService = new CodeService;
-        $code = $codeService->makeInviteCode();
+        $code = $codeService->generateCode();
 
         return [
             'code' => 10000,

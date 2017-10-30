@@ -18,9 +18,12 @@
     <p>团队人数：{{ $teamLevelInfo['my']->team_count }}</p>
     <p>业绩合计：{{ $teamLevelInfo['my']->team_pv }}<if condition="$data['children']"><span onclick="show_content( this );" class="num-">-</span></if></p>
 </div>
-<div class="content">
-    该页面等有数据再处理
-</div>
+@if (!empty($teamLevelInfo['members']))
+    <div class="content">
+        @foreach($teamLevelInfo['members'] as $member)
+        @endforeach
+    </div>
+@endif
 <br/><br/><br/>
 </body>
 </html>

@@ -7,7 +7,7 @@
 @section('content')
 	<div style="padding: 15px" class="zcxy-body">
 	    <br/>
-	    <div>协议内容</div>
+		{!!$protocol->content!!}
 	    <div class="btn">
 	        <button class="style btn-agree" type="button">同意注册协议</button>
 	    </div>
