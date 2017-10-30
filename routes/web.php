@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:user']], function () {
 
 		// 团队
 		Route::get('teams/members', 'TeamsController@members')->name('teams_members');
-		Route::get('teams/levels', 'TeamsController@levels')->name('teams_levels');
+		Route::get('teams/levels/{id?}', 'TeamsController@levels')->where('id', '[0-9]+')->name('teams_levels');
 	});
 
 	Route::namespace('Mall')->prefix('mall')->group(function() {

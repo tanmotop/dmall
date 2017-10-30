@@ -30,7 +30,10 @@ class CreateUsersTable extends Migration
 	        $table->timestamp('actived_at')->nullable()->comment('激活时间');
             $table->unsignedInteger('parent_id')->default(0)->comment('上级ID:0表示最顶级');
             $table->tinyInteger('status')->default(0)->comment('激活状态：1正常0未激活');
+            $table->double('money', 15, 2)->default(0.00)->comment('用户金额');
+            $table->unsignedInteger('pv')->default(0)->comment('pv值');
             $table->timestamps();
+            $table->index('parent_id');
         });
 	    DB::statement("ALTER TABLE `{$usersTable}` comment '用户表'");
     }
