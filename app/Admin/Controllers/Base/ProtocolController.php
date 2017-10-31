@@ -49,7 +49,7 @@ class ProtocolController extends Controller
      */
     public function create()
     {
-        return redirect('');
+        return redirect('/admin/protocol/1/edit');
     }
 
     /**

@@ -17,7 +17,6 @@ class CreateOrdersGoodsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('order_id')->comment('订单id');
             $table->unsignedInteger('goods_id')->comment('商品id');
-            
             $table->timestamps();
         });
     }

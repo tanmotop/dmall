@@ -73,7 +73,7 @@ class AgentController extends Controller
      */
     protected function grid()
     {
-        $levels = (new UserLevel)->getLevelNameArray();
+        $levels = (new UserLevel)->)();
         $grid = Admin::grid(User::class, function (Grid $grid) use ($levels) {
             // 第一列显示id字段，并将这一列设置为可排序列
             // $grid->id('ID');
@@ -138,7 +138,7 @@ class AgentController extends Controller
             $form->password('repasswd', '确认密码')->rules('same:password', [
                 'same' => '两次密码不一致',
             ]);
-            $form->select('level', '代理级别')->options((new UserLevel)->getLevelNameArray())->rules('required');
+            $form->select('level', '代理级别')->options((new UserLevel)->getIdNameArray())->rules('required');
             $form->text('realname', '真实姓名')->rules('required', [
                 'required' => '真实姓名不能为空'
             ]);

@@ -88,7 +88,7 @@
             -ms-text-size-adjust: none;
             -o-text-size-adjust: none;
             text-size-adjust: none;
-        width: {$caNumber};
+            width: {{count($cats)*100}}px;
         }
     </style>
 @endsection
@@ -113,21 +113,58 @@
         <div class="sp-list-top" id="wrapper">
             <div id="scroller">
                 <ul>
-                    <li><span onclick="select_cat( this, 'all' )" class="sp-list-active">全部</span></li>
+                    <li id="cat_0">
+                        <span onclick="javascript:location='{{ route('goods') }}'" @if($catId == 0) class="sp-list-active" @endif>全部</span>
+                    </li>
                     @foreach($cats as $cat)
-                        <li><span onclick="select_cat( this, {{ $cat->id }} )">{{ $cat->name}}</span></li>
+                        <li id="cat_{{$cat->id}}">
+                            <span onclick="javascript:location='{{ route('goods', ['cat_id' => $cat->id]) }}'"  @if($catId == $cat->id) class="sp-list-active" @endif>{{ $cat->name}}</span>
+                        </li>
                     @endforeach
                 </ul>
             </div>
         </div>
-        <form id="cart_form" action="{:U('Cart/add')}" method="post">
-            <div id="goods-list">
-                <div class="sk-spinner sk-spinner-double-bounce">
-                    <div class="sk-double-bounce1"></div>
-                    <div class="sk-double-bounce2"></div>
+        <div id="goods-list">
+            @forelse($goodsList as $goods)
+                <div class="sp-list-bottom goods-item" data-attr-id="{{ $goods->attr_id }}">
+                    <div class="up">
+                        <div class="zh-check">
+                            <input value="Y" type="checkbox" class="chk_1" id="check_{{ $goods->attr_id }}">
+                            <label for="check_{{ $goods->attr_id }}" class="select-btn"></label>
+                        </div>
+                        <h4>海带条试吃装</h4>
+                        <div class="up-right">
+                            <img class="reduce-btn" src="/assets/img/goods_del.png">
+                            <input type="number" class="input-numer" value="1" data-buy-price="{{ $goods->user_prices['level_'.$myLevel] }}" data-stock="{{$goods->stock}}">
+                            <img class="add-btn" src="/assets/img/goods_add.png">
+                        </div>
+                    </div>
+                    <div class="down">
+                        <div class="down-left">
+                            <img src="/Public/Uploads/images/goods/logo/2017-05-24/mid_59252e977f2c1.jpg">
+                        </div>
+                        <div class="down-right">
+                            <ul>
+                                @foreach(array_reverse($userLevels, true) as $key => $levelName)
+                                    <li><p>{{ $levelName }}价：￥{{ $goods->user_prices['level_'.$key] }}</p></li>
+                                @endforeach
+                                <li><p>零售价：<em><del>￥{{ $goods->price }}</del></em></p></li>
+                                <li><p>购买价：<em>￥{{ $goods->user_prices['level_'.$myLevel] }}</em></p></li>
+                                <li><p>规则名称：{{ $goods->attr_name }}</p></li>
+                                <li><p>PV值：<em>{{ $goods->pv }}</em></p></li>
+                                <li><p>库存：<i>{{ $goods->stock }}</i></p></li>
+                                <li><p>产品编号：<i>{{ $goods->id }}</i></p></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </form>
+             @empty
+                <div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>暂无数据</span></div>
+            @endforelse
+        </div>
+        @if ($goodsList->currentPage() != $goodsList->lastPage())
+            <div align="center" onclick="getMoreGoods()" class="sp-list-bottom tips"><span>上拉/点击获取更多邀请码</span></div>
+        @endif
     </div>
     <br/><br/><br/><br/>
     <footer>
@@ -138,454 +175,214 @@
             </div>
         </div>
         <div class="footer-right">
-            <button style="line-height: 0;" class="cart-btn" type="button">加入购物车</button>
+            <button style="line-height: 0;" class="cart-btn add-to-cart" type="button">加入购物车</button>
         </div>
     </footer>
 @endsection
 
 @section('scripts')
-	<script type="text/javascript" src="/plugins/iscroll/iscroll.js"></script>
+    <script type="text/javascript" src="/plugins/iscroll/iscroll.js"></script>
     <script type="text/javascript">
-        var myScroll;
-        function loaded () {
-            myScroll = new IScroll('#wrapper', { eventPassthrough: true, scrollX: true, scrollY: false, preventDefault: false });
+        $(function() {
+            var myScroll = new IScroll('#wrapper', { eventPassthrough: true, scrollX: true, scrollY: false, preventDefault: false });
+            myScroll.scrollToElement('#cat_{{$catPlace}}', true, true);
+        })
+    </script>
+    <script type="text/javascript">
+        var myLevel = {{ $myLevel }};
+        var userLevels = $.parseJSON('{!! json_encode($userLevels) !!}');
+        var selectGoods = {};
+        var $totalNumber = $('.total-number');
+        var $totalPrice  = $('.total-price');
+        var totalNumber = 0;
+        var totalPrice  = 0;
+
+        /**
+         * 选择
+         */
+        $('#goods-list').on('click', '.select-btn', function() {
+            var $container = $(this).parents('.goods-item');
+            var checked = $(this).prev().is(':checked')
+            var $input = $container.find('.input-numer');
+            var count = $input.val();
+            var price = count * $input.attr('data-buy-price');
+            changeTotalNumber_Price(!checked, count, price)
+            changeSelectGoods(!checked, $container.attr('data-attr-id'), count)
+        })
+
+        /**
+         * 添加
+         */
+        $('#goods-list').on('click', '.add-btn', function() {
+            var $container = $(this).parents('.goods-item');
+            var $input = $container.find('.input-numer');
+            var stock = $input.attr('data-stock')
+            if (parseInt($input.val()) - 0 + 1 > stock) {
+                return false;
+            }
+            $input.val($input.val() - 0 + 1)
+            if ($container.find('.select-btn').prev().is(':checked')) {
+                changeTotalNumber_Price(true, 1, $input.attr('data-buy-price'))
+                changeSelectGoods(true, $container.attr('data-attr-id'), $input.val())
+            }
+        })
+
+        /**
+         * 减少
+         */
+        $('#goods-list').on('click', '.reduce-btn', function() {
+            var $container = $(this).parents('.goods-item');
+            var $input = $container.find('.input-numer');
+            if (parseInt($input.val()) <= 1) {
+                return false;
+            }
+            $input.val($input.val() - 1)
+            if ($container.find('.select-btn').prev().is(':checked')) {
+                changeTotalNumber_Price(false, 1, $input.attr('data-buy-price'))
+                changeSelectGoods(true, $container.attr('data-attr-id'), $input.val())
+            }
+        })
+
+        /**
+         * 手动输入值
+         */
+        $('#goods-list').on('change', '.input-numer', function() {
+            var $container = $(this).parents('.goods-item');
+            var stock = $(this).attr('data-stock');
+            var value = parseInt($(this).val());
+            $(this).val(value);
+            var attrId = $container.attr('data-attr-id');
+            // 判断合法值
+            if (isNaN(value)) $(this).val(value = 1);
+            if (value > stock) $(this).val(stock);
+            if (value <= 0) $(this).val(1);
+            // 选中状态需要更新selectGoods
+            if ($container.find('.select-btn').prev().is(':checked')) {
+                var selectCount = selectGoods['aid' + attrId]
+                var changeCount = value - selectCount
+                var changePrice = Math.abs(changeCount) * $(this).attr('data-buy-price')
+                if (changeCount > 0) {
+                    changeTotalNumber_Price(true, changeCount, changePrice)
+                } else {
+                    changeTotalNumber_Price(false, -changeCount, changePrice)
+                }
+            }
+            changeSelectGoods(1, attrId, value)
+        })
+
+        $('.add-to-cart').on('click', function() {
+            var length = 0;
+            for(var i in selectGoods) ++length;
+            if (length == 0) {
+                alert('请选择商品');
+                return false;
+            }
+            console.log(selectGoods)
+            $.post('{{ route('goods_add_to_cart') }}', {
+                '_token': '{{ csrf_token() }}',
+                'selectGoods': JSON.stringify(selectGoods)
+            }, function(response) {
+                if (response.code == 10000) {
+                    location = '{{ route('carts') }}'
+                }
+            });
+        })
+
+        /**
+         * 修改总数
+         * type: 1增加 0减少
+         */
+        function changeTotalNumber_Price(type, count, price)
+        {
+            if (type) {
+                totalNumber += parseInt(count);
+                totalPrice  += parseFloat(price);
+            } else {
+                totalNumber -= count;
+                totalPrice  -= price;
+            }
+            $totalNumber.text(totalNumber)
+            $totalPrice.text(totalPrice)
+        }
+
+        /**
+         * 修改已选
+         * type: 1增加 0减少
+         */
+        function changeSelectGoods(type, attrId, count)
+        {
+            if (type) {
+                selectGoods[attrId] = count
+            } else {
+                delete selectGoods[attrId]
+            }
         }
     </script>
     <script type="text/javascript">
-        /* 商品图片路径 */
-        var viewPath = "/";
-        /* 定义总的加载的商品个数 */
-        totalNumber = 0;
-        /* 定义每次加载的商品个数 */
-        singleNumber = 5; // （只能修改此处）
-        /* 定义当前总共加载多少个 */
-        eachNumber = 0;
-        /* 缓存数据 */
-        var data = [];
-        /* 缓存网页数据 */
-        var cache = [];
-        /* 是否还能下拉 */
-        status = 'true';
-        /* 当前分类 */
-        catgory_id = 'all';
-
-        /* 默认加载所有商品 */
-        $( function () {
-            loaded();
-            //setScrollerW();
-            $.ajax( {
-                url: "{{ route('goods_list') }}",
-                type: 'GET',
-                data: { 'cat_id': 'all' },
-                dataType: 'json',
-                success: function ( json ) {
-                    if( json.code == 'success' ){
-                        var html = '';
-                        if( json.data != '' ){
-                            data.push( json.data );
-                            $.each( json.data, function ( k, v ){
-                                console.log(k,v)
-                                totalNumber++;
-                                if( k < singleNumber ){
-                                    var goods = v.id + '-' + v.goods_attr_id;
-                                    html += '<div class="sp-list-bottom">' +
-                                            '<div class="up">' +
-                                            '<div class="zh-check">' +
-                                            '<input name="cart[' + goods + '][check]" value="Y" onclick="add_goods( this, ' + v.level_price + ' )" type="checkbox" class="chk_1" id="check_a' + eachNumber + '">' +
-                                            '<label for="check_a' + eachNumber + '"></label>' +
-                                            '</div>' +
-                                            '<h4>' + v.name + '</h4>' +
-                                            '<div class="up-right">' +
-                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
-                                            '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
-                                            '</div>' +
-                                            '</div>' +
-                                            '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.pv + '"/>' +
-                                            '<input type="hidden" name="cart[' + goods + '][price]" value="' + v.level_price + '"/>' +
-                                            '<div class="down">' +
-                                            '<div class="down-left">' +
-                                            '<img src="' + v.mid_logo + '">' +
-                                            '</div>' +
-                                            '<div class="down-right">' +
-                                            '<ul>';
-                                    $.each( v.m_price, function ( k2, v2 ){
-                                        html += '<li><p>' + v2.level_name + '价：￥' + v2.price + '</p></li>';
-                                    } );
-                                    html += '<li><p>零售价：<em><del>￥' + v.goods_price + '</del></em></p></li>' +
-                                            '<li><p>购买价：<em>￥' + v.level_price + '</em></p></li>';
-                                    if( v.gaData != '' ){
-                                        $.each( v.gaData, function ( k1, v1 ){
-                                            html += '<li><p>' + v1.attr_name + '：' + v1.attr_value + '</p></li>';
-                                        } );
-                                    }
-
-                                    html += '<li><p>PV值：<em>' + v.goods_pv + '</em></p></li>' +
-                                            '<li><p>库存：<i>' + v.goods_number + '</i></p></li>' +
-                                            '<li><p>产品编号：<i>' + v.goods_sn + '</i></p></li>' +
-                                            '</ul></div></div></div>';
-                                    eachNumber++;
-                                }
-                            } );
-                            if( totalNumber > eachNumber ){
-                                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多商品</span></div>';
-                            }else{
-                                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多商品了</span></div>';
-                                status = 'false';
-                            }
-                        }else{
-                            html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的商品</span></div>';
-                        }
-                        $( '#goods-list' ).html( html );
-                    }
-                }
-            } );
-        } );
-
-
-        /* 选择商品分类加载相应商品 */
-        function select_cat( span, id ) {
-            /* 当前分类 */
-            catgory_id = id;
-            /* 定义总的加载的商品个数 */
-            totalNumber = 0;
-            /* 定义当前总共加载多少个 */
-            eachNumber = 0;
-            /* 缓存数据 */
-            data = [];
-            /* 缓存网页数据 */
-            cache = [];
-            /* 是否还能下拉 */
-            status = 'true';
-
-            /* 清空价格与数量 */
-            $( '.total-price' ).text( '0' );
-            $( '.total-number' ).text( '0' );
-
-            $( '.sp-list-top' ).find( 'li span' ).removeClass( 'sp-list-active' );
-            $( span ).addClass( 'sp-list-active' );
-            var list = $( '#goods-list' );
-            var spinner = '<div class="sk-spinner sk-spinner-double-bounce">' +
-                    '<div class="sk-double-bounce1"></div>' +
-                    '<div class="sk-double-bounce2"></div></div>';
-            list.html( spinner );
-            $.ajax( {
-                url: "{{ route('goods_list') }}",
-                type: 'GET',
-                data: { 'cat_id': id },
-                dataType: 'json',
-                success: function ( json ) {
-                    if( json.code == 'success' ){
-                        var html = '';
-                        if( json.data != '' ){
-                            data.push( json.data );
-                            $.each( json.data, function ( k, v ){
-                                totalNumber++;
-                                if( k < singleNumber ){
-                                    var goods = v.id + '-' + v.goods_attr_id;
-                                    html += '<div class="sp-list-bottom">' +
-                                            '<div class="up">' +
-                                            '<div class="zh-check">' +
-                                            '<input name="cart[' + goods + '][check]" value="Y" onclick="add_goods( this, ' + v.level_price + ' )" type="checkbox" class="chk_1" id="check_a' + eachNumber + '">' +
-                                            '<label for="check_a' + eachNumber + '"></label>' +
-                                            '</div>' +
-                                            '<h4>' + v.goods_name + '</h4>' +
-                                            '<div class="up-right">' +
-                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
-                                            '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
-                                            '</div>' +
-                                            '</div>' +
-                                            '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.goods_pv + '"/>' +
-                                            '<input type="hidden" name="cart[' + goods + '][price]" value="' + v.level_price + '"/>' +
-                                            '<div class="down">' +
-                                            '<div class="down-left">' +
-                                            '<img src="' + v.mid_logo + '">' +
-                                            '</div>' +
-                                            '<div class="down-right">' +
-                                            '<ul>';
-                                    $.each( v.m_price, function ( k2, v2 ){
-                                        html += '<li><p>' + v2.level_name + '价：￥' + v2.price + '</p></li>';
-                                    } );
-                                    html += '<li><p>零售价：<em><del>￥' + v.goods_price + '</del></em></p></li>' +
-                                            '<li><p>购买价：<em>￥' + v.level_price + '</em></p></li>';
-                                    if( v.gaData != '' ){
-                                        $.each( v.gaData, function ( k1, v1 ){
-                                            html += '<li><p>' + v1.attr_name + '：' + v1.attr_value + '</p></li>';
-                                        } );
-                                    }
-
-                                    html += '<li><p>PV值：<em>' + v.goods_pv + '</em></p></li>' +
-                                            '<li><p>库存：<i>' + v.goods_number + '</i></p></li>' +
-                                            '<li><p>产品编号：<i>' + v.goods_sn + '</i></p></li>' +
-                                            '</ul></div></div></div>';
-                                    eachNumber++;
-                                }
-                            } );
-                            if( totalNumber > eachNumber ){
-                                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多商品</span></div>';
-                            }else{
-                                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多商品了</span></div>';
-                                status = 'false';
-                            }
-                        }else{
-                            html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的商品</span></div>';
-                        }
-                        list.html( html );
-                    }
-                }
-            } );
-        }
-
-        /* 获取更多商品 */
-        $(document).ready(function() {
-            $(window).scroll(function() {
-                //$(document).scrollTop() 获取垂直滚动的距离
-                //$(document).scrollLeft() 这是获取水平滚动条的距离
-                if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-                    getNewGoods();
-                }
-            });
+        $(window).scroll(function() {
+            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                getMoreGoods();
+            }
         });
-
-        /* 获取新商品 */
-        function getNewGoods() {
-            var list = $( '#goods-list' );
-            var html = '';
-            if( status == 'true' ){
-                $( '.goods-last-notice span' ).html( '正在获取 <i class="fa fa-spinner fa-spin"></i>' );
-                var minNumber = eachNumber;
-                var maxNumber = Number(eachNumber) + Number( singleNumber );
-                $.each( data[0], function ( k, v ){
-                    if( ( minNumber <= k && k < maxNumber ) && k < totalNumber ){
-                        var goods = v.id + '-' + v.goods_attr_id;
-                        html += '<div class="sp-list-bottom">' +
-                                '<div class="up">' +
-                                '<div class="zh-check">' +
-                                '<input name="cart[' + goods + '][check]" value="Y" onclick="add_goods( this, ' + v.level_price + ' )" type="checkbox" class="chk_1" id="check_a' + eachNumber + '">' +
-                                '<label for="check_a' + eachNumber + '"></label>' +
-                                '</div>' +
-                                '<h4>' + v.goods_name + '</h4>' +
-                                '<div class="up-right">' +
-                                '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
-                                '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
-                                '</div>' +
-                                '</div>' +
-                                '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.goods_pv + '"/>' +
-                                '<input type="hidden" name="cart[' + goods + '][price]" value="' + v.level_price + '"/>' +
-                                '<div class="down">' +
-                                '<div class="down-left">' +
-                                '<img src="' + v.mid_logo + '">' +
-                                '</div>' +
-                                '<div class="down-right">' +
-                                '<ul>';
-                        $.each( v.m_price, function ( k2, v2 ){
-                            html += '<li><p>' + v2.level_name + '价：￥' + v2.price + '</p></li>';
-                        } );
-                        html += '<li><p>零售价：<em><del>￥' + v.goods_price + '</del></em></p></li>' +
-                                '<li><p>购买价：<em>￥' + v.level_price + '</em></p></li>';
-                        if( v.gaData != '' ){
-                            $.each( v.gaData, function ( k1, v1 ){
-                                html += '<li><p>' + v1.attr_name + '：' + v1.attr_value + '</p></li>';
-                            } );
-                        }
-
-                        html += '<li><p>PV值：<em>' + v.goods_pv + '</em></p></li>' +
-                                '<li><p>库存：<i>' + v.goods_number + '</i></p></li>' +
-                                '<li><p>产品编号：<i>' + v.goods_sn + '</i></p></li>' +
-                                '</ul></div></div></div>';
-                        eachNumber++;
+        var currentPage = parseInt('{{ $goodsList->currentPage() }}')
+        var lastPage = parseInt('{{ $goodsList->lastPage() }}')
+        function getMoreGoods()
+        {
+            if (currentPage == lastPage) {
+                return false;
+            }
+            $('.tips span').html('正在获取 <i class="fa fa-spinner fa-spin"></i>');
+            $.get('{{ route('goods') }}', {
+                page: currentPage + 1,
+                dataType: 'json'
+            }, function(json) {
+                currentPage = json.current_page
+                var data = json.data
+                var html = ''
+                for (var i in data) {
+                    var item = data[i]
+                    var buyPrice = item.user_prices['level_' + myLevel]
+                    html += ""
+                        + '<div class="sp-list-bottom goods-item" data-attr-id="' + item.attr_id + '">'
+                        + '    <div class="up">'
+                        + '        <div class="zh-check">'
+                        + '            <input value="Y" type="checkbox" class="chk_1" id="check_' + item.attr_id + '">'
+                        + '            <label for="check_' + item.attr_id + '" class="select-btn"></label>'
+                        + '        </div>'
+                        + '        <h4>海带条试吃装</h4>'
+                        + '        <div class="up-right">'
+                        + '            <img class="reduce-btn" src="/assets/img/goods_del.png">'
+                        + '            <input type="number" class="input-numer" value="1" data-buy-price="'+buyPrice+'" data-stock="' + item.stock + '">'
+                        + '            <img class="add-btn" src="/assets/img/goods_add.png">'
+                        + '        </div>'
+                        + '    </div>'
+                        + '    <div class="down">'
+                        + '        <div class="down-left">'
+                        + '            <img src="/Public/Uploads/images/goods/logo/2017-05-24/mid_59252e977f2c1.jpg">'
+                        + '        </div>'
+                        + '        <div class="down-right">'
+                        + '            <ul>'
+                        + '                <li><p>零售价：<em><del>￥' + item.price + '</del></em></p></li>'
+                        + '                <li><p>购买价：<em>￥' + buyPrice + '</em></p></li>'
+                        + '                <li><p>规则名称：' + item.attr_name + '</p></li>'
+                        + '                <li><p>PV值：<em>' + item.pv + '</em></p></li>'
+                        + '                <li><p>库存：<i>' + item.stock + '</i></p></li>'
+                        + '                <li><p>产品编号：<i>' + item.id + '</i></p></li>'
+                        + '            </ul>'
+                        + '        </div>'
+                        + '    </div>'
+                        + '</div>'
+                }
+                setTimeout(function() {
+                    $('#goods-list').append(html)
+                    if (json.current_page == json.last_page) {
+                        $('.tips').remove();
+                        $('#goods-list').append('<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多了</span></div>');
+                    } else {
+                        $('.tips span').html('上拉/点击获取更多邀请码');
                     }
-                } );
-                if( totalNumber > eachNumber ){
-                    html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多商品</span></div>';
-                    cache.push( html );
-                }else{
-                    html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多商品了</span></div>';
-                    status = 'false';
-                }
-                list.children( '.goods-last-notice' ).remove();
-                list.append( html );
-            }
-        }
-
-        /* 逐个减少商品数量 */
-        function reduce_number( img, price ){
-            var total_price = $( '.total-price' );
-            var total_number = $( '.total-number' );
-            var input = $( img ).next();
-            var val = $( input ).val();
-            var i_status = $( img ).parent().prev().prev().children( 'input' ).is( ':checked' );
-            if( val > 1 ){
-                if( i_status ){
-                    total_price.text( Number( total_price.text() ) - Number( price ) );
-                    total_number.text( Number( total_number.text() ) - Number( 1 ) );
-                }
-                $( input ).val( val - 1 );
-            }
-            input.attr( 'data-number', $( input ).val() );
-        }
-
-        /* 逐个增加商品数量 */
-        function add_number( img, goods_number, price ){
-            var total_price = $( '.total-price' );
-            var total_number = $( '.total-number' );
-            var input = $( img ).prev();
-            var val = $( input ).val();
-            var i_status = $( img ).parent().prev().prev().children( 'input' ).is( ':checked' );
-            if( val < goods_number ){
-                if( i_status ){
-                    total_price.text( Number( total_price.text() ) + Number( price ) );
-                    total_number.text( Number( total_number.text() ) + Number( 1 ) );
-                }
-                $( input ).val( Number(val) + Number(1) );
-            }
-            input.attr( 'data-number', $( input ).val() );
-        }
-
-        /* 手动输入商品数量 */
-        function change_number( input, goods_number, price ) {
-            var total_price = $( '.total-price' );
-            var total_number = $( '.total-number' );
-            var val = $( input ).val();
-            var old_number = $( input ).attr( 'data-number' );
-            var i_status = $( input ).parent().prev().prev().children( 'input' ).is( ':checked' );
-            if( val == '' || val < 1 ){
-                $( input ).val( 1 );
-            }
-            if( val > goods_number ){
-                $( input ).val( goods_number );
-            }
-            var new_number = Number( $( input ).val() ) - Number( old_number );
-            var new_price = price * new_number;
-            if( i_status ){
-                total_price.text( Number( total_price.text() ) + Number( new_price ) );
-                total_number.text( Number( total_number.text() ) + Number( new_number ) );
-            }
-            $( input ).attr( 'data-number', $( input ).val() );
-        }
-
-        /* 搜索商品 */
-        function goods_search( a ) {
-            /* 获取关键字 */
-            var val = $( a ).parent().prev().children().val();
-            /* 定义总的加载的商品个数 */
-            totalNumber = 0;
-            /* 定义当前总共加载多少个 */
-            eachNumber = 0;
-            /* 缓存数据 */
-            data = [];
-            /* 缓存网页数据 */
-            cache = [];
-            /* 是否还能下拉 */
-            status = 'true';
-
-            /* 清空价格与数量 */
-            $( '.total-price' ).text( '0' );
-            $( '.total-number' ).text( '0' );
-
-            $( '.sp-list-top' ).find( 'li span' ).removeClass( 'sp-list-active' );
-
-            var list = $( '#goods-list' );
-            var spinner = '<div class="sk-spinner sk-spinner-double-bounce">' +
-                    '<div class="sk-double-bounce1"></div>' +
-                    '<div class="sk-double-bounce2"></div></div>';
-            list.html( spinner );
-            $.ajax( {
-                url: "{{ route('goods_list') }}",
-                type: 'GET',
-                data: { 'cat_id': 'all', 'keywords': val },
-                dataType: 'json',
-                success: function ( json ){
-                    if( json.code == 'success' ){
-                        var html = '';
-                        if( json.data != '' ){
-                            data.push( json.data );
-                            $.each( json.data, function ( k, v ){
-                                totalNumber++;
-                                if( k < singleNumber ){
-                                    var goods = v.id + '-' + v.goods_attr_id;
-                                    html += '<div class="sp-list-bottom">' +
-                                            '<div class="up">' +
-                                            '<div class="zh-check">' +
-                                            '<input name="cart[' + goods + '][check]" value="Y" onclick="add_goods( this, ' + v.level_price + ' )" type="checkbox" class="chk_1" id="check_a' + eachNumber + '">' +
-                                            '<label for="check_a' + eachNumber + '"></label>' +
-                                            '</div>' +
-                                            '<h4>' + v.goods_name + '</h4>' +
-                                            '<div class="up-right">' +
-                                            '<img onclick="reduce_number( this, ' + v.level_price + ' );" src="/assets/img/goods_del.png">' +
-                                            '<input name="cart[' + goods + '][number]" data-number="1" onchange="change_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" type="number" value="1"/>' +
-                                            '<img onclick="add_number( this, ' + v.goods_number + ', ' + v.level_price + ' );" src="/assets/img/goods_add.png">' +
-                                            '</div>' +
-                                            '</div>' +
-                                            '<input type="hidden" name="cart[' + goods + '][pv]" value="' + v.goods_pv + '"/>' +
-                                            '<input type="hidden" name="cart[' + goods + '][price]" value="' + v.level_price + '"/>' +
-                                            '<div class="down">' +
-                                            '<div class="down-left">' +
-                                            '<img src="' + v.mid_logo + '">' +
-                                            '</div>' +
-                                            '<div class="down-right">' +
-                                            '<ul>';
-                                    $.each( v.m_price, function ( k2, v2 ){
-                                        html += '<li><p>' + v2.level_name + '价：￥' + v2.price + '</p></li>';
-                                    } );
-                                    html += '<li><p>零售价：<em><del>￥' + v.goods_price + '</del></em></p></li>' +
-                                            '<li><p>购买价：<em>￥' + v.level_price + '</em></p></li>';
-                                    if( v.gaData != '' ){
-                                        $.each( v.gaData, function ( k1, v1 ){
-                                            html += '<li><p>' + v1.attr_name + '：' + v1.attr_value + '</p></li>';
-                                        } );
-                                    }
-
-                                    html += '<li><p>PV值：<em>' + v.goods_pv + '</em></p></li>' +
-                                            '<li><p>库存：<i>' + v.goods_number + '</i></p></li>' +
-                                            '<li><p>产品编号：<i>' + v.goods_sn + '</i></p></li>' +
-                                            '</ul></div></div></div>';
-                                    eachNumber++;
-                                }
-                            } );
-                            if( totalNumber > eachNumber ){
-                                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多商品</span></div>';
-                            }else{
-                                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多商品了</span></div>';
-                                status = 'false';
-                            }
-                        }else{
-                            html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的商品</span></div>';
-                        }
-                        list.html( html );
-                    }
-                }
-            } );
-        }
-
-        /* 添加商品 */
-        function add_goods( input, price ) {
-            var new_number = $( input ).parent().next().next().children( 'input' ).val();
-            var total_price = $( '.total-price' );
-            var total_number = $( '.total-number' );
-            var new_price = price * new_number;
-            if( $(input).is(':checked') ){
-                total_price.text( Number( total_price.text() ) + Number( new_price ) );
-                total_number.text( Number( total_number.text() ) + Number( new_number ) );
-            }else{
-                total_price.text( Number( total_price.text() ) - Number( new_price ) );
-                total_number.text( Number( total_number.text() ) - Number( new_number ) );
-            }
-        }
-
-        /* 提交购物车表单 */
-        $( '.cart-btn' ).click( function () {
-            document.getElementById("cart_form").submit();
-        } );
-
-        /* 设置商品分类菜单宽度 */
-        function setScrollerW() {
-            var scroller = $( '#scroller' );
-            var liNumber = scroller.children( 'ul' ).children( 'li' ).length;
-            var width = liNumber * 100;
-            scroller.css( 'width', width + 'px' );
+                },500)
+            });
         }
     </script>
 @endsection

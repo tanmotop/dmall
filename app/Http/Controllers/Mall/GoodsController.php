@@ -7,47 +7,97 @@ use App\Http\Controllers\Controller;
 use App\Models\GoodsCat;
 use App\Models\Goods;
 use App\Models\GoodsAttr;
+use App\Models\UserLevel;
+use App\Models\Cart;
 
 class GoodsController extends Controller
 {
 	private $goodsModel;
 	private $catModel;
 	private $attrModel;
+    private $cartModel;
 
-	public function __construct(Goods $goods, GoodsCat $cat, GoodsAttr $attr)
+	public function __construct(Goods $goods, GoodsCat $cat, GoodsAttr $attr, Cart $cart)
 	{
 		$this->goodsModel = $goods;
 		$this->catModel   = $cat;
 		$this->attrModel  = $attr;
+        $this->cartModel  = $cart;
 	}
 
-    public function index()
+    /**
+     * 商品列表
+     * 
+     * @return view|json
+     */
+    public function index(Request $request)
     {
+        $catId = $request->input('cat_id', 0);
+        $goodsList = $this->goodsModel->getSaleGoodsList($catId);
+
+        // 获取更多/分页数据 => 直接返回json
+        if ($request->has('dataType') && $request->dataType == 'json') {
+            return $goodsList;
+        }
+
     	$cats = $this->catModel->enable()->get(['id', 'name']);
+        foreach ($cats as $key => $cat) {
+            if ($cat->id == $catId) {
+                $catPlace = $key + 1;
+            }
+        }
+        list($userLevels, $myLevel) = $this->getUserLevelsInfo();
     	// dd($cats);
         return view('mall/goods', [
-        	'title' => '商品',
-        	'cats'  => $cats,
+        	'title'      => '商品',
+            'catId'      => $catId,
+            'catPlace'   => isset($catPlace) ? $catPlace : 0,
+        	'cats'       => $cats,
+            'goodsList'  => $goodsList,
+            'userLevels' => $userLevels,
+            'myLevel'    => $myLevel,
         ]);
     }
 
+    public function getUserLevelsInfo()
+    {
+        if (!session()->has('user_levels')) {
+            (new UserLevel)->saveUserLevelsToSession();
+        }
+        $userLevelsInfo = session('user_levels');
+        $levels = $userLevelsInfo['levels'];
+        if (isset($levels[0])) {
+            unset($levels[0]);
+        }
+        // 如果用户是顶级，则购买的价格以第一级的价格计算
+        if (!($myLevel = session('auth_user')->level)) {
+            $myLevel = $userLevelsInfo['first_level'];
+        }
+        
+        return [$levels, $myLevel];
+    }
+
     /**
-     * POST 获取商品数量
-     * 
+     * 添加商品到购物车
+     * @param Request $request
+     *
      * @return json
      */
-    public function getGoodsList()
+    public function addToCart(Request $request)
     {
-    	$goodsList = $this->goodsModel->getSaleGoodsList()->toArray();
+        $selectAttrs = json_decode($request->selectGoods, true);
+        $flag = $this->cartModel->addToCart(session('auth_user')->id, $selectAttrs);
 
-    	foreach ($goodsList as & $goods) {
-    		$goods['pv'] = 10;
-    		// $goods['']
-    	}
-
-    	return [
-    		'code' => 'success',
-    		'data' => $goodsList,
-    	];
+        if ($flag == true) {
+            return [
+                'code' => 10000,
+                'msg'  => 'Success',
+            ];
+        } else {
+            return [
+                'code' => 10002,
+                'msg'  => 'Error',
+            ];
+        }
     }
 }

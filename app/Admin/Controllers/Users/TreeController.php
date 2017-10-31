@@ -32,7 +32,7 @@ class TreeController
 
     protected function tree()
     {
-        $levels = (new UserLevel)->getLevelNameArray();
+        $levels = (new UserLevel)->getIdNameArray();
         $tree = Admin::tree(User::class, function (Tree $tree) use ($levels) {
             $logo = "<i class=\"fa fa-user\"></i>";
             $tree->branch(function ($branch) use ($levels, $logo) {

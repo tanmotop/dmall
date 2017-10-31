@@ -28,14 +28,34 @@ class Goods extends Model
         return $query->where('status', 1);
     }
 
-    public function getSaleGoodsList()
+    public function getSaleGoodsList($catId)
     {
         $fields = [
-            'goods.id', 'goods.name', 'goods.sn', 'goods_attrs.price', 'goods_attrs.name as attr_name', 'goods_attrs.stock', 'goods_attrs.weight'
+            'goods.id',
+            'goods.name',
+            'goods.cat_id',
+            'goods.sn',
+            'goods_attrs.id as attr_id',
+            'goods_attrs.pv',
+            'goods_attrs.price',
+            'goods_attrs.user_prices',
+            'goods_attrs.name as attr_name',
+            'goods_attrs.stock',
+            'goods_attrs.weight',
         ];
-        return $this->join('goods_attrs', 'goods.id', '=', 'goods_attrs.goods_id')
+        $query = $this->join('goods_attrs', 'goods.id', '=', 'goods_attrs.goods_id')
             ->where('goods.status', '=', 1)
             ->orderBy('goods.sort', 'asc')
-            ->get($fields);
+            ->select($fields);
+        if ($catId != 0) {
+            $query = $query->where('goods.cat_id', '=', $catId);
+        }
+        $list = $query->paginate(4);
+
+        $list->each(function($item, $i) {
+            $item->user_prices = json_decode($item->user_prices, true);
+        });
+
+        return $list;
     }
 }

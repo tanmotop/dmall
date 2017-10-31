@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserLevel;
 
 class LoginController extends Controller
 {
@@ -40,6 +41,7 @@ class LoginController extends Controller
         if (md5($password) == $user->password) {
             unset($user->password);
             session(['auth_user' => $user]);
+            (new UserLevel)->saveUserLevelsToSession();
             session()->save();
             return 1;
         } else {
@@ -55,6 +57,7 @@ class LoginController extends Controller
     public function cancel()
     {
        session()->forget('auth_user');
+       session()->forget('user_levels');
 
        return redirect()->route('login');
     }

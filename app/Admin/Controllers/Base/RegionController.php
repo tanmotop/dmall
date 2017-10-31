@@ -28,12 +28,6 @@ class RegionController extends Controller
             $content->a = 1;
             $content->body(Region::tree());
         });
-
-        return Admin::content(function (Content $content) {
-            $content->header('快递公司');
-            $content->description('公司列表');
-            $content->body($this->grid()->render());
-        });
     }
 
     /**

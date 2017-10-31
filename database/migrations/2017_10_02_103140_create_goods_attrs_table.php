@@ -22,6 +22,7 @@ class CreateGoodsAttrsTable extends Migration
             $table->unsignedInteger('weight')->comment('重量，单位：克');
             $table->unsignedInteger('pv')->comment('pv值');
             $table->double('price', 15, 2)->comment('价格');
+            $table->text('user_prices')->comment('代理商价格(多个，json)');
             $table->timestamps();
         });
     }

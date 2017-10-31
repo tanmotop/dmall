@@ -11,7 +11,7 @@ class UserLevel extends Model
      */
     protected $table = 'user_levels';
 
-    public function getLevelNameArray()
+    public function getIdNameArray()
     {
         $levels = [];
     	foreach ($this->all() as $item) {
@@ -19,5 +19,37 @@ class UserLevel extends Model
         }
 
         return $levels;
+    }
+
+    public function getLevelNameArray()
+    {
+        $levels = [];
+        foreach ($this->orderBy('level')->get() as $item) {
+            $levels[$item->level] = $item->name;
+        }
+
+        return $levels;
+    }
+
+    /**
+     * 用户层级存储在session => 前台需要用到
+     * 
+     * @return void
+     */
+    public function saveUserLevelsToSession()
+    {
+        $userLevels = $this->getLevelNameArray();
+        $firstLevel = 0;
+        foreach ($userLevels as $key => $level) {
+            if ($key != 0) {
+                $firstLevel = $key;
+                break;
+            }
+        }
+
+        session(['user_levels' => [
+            'levels' => $userLevels,
+            'first_level' => $firstLevel,
+        ]]);
     }
 }

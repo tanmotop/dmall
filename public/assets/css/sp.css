@@ -4,6 +4,7 @@
     width: 2em;
     margin-top: 2%;
     float: left;
+    margin-left: 0.5em;
 }
 
 .chk_1 { 
@@ -68,12 +69,12 @@ span.active-kw{
 	background: #fff;
 	margin: .897em .897em .897em .897em;
 	border-radius: .4em;
-	padding: .4em 0 0 0;
+	padding: .4em 0;
 }
 .up{
 	overflow: hidden;
 	width: 100%;
-	margin: 0 .3em .15em 1em;
+	/*margin: 0 .3em .15em 1em;*/
 	border-bottom: 1px solid #E9EFF0;
 	position: relative;
 }
@@ -130,7 +131,7 @@ span.active-kw{
 	position: relative;
 }
 .down .down-right li{
-	line-height: 1.4em;
+	line-height: 1.6em;
 }
 .down .down-right li p{
 	font-size: .8em;

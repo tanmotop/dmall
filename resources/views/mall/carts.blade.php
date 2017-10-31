@@ -5,8 +5,8 @@
     <link href="/plugins/bootstrap/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <style>
         .up-right input {
-            margin-left: 8px;
-            margin-right: 8px;
+            margin-left: 4px;
+            margin-right: 4px;
             border: none;
             border-right: 1px solid #BFBFBF;
             border-left: 1px solid #BFBFBF;
@@ -21,7 +21,7 @@
             /* padding: 0; */
         }
         .up-right img {
-            width: 2em;
+            width: 1.6em;
         }
         .up-right {
             width: 60%;
@@ -41,82 +41,71 @@
                     <i style="font-size: 22px;margin-left: 5px;color: #b3b3b3;" class="fa fa-chevron-left"></i>
                 </a>
             </div>
-            <div style="margin-top: 8px;margin-right: 10px;" class="top-right">
+            <div style="margin-top: 8px;margin-right: 8px;" class="top-right">
                 <a href="{{ route('home') }}">
                     <i style="font-size: 26px;margin-left: -5px;color: #b3b3b3;" class="fa fa-home"></i>
                 </a>
             </div>
         </div>
-
-        <if condition="!empty( $data )">
-            <div id="remove1" style="height: 30px;" class="sp-list-bottom">
-                <div style="margin-top: 1px;margin-left: 13px;" class="zh-check">
-                    <input onclick="select_all( this, {$tmp.price}, {$tmp.number} );" name="cart_a" value="Y"
-                           type="checkbox" id="check_a" class="chk_1">
-                    <label for="check_a"></label>
-                </div>
-                <h4 style="margin-top: 1px;">选择全部商品</h4>
+        
+        @if (count($goodsList))
+        <div id="remove1" style="height: 30px;" class="sp-list-bottom">
+            <div style="margin-top: 4px;margin-left: 6px;" class="zh-check">
+                <input value="Y" type="checkbox" class="chk_1 check-all" id="check_all1">
+                <label for="check_all1" class="select-all-btn"></label>
             </div>
-        </if>
+            <h4 style="margin-top: 6px;">选择全部商品</h4>
+        </div>
+        @endif
 
-        <form id="car-goods" action="{:U('Order/add')}" method="get">
-            <if condition="!empty($data)">
-                <foreach name="data" key="k" item="v">
-                    <div class="sp-list-bottom splistbottom">
-                        <div class="up">
-                            <div class="zh-check">
-                                <input name="cart[{$v.id}]" value="{$v.goods_number}"
-                                       onclick="add_goods( this, '{$v.goods_price}', '{$v.goods_number}' );" type="checkbox"
-                                       id="check_a{$k}" class="chk_1">
-                                <label for="check_a{$k}"></label>
-                            </div>
-                            <h4>{$v.goods_name}</h4>
-                            <div class="up-right-delet">
-                                <button data-id="{$v.id}" type="button" class="sc-btn">删除</button>
-                            </div>
-                        </div>
-                        <div class="down">
-                            <div class="down-left">
-                                <img src="{$v.mid_logo|showImg=###, 'goods/', 'logo/'}"/>
-                            </div>
-                            <div class="down-right">
-                                <ul>
-                                    <li>
-                                        <p>购买价：<em>￥{$v.goods_price}</em></p>
-                                        <div class="mycart-number">
-                                            <div class="up-right">
-                                            <img onclick="reduce_number( this, '{$v.goods_price}' );" src="__PUBLIC__/Home/default/img/goods_del.png">
-                                            <input  data-number="1" onchange="change_number( this, '{$v.total_number}', '{$v.goods_price}' );" data-dj="{$v.goods_price}" id="id_{$v.goods_id}" type="number" value="{$v.goods_number}"/>
-                                            <img onclick="add_number( this, '{$v.total_number}', '{$v.goods_price}' );" src="__PUBLIC__/Home/default/img/goods_add.png">
-                                            </div>
-
-                                        </div>
-                                    </li>
-                                    <foreach name="v['gaData']" item="v1">
-                                        <li><p>{$v1.attr_name}：<span class="active-kw">{$v1.attr_value}</span></p></li>
-                                    </foreach>
-                                    <li><p>PV值：<i>{$v.goods_pv}</i></p></li>
-                                    <li><p>产品编号：<i>{$v.goods_sn}</i></p></li>
-                                </ul>
-                            </div>
-                        </div>
+        @forelse($goodsList as $goods)
+            <div class="sp-list-bottom splistbottom cart-item" data-attr-id="{{ $goods->attr_id }}" data-cart-id="{{ $goods->cart_id }}">
+                <div class="up">
+                    <div class="zh-check">
+                        <input value="Y" type="checkbox" class="chk_1" id="check_{{ $goods->attr_id }}">
+                        <label for="check_{{ $goods->attr_id }}" class="select-btn"></label>
                     </div>
-                </foreach>
-                <else/>
-                <div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>您的购物车为空</span></div>
-            </if>
-        </form>
-
-        <if condition="!empty( $data )">
-            <div id="remove2" style="height: 30px;" class="sp-list-bottom">
-                <div style="margin-top: 1px;margin-left: 13px;" class="zh-check">
-                    <input onclick="select_all( this, {$tmp.price}, {$tmp.number} );" name="cart_b" value="N"
-                           type="checkbox" id="check_b" class="chk_1">
-                    <label for="check_b"></label>
+                    <h4>{{ $goods->name }}</h4>
+                    <div class="up-right-delet">
+                        <button data-id="{{ $goods->cart_id }}" type="button" class="sc-btn del-goods">删除</button>
+                    </div>
                 </div>
-                <h4 style="margin-top: 1px;">选择全部商品</h4>
+                <div class="down">
+                    <div class="down-left">
+                        <img src="" alt="商品logo" />
+                    </div>
+                    <div class="down-right">
+                        <ul>
+                            <li>
+                                <p>购买价：<em>￥{{ $goods->buy_price }}</em></p>
+                                <div class="mycart-number">
+                                    <div class="up-right">
+                                        <img class="reduce-btn" src="/assets/img/goods_del.png">
+                                        <input value="{{ $goods->count }}" class="input-numer" value="1" data-buy-price="{{ $goods->buy_price }}" data-stock="{{$goods->stock}}"/>
+                                        <img class="add-btn" src="/assets/img/goods_add.png">
+                                    </div>
+                                </div>
+                            </li>
+                            <li><p>规则：<span class="active-kw">{{ $goods->attr_name }}</span></p></li>
+                            <li><p>PV值：<i>{{ $goods->pv }}</i></p></li>
+                            <li><p>产品编号：<i>{{ $goods->goods_id }}</i></p></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </if>
+        @empty
+            <div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>您的购物车为空</span></div>
+        @endforelse
+        
+        @if (count($goodsList))
+        <div id="remove2" style="height: 30px;" class="sp-list-bottom">
+            <div style="margin-top: 4px;margin-left: 8px;" class="zh-check">
+                <input value="Y" type="checkbox" class="chk_1 check-all" id="check_all2">
+                <label for="check_all2" class="select-all-btn"></label>
+            </div>
+            <h4 style="margin-top: 6px;">选择全部商品</h4>
+        </div>
+        @endif
     </div>
     <br/><br/><br/><br/>
     <footer>
@@ -127,221 +116,171 @@
             </div>
         </div>
         <div class="footer-right">
-            <button style="line-height: 0;" class="cart-btn" type="button">提交订单</button>
+            <button style="line-height: 0;" class="cart-btn submit-btn" type="button">提交订单</button>
         </div>
     </footer>
-    <div id="cart_dialog"></div>
+    <div id="cart_dialog" style="display: none">
+        <div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
+            <div class="modal-dialog">
+                <div class="out-zx">
+                    <i style="color: red" class="fa fa-exclamation-circle fa-5x"></i>
+                    <p>删除提示</p>
+                    <div class="change-btn">
+                        <button style="float: none" type="button" class="left-btn btn-close">再想想</button>
+                        <button style="float: none;" type="button" class="right-btn btn-login btn-sure-del" data-del-id="">确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-back fade in"></div>
+    </div>
 @endsection
 
-@section('styles')
-	
+@section('scripts')
+    <script>
+        var selectGoods = {};
+        var $totalNumber = $('.total-number');
+        var $totalPrice  = $('.total-price');
+        var totalNumber = 0;
+        var totalPrice  = 0;
+    </script>
     <script type="text/javascript">
-        /* 选择要购买的商品 */
-        function add_goods(input, price, number) {
-
-            var total_price = $('.total-price');
-            var total_number = $('.total-number');
-            var a = $('#check_a');
-            var b = $('#check_b');
-            var form = $('#car-goods');
-            var checkbox = form.children('.sp-list-bottom').children('.up').children('.zh-check').children('input');
-            var length = checkbox.length;
-            var count = 0;
-            for (var i in checkbox) {
-                if (checkbox[i].checked) {
-                    count++;
-                }
-            }
-            if (count == length) {
-                a.prop('checked', 'checked');
-                b.prop('checked', 'checked');
-            } else {
-                a.removeAttr('checked');
-                b.removeAttr('checked');
-            }
-            //alert(length);alert(count);
-
-                var jk = 0;
-                var zs = 0;
-                $('.splistbottom').each(function(){
-                    if($(this).find('.up').find('input').is( ':checked' )){
-                        var g = parseInt($(this).find('.down').find('.up-right').find('input').val());
-                        var h =parseInt($(this).find('.down').find('.up-right').find('input').attr('data-dj'));
-                        var k = g*h;
-                        jk = jk+g;
-                        zs = zs+k;
-                    }
-                })
-                total_price.text(zs);
-                total_number.text(jk);
-
-        }
-        /* 逐个减少商品数量 */
-        function reduce_number( img, price ){
-            var total_price = $( '.total-price' );
-            var total_number = $( '.total-number' );
-            var input = $( img ).next();
-            var val = $( input ).val();
-            var i_status = $( img ).parents('.down').prev().find( 'input' ).is( ':checked' );
-            if( val > 1 ){
-                if( i_status ){
-                    total_price.text( Number( total_price.text() ) - Number( price ) );
-                    total_number.text( Number( total_number.text() ) - Number( 1 ) );
-                }
-                $(input).val( val - 1 );
-
-            }
-            input.attr( 'data-number', $( input ).val() );
-            $(input).parents(".down").prev().find('input').val($( input ).val());
-
-        }
-
-        /* 逐个增加商品数量 */
-        function add_number( img, goods_number, price ){
-            var total_price = $( '.total-price' );
-            var total_number = $( '.total-number' );
-            var input = $( img ).prev();
-            var val = parseInt($( input ).val());
-            var i_status = $( img ).parents('.down').prev().find( 'input' ).is( ':checked' );
-            if( val < goods_number ){
-                if( i_status ){
-                    total_price.text( Number( total_price.text() ) + Number( price ) );
-                    total_number.text( Number( total_number.text() ) + Number( 1 ) );
-                }
-                $( input ).val( val + 1 );
-            }
-            input.attr( 'data-number', $( input ).val() );
-            input.attr('value',$( input ).val() );
-            $(input).parents(".down").prev().find('input').val($( input ).val());
-        }
-        /* 手动输入商品数量 */
-        function change_number( input, goods_number, price ) {
-            var total_price = $( '.total-price' );
-            var total_number = $( '.total-number' );
-            var val = parseInt($( input ).val());
-            var old_number = $( input ).attr( 'data-number' );
-            var i_status = $(input).parents('.down').prev().find( 'input' ).is( ':checked' );
-            if( val == '' || val < 1 ){
-                $( input ).val( 1 );
-            }
-            if( val > goods_number ){
-                $( input ).val( goods_number );
-            }
-            var new_number = Number( $( input ).val() ) - Number( old_number );
-            var new_price = price * new_number;
-            if( i_status ){
-                var jk = 0;
-                var zs = 0;
-                $('.splistbottom').each(function(){
-                    if($(this).find('.up').find('input').is( ':checked' )){
-                        var g = parseInt($(this).find('.down').find('.up-right').find('input').val());
-                        var h =parseInt($(this).find('.down').find('.up-right').find('input').attr('data-dj'));
-                        var k = g*h;
-                        jk = jk+g;
-                        zs = zs+k;
-                    }
-                })
-                total_price.text(zs);
-                total_number.text(jk);
-            }
-            $(input).parents(".down").prev().find('input').val($( input ).val());
-            $( input ).attr( 'data-number', $( input ).val() );
-
-        }
-        /* 选择要删除的商品 */
-        $('.sc-btn').click(function () {
-            var div = $(this).parent().parent().parent();
-            var form = $('#car-goods');
-            var dialog = $('#cart_dialog');
-            var id = $(this).attr('data-id');
-            var html = '<div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
-                    '<div class="modal-dialog">' +
-                    '<div class="out-zx">' +
-                    '<i style="color: red" class="fa fa-exclamation-circle fa-5x"></i>' +
-                    '<p>删除提示</p>' +
-                    '<div class="change-btn">' +
-                    '<button style="float: none" type="button" class="left-btn btn-close">再想想</button>' +
-                    '<button style="float: none;" type="button" class="right-btn btn-login">确认删除</button>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="modal-back fade in"></div>';
-            dialog.html(html);
-
-            /* 关闭模态框 */
-            $('.btn-close').click(function () {
-                dialog.html('');
-            });
-
-            /* 确认删除 */
-            $('.btn-login').click(function () {
-                $.ajax({
-                    url: "{:U( 'Cart/ajaxDelCartGoods' )}",
-                    type: 'POST',
-                    data: {'id': id},
-                    dataType: 'json',
-                    success: function (json) {
-                        if (json.code == 'success') {
-                            dialog.html('');
-                            div.remove();
-                            var divNumber = form.children('div').length;
-                            if (divNumber == 0) {
-                                var html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>您的购物车为空</span></div>';
-                                form.html(html);
-                                $('#remove1').remove();
-                                $('#remove2').remove();
-                                $('.cart-btn').attr('disabled', 'disabled')
-                            }
-                        }
-                    }
-                });
-            });
+        // 删除事件
+        $('.del-goods').on('click', function () {
+            $('#cart_dialog').show();
+            var cartId = $(this).attr('data-id')
+            $('.btn-sure-del').attr('data-del-id', cartId)
+        })
+        // 关闭弹窗事件
+        $('.btn-close').on('click', function () {
+            $('#cart_dialog').hide();
+            $('.btn-sure-del').attr('data-del-id', '')
         });
-
-        /* 提交购物车表单 */
-        $('.cart-btn').click(function () {
-          document.getElementById("car-goods").submit();
-        });
-
-        /* 全选商品 */
-        function select_all(input) {
-            var inputs = $('#car-goods').find('input');
-            var total_price = $('.total-price');
-            var val = $(input).val();
-            var a = $('#check_a');
-            var b = $('#check_b');
-            var total_number = $('.total-number');
-            if ($(input).is(':checked')) {
-                inputs.prop('checked', 'checked');
-                if (val == 'Y') {
-                    b.prop('checked', 'checked');
+        // 确定删除事件
+        $('.btn-sure-del').on('click', function() {
+            var cartId = $(this).attr('data-del-id')
+            $(this).attr('data-del-id', '')
+            $.post('{{route('carts_del')}}', {
+                cart_id: cartId,
+                _token: '{{ csrf_token() }}'
+            }, function(response) {
+                if (response.code == 10000) {
+                    $('.cart-item[data-cart-id="'+cartId+'"]').remove();
                 } else {
-                    a.prop('checked', 'checked');
+                    alert('删除失败');
                 }
+                $('#cart_dialog').hide();
+            })
+        })
+        // 全选框选择事件
+        $('#check_all1,#check_all2').on('change', function() {
+            var checkboxLength = $('.cart-item').find('input[type=checkbox]').length
+            var checkedCount = 0
+            var $checkbox = $('.cart-item').find('input[type=checkbox]');
+            $checkbox.each(function(item) {
+                if ($(this).is(':checked')) ++checkedCount
+            })
+            if (checkedCount == checkboxLength) {
+                $checkbox.removeAttr('checked')
+                $('#check_all1,#check_all2').removeAttr('checked')
             } else {
-                inputs.removeAttr('checked');
-                total_price.text('0');
-                total_number.text('0');
-                if (val == 'Y') {
-                    b.removeAttr('checked');
-                } else {
-                    a.removeAttr('checked');
-                }
+                $checkbox.prop('checked', 'checked')
+                $('#check_all1,#check_all2').prop('checked', 'checked')
             }
-            var jk = 0;
-            var zs = 0;
-            $('.splistbottom').each(function(){
-                if($(this).find('.up').find('input').is( ':checked' )){
-                    var g = parseInt($(this).find('.down').find('.up-right').find('input').val());
-                    var h =parseInt($(this).find('.down').find('.up-right').find('input').attr('data-dj'));
-                    var k = g*h;
-                    jk = jk+g;
-                    zs = zs+k;
+            changeTotalNumber_Price()
+        });
+        // 单项选择事件
+        $('.cart-item').on('change', 'input[type=checkbox]', function() {
+            changeTotalNumber_Price()
+            changeCheckbox()
+        })
+        // 减少点击事件
+        $('.cart-item').on('click', '.reduce-btn', function() {
+            var $input = $(this).next();
+            var newValue = parseInt($input.val()) - 1
+            $input.val(newValue < 1 ? 1 : newValue)
+            if ($(this).parents('.cart-item').find('input[type=checkbox]').is(':checked')) {
+                changeTotalNumber_Price();
+            }
+        });
+        // 减少点击事件
+        $('.cart-item').on('click', '.add-btn', function() {
+            var $input = $(this).prev();
+            var newValue = parseInt($input.val()) + 1
+            var stock = $input.attr('data-stock')
+            $input.val(newValue > stock ? stock : newValue)
+            if ($(this).parents('.cart-item').find('input[type=checkbox]').is(':checked')) {
+                changeTotalNumber_Price();
+            }
+        });
+        // 输入事件
+        $('.cart-item').on('change', '.input-numer', function() {
+            var stock = $(this).attr('data-stock');
+            var value = parseInt($(this).val());
+            // 判断合法值
+            if (isNaN(value) || value <= 0) value = 1;
+            if (value > stock) value = stock;
+            $(this).val(value)
+            if ($(this).parents('.cart-item').find('input[type=checkbox]').is(':checked')) {
+                changeTotalNumber_Price();
+            }
+        })
+        // 提交订单事件
+        $('.submit-btn').on('click', function() {
+            var selectGoods = {}, length = 0
+            $('.cart-item').each(function(i, item) {
+                if ($(item).find('input[type=checkbox]').is(':checked')) {
+                    var cartId = $(item).attr('data-cart-id');
+                    var count  = $(item).find('.input-numer').val();
+                    selectGoods[cartId] = count
+                    ++length
                 }
             })
-            total_price.text(zs);
-            total_number.text(jk);
+            if (length == 0) alert('您还没有选择商品');
+            $.post('{{ route('carts_prepare') }}', {
+                '_token': '{{ csrf_token() }}',
+                'selectGoods': JSON.stringify(selectGoods)
+            }, function(response) {
+                if (response.code == 10000) {
+                    location = '{{ route('orders_prepare') }}';
+                } else {
+                    alert('部分商品可能库存不足，请重新选择');
+                }
+            })
+        })
+    </script>
+
+    <script>
+        function changeCheckbox()
+        {
+            var $checkAll_A = $('#check_all1')
+            var $checkAll_B = $('#check_all2')
+            var checkboxLength = $('.cart-item').find('input[type=checkbox]').length
+            var checkedCount = 0
+            $('.cart-item').find('input[type=checkbox]').each(function(item) {
+                if ($(this).is(':checked')) ++checkedCount
+            })
+            if (checkedCount == checkboxLength) {
+                $('#check_all1,#check_all2').prop('checked', 'checked')
+            } else {
+                $('#check_all1,#check_all2').removeAttr('checked')
+            }
+        }
+        function changeTotalNumber_Price()
+        {
+            totalNumber = 0;
+            totalPrice = 0;
+            $('.cart-item').each(function() {
+                var $item = $(this)
+                if ($item.find('.select-btn').prev().is(':checked')) {
+                    var price = parseFloat($item.find('.input-numer').attr('data-buy-price'))
+                    var count = parseInt($item.find('.input-numer').val())
+                    totalNumber += count
+                    totalPrice += price * count
+                }
+            })
+            $totalNumber.text(totalNumber)
+            $totalPrice.text(totalPrice)
         }
     </script>
 @endsection
