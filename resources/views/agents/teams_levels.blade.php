@@ -18,9 +18,36 @@
     <p>团队人数：{{ $teamLevelInfo['my']->team_count }}</p>
     <p>业绩合计：{{ $teamLevelInfo['my']->team_pv }}<if condition="$data['children']"><span onclick="show_content( this );" class="num-">-</span></if></p>
 </div>
-<div class="content">
-    该页面等有数据再处理
-</div>
+@if (!empty($teamLevelInfo['members']))
+    <div class="content">
+        @foreach($teamLevelInfo['members'] as $member)
+            <span onclick="team_go_to( this )" value="{{ $member->id }}">
+                <div style="text-align: center">{{ $loop->iteration }}</div>
+                <p>{{ $member->realname }} | <span class="red">{{ $member->level_name }}</span> | {{ $member->phone }}</p>
+                <p>编号：{{ $member->id }}</p>
+                <p>激活时间：{{ $member->actived_at }}</p>
+                <p>团队人数：{{ $member->team_count }}</p>
+                <p>业绩合计：<span class="red">{{ $member->team_pv }}</span></p>
+
+                {{--<table>--}}
+                    {{--<tr>--}}
+                        {{--<td>( {$v.self_pv}</td>--}}
+                        {{--<td>{$v.real_name} )</td>--}}
+                    {{--</tr>--}}
+
+                    {{--<foreach name="v['children']" item="v2">--}}
+                        {{--<tr>--}}
+                            {{--<td>( {$v2.all_pv}</td>--}}
+                            {{--<td>{$v2.real_name} )</td>--}}
+                        {{--</tr>--}}
+                    {{--</foreach>--}}
+                {{--</table>--}}
+                <br/>
+                <hr>
+            </span>
+        @endforeach
+    </div>
+@endif
 <br/><br/><br/>
 </body>
 </html>
@@ -61,6 +88,6 @@
     /* 显示下级代理商 */
     function team_go_to( span ) {
         var id = $( span ).attr( 'value' );
-        window.location.href = "{:U('Member/team_level', '', false)}/id/"+id;
+        window.location.href = "{{ route('teams_levels') }}" + '/' + id;
     }
 </script>

@@ -31,9 +31,9 @@ class TeamsController extends Controller
         ]);
     }
 
-    public function levels()
+    public function levels($id = null)
     {
-    	$uid = session('auth_user')->id;
+    	$uid = $id ? $id : session('auth_user')->id;
     	$teamLevelInfo = $this->userModel->getTeamLevelInfo($uid);
 
         return view('agents/teams_levels', [

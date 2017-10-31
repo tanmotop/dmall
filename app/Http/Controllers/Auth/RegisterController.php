@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\RegProtocol;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -27,7 +28,8 @@ class RegisterController extends Controller
 
     public function contract()
     {
-    	return view('auth/contract', ['title' => '注册协议']);
+        $protocol = RegProtocol::find(1);
+    	return view('auth/contract', ['title' => '注册协议', 'protocol' => $protocol]);
     }
 
     public function checkInvitationCode(Request $request)

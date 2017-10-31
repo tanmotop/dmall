@@ -28,4 +28,8 @@ Route::group([
     $router->resource('/users/levels', Users\LevelController::class);
     $router->resource('/users/agents', Users\AgentController::class);
     $router->resource('/users/tree', Users\TreeController::class);
+
+    // 财务
+    $router->resource('/finances/recharge', Finances\RechargeController::class);
+    $router->resource('/finances/refund', Finances\RefundController::class);
 });

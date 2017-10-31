@@ -89,8 +89,8 @@ class AgentController extends Controller
             $grid->phone('手机号');
             $grid->created_at('注册时间');
             $grid->actived_at('激活时间');
-            $grid->column('激活状态')->display(function($status) {
-                return !empty($this->actived_at) ? '已激活' : '未激活';
+            $grid->status('激活状态')->display(function($status) {
+                return $status == 1 ? '已激活' : '未激活';
             });
         });
 

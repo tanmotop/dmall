@@ -12,6 +12,7 @@ namespace App\Models;
 use Encore\Admin\Traits\AdminBuilder;
 use Encore\Admin\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class User extends Model
 {
@@ -85,12 +86,25 @@ class User extends Model
      */
     public function getTeamLevelInfo($uid)
     {
-        $user = $this->where('id', '=', $uid)->first();
+        $user = $this->where('id', $uid)->first();
         $user = $this->statUserTeamInfo($user);
+
+        ///
+        $levels = (new UserLevel)->getLevelNameArray();
+        $members = $this->where([
+            ['parent_id', $uid],
+            ['status', 1]
+        ])->get();
+
+        ///
+        $members->each(function ($item, $i) use ($levels) {
+            $item = $this->statUserTeamInfo($item);
+            $item->level_name = $levels[$item->level];
+        });
 
         return [
             'my' => $user,
-            'members' => [],
+            'members' => $members,
         ];
     }
 
@@ -104,10 +118,16 @@ class User extends Model
         } else {
             $user->parent_realname = '待添加';
         }
-        $user->team_count = $this->where('parent_id', '=', $user->id)
-            ->where('status', '=', 1)
-            ->count();
-        $user->team_pv = 1000;
+
+        $data = $this->select(DB::raw('COUNT(*) as team_count,SUM(`pv`) as team_pv'))
+            ->where([
+                ['parent_id', '=', $user->id],
+                ['status', '=', 1]
+            ])->first();
+
+        ///
+        $user->team_count = $data->team_count;
+        $user->team_pv = $data->team_pv + $user->pv;
 
         return $user;
     }
