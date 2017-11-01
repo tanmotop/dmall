@@ -72,14 +72,14 @@ class Cart extends Model
             'goods_attrs.stock',
             'goods_attrs.weight',
         ];
-        $goodsList = $this->join('goods_attrs', 'carts.attr_id', '=', 'goods_attrs.id')
+        $goodsList = $this->join('goods_attrs', 'carts.goods_attr_id', '=', 'goods_attrs.id')
             ->join('goods', 'goods_attrs.goods_id', '=', 'goods.id')
             ->select($fields)
             ->get();
 
         if (($myLevel = session('auth_user')->level) == 0) {
             if (!session()->has('user_levels')) {
-                (new App\Models\UserLevel)->saveUserLevelsToSession();
+                (new UserLevel)->saveUserLevelsToSession();
             }
             $myLevel = session('user_levels')['first_level'];
         }

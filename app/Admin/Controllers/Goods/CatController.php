@@ -78,7 +78,9 @@ class CatController extends Controller
             $grid->id('ID')->sortable();
             $grid->name('分类名称');
             $grid->sort('分类排序')->sortable();
-            $grid->status('分类状态');
+            $grid->status('分类状态')->display(function ($status) {
+                return $status == 1 ? '显示' : '隐藏';
+            });
             $grid->created_at('创建时间');
             $grid->updated_at('更新时间');
         });
@@ -109,9 +111,10 @@ class CatController extends Controller
     protected function form()
     {
         return Admin::form(GoodsCat::class, function (Form $form) {
-            $form->display('id', '分类ID');
+//            $form->display('id', '分类ID');
             $form->text('name', '分类标题')->rules('required');
             $form->number('sort', '分类排序')->default(50)->placeholder('分类排序');
+            $form->radio('status', '分类状态')->options([1 => '显示', 0 => '隐藏'])->default(1);
             
             $form->saving(function (Form $form) {
                 // $form->name = '商品3_x';

@@ -230,7 +230,7 @@
         /* 定义总的加载的订单个数 */
         totalNumber = 0;
         /* 定义每次加载的订单个数 */
-        singleNumber = 10; // （只能修改此处）
+        singleNumber = 1; // （只能修改此处）
         /* 定义当前总共加载多少个 */
         eachNumber = 0;
         /* 缓存数据 */
@@ -242,43 +242,40 @@
 
         /* 默认加载 */
         $( function () {
-            $.ajax( {
-                url: "{:U( 'Finance/ajaxGetFrData' )}",
-                type: 'POST',
-                dataType: 'json',
-                success: function ( json ) {
-                    if( json.code == 'success' ){
-                        var html = '';
-                        if( json.data != '' ){
-                            data.push( json.data );
-                            $.each( json.data, function ( k, v ){
-                                totalNumber++;
-                                if( k < singleNumber ){
-                                    html += '<div class="zc-bottom">' +
-                                            '<ul>' +
-                                            '<li>类型：<input readonly type="text" value="账户充值"></li>' +
-                                            '<li>充值：<input readonly type="text" value="￥' + v.recharge_money + '"></li>' +
-                                            '<li>余额：<input readonly type="text" value="￥' + v.after_recharge_money + '"></li>' +
-                                            '<li>时间：<input readonly type="text" value="' + v.add_time + '"></li>' +
-                                            '<li>说明：<input style="color: orange" readonly type="text" value="' + v.recharge_mode + '￥' + v.recharge_money + '"></li>' +
-                                            '</ul>' +
-                                            '</div>';
-                                    eachNumber++;
-                                }
-                            } );
-                            if( totalNumber > eachNumber ){
-                                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多充值记录</span></div>';
-                            }else{
-                                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多充值记录了</span></div>';
-                                status = 'false';
+            $.get("{{route('finances_flow_charge')}}", {
+                dataType:'json'
+            }, function ( json ) {
+                if( json.code == 10000 ){
+                    var html = '';
+                    if( json.data != '' ){
+                        data.push( json.data );
+                        $.each( json.data, function ( k, v ){
+                            totalNumber++;
+                            if( k < singleNumber ){
+                                html += '<div class="zc-bottom">' +
+                                    '<ul>' +
+                                    '<li>类型：<input readonly type="text" value="账户充值"></li>' +
+                                    '<li>充值：<input readonly type="text" value="￥' + v.money + '"></li>' +
+                                    '<li>余额：<input readonly type="text" value="￥' + v.money_after + '"></li>' +
+                                    '<li>时间：<input readonly type="text" value="' + v.created_at + '"></li>' +
+                                    '<li>说明：<input style="color: orange" readonly type="text" value="' + v.describe + '"></li>' +
+                                    '</ul>' +
+                                    '</div>';
+                                eachNumber++;
                             }
+                        } );
+                        if( totalNumber > eachNumber ){
+                            html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多充值记录</span></div>';
                         }else{
-                            html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的充值记录</span></div>';
+                            html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多充值记录了</span></div>';
+                            status = 'false';
                         }
-                        $( '#member_list' ).html( html );
+                    }else{
+                        html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的充值记录</span></div>';
                     }
+                    $( '#member_list' ).html( html );
                 }
-            } );
+            });
 
             /* 默认选择当前月 */
             var time = new Date();
@@ -310,10 +307,10 @@
                         html += '<div class="zc-bottom">' +
                                 '<ul>' +
                                 '<li>类型：<input readonly type="text" value="账户充值"></li>' +
-                                '<li>充值：<input readonly type="text" value="￥' + v.recharge_money + '"></li>' +
-                                '<li>余额：<input readonly type="text" value="￥' + v.after_recharge_money + '"></li>' +
-                                '<li>时间：<input readonly type="text" value="' + v.add_time + '"></li>' +
-                                '<li>说明：<input style="color: orange" readonly type="text" value="' + v.recharge_mode + '￥' + v.recharge_money + '"></li>' +
+                                '<li>充值：<input readonly type="text" value="￥' + v.money + '"></li>' +
+                                '<li>余额：<input readonly type="text" value="￥' + v.money_after + '"></li>' +
+                                '<li>时间：<input readonly type="text" value="' + v.created_at + '"></li>' +
+                                '<li>说明：<input style="color: orange" readonly type="text" value="' + v.describe + '"></li>' +
                                 '</ul>' +
                                 '</div>';
                         eachNumber++;
@@ -351,44 +348,41 @@
                     '<div class="sk-double-bounce1"></div>' +
                     '<div class="sk-double-bounce2"></div></div>';
             list.html( spinner );
-            $.ajax( {
-                url: "{:U( 'Finance/ajaxGetFrData' )}",
-                type: 'POST',
-                data: { 'time': val },
-                dataType: 'json',
-                success: function ( json ){
-                    if( json.code == 'success' ){
-                        var html = '';
-                        if( json.data != '' ){
-                            data.push( json.data );
-                            $.each( json.data, function ( k, v ){
-                                totalNumber++;
-                                if( k < singleNumber ){
-                                    html += '<div class="zc-bottom">' +
-                                            '<ul>' +
-                                            '<li>类型：<input readonly type="text" value="账户充值"></li>' +
-                                            '<li>充值：<input readonly type="text" value="￥' + v.recharge_money + '"></li>' +
-                                            '<li>余额：<input readonly type="text" value="￥' + v.after_recharge_money + '"></li>' +
-                                            '<li>时间：<input readonly type="text" value="' + v.add_time + '"></li>' +
-                                            '<li>说明：<input style="color: orange" readonly type="text" value="' + v.recharge_mode + '￥' + v.recharge_money + '"></li>' +
-                                            '</ul>' +
-                                            '</div>';
-                                    eachNumber++;
-                                }
-                            } );
-                            if( totalNumber > eachNumber ){
-                                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多充值记录</span></div>';
-                            }else{
-                                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多充值记录了</span></div>';
-                                status = 'false';
+            $.get("{{route('finances_flow_charge')}}", {
+                dataType:'json',
+                time:val
+            }, function ( json ){
+                if( json.code == 10000 ){
+                    var html = '';
+                    if( json.data != '' ){
+                        data.push( json.data );
+                        $.each( json.data, function ( k, v ){
+                            totalNumber++;
+                            if( k < singleNumber ){
+                                html += '<div class="zc-bottom">' +
+                                    '<ul>' +
+                                    '<li>类型：<input readonly type="text" value="账户充值"></li>' +
+                                    '<li>充值：<input readonly type="text" value="￥' + v.money + '"></li>' +
+                                    '<li>余额：<input readonly type="text" value="￥' + v.money_after + '"></li>' +
+                                    '<li>时间：<input readonly type="text" value="' + v.created_at + '"></li>' +
+                                    '<li>说明：<input style="color: orange" readonly type="text" value="' + v.describe + '"></li>' +
+                                    '</ul>' +
+                                    '</div>';
+                                eachNumber++;
                             }
+                        } );
+                        if( totalNumber > eachNumber ){
+                            html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多充值记录</span></div>';
                         }else{
-                            html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的充值记录</span></div>';
+                            html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多充值记录了</span></div>';
+                            status = 'false';
                         }
-                        list.html( html );
+                    }else{
+                        html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的充值记录</span></div>';
                     }
+                    list.html( html );
                 }
-            } );
+            });
         }
         /* 时间控件 */
         $('#time').datetimepicker({
