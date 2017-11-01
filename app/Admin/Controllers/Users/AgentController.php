@@ -73,7 +73,7 @@ class AgentController extends Controller
      */
     protected function grid()
     {
-        $levels = (new UserLevel)->)();
+        $levels = (new UserLevel)->getLevelNameArray();
         $grid = Admin::grid(User::class, function (Grid $grid) use ($levels) {
             // 第一列显示id字段，并将这一列设置为可排序列
             // $grid->id('ID');
