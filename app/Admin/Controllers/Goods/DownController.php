@@ -77,6 +77,10 @@ class DownController extends Controller
         $grid = Admin::grid(Goods::class, function (Grid $grid) {
             // 第一列显示id字段，并将这一列设置为可排序列
             $grid->id('ID')->sortable();
+            $grid->logo('商品LOGO')->display(function ($logo) {
+                $src = env('APP_URL') . '/uploads/' . $logo;
+                return "<img src='{$src}' width='50' height='50'>";
+            });
             $grid->sn('商品编号');
             $grid->name('商品名称');
             $grid->short_name('商品简称');

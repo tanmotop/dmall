@@ -27,8 +27,9 @@ class GoodsController extends Controller
 
     /**
      * 商品列表
-     * 
-     * @return view|json
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -81,7 +82,7 @@ class GoodsController extends Controller
      * 添加商品到购物车
      * @param Request $request
      *
-     * @return json
+     * @return array
      */
     public function addToCart(Request $request)
     {

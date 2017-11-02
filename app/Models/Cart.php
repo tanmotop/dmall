@@ -7,7 +7,7 @@ use App\Models\Freight;
 
 class Cart extends Model
 {
-    protected $fillable = ['user_id', 'attr_id', 'count'];
+    protected $fillable = ['user_id', 'goods_id', 'goods_attr_id', 'count'];
 
     /**
      * 添加商品到购物车
@@ -15,13 +15,15 @@ class Cart extends Model
     public function addToCart($uid, $attrs)
     {
         foreach ($attrs as $attrId => $count) {
-            if ($row = $this->where('user_id', '=', $uid)->where('attr_id', '=', $attrId)->first()) {
+            if ($row = $this->where('user_id', '=', $uid)->where('goods_attr_id', '=', $attrId)->first()) {
                 $row->count = $row->count + $count;
                 $row->save();
             } else {
+                $goodsAttr = GoodsAttr::find($attrId);
                 $this->create([
                     'user_id' => $uid,
-                    'attr_id' => $attrId,
+                    'goods_id' => $goodsAttr->goods_id,
+                    'goods_attr_id' => $attrId,
                     'count'   => $count,
                 ]);
             }
@@ -61,6 +63,7 @@ class Cart extends Model
             'carts.id as cart_id',
             'carts.count',
             'goods.id as goods_id',
+            'goods.logo',
             'goods.name',
             'goods.cat_id',
             'goods.sn',

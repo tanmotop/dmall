@@ -132,7 +132,7 @@
                             <input value="Y" type="checkbox" class="chk_1" id="check_{{ $goods->attr_id }}">
                             <label for="check_{{ $goods->attr_id }}" class="select-btn"></label>
                         </div>
-                        <h4>海带条试吃装</h4>
+                        <h4>{{ $goods->name }}</h4>
                         <div class="up-right">
                             <img class="reduce-btn" src="/assets/img/goods_del.png">
                             <input type="number" class="input-numer" value="1" data-buy-price="{{ $goods->user_prices['level_'.$myLevel] }}" data-stock="{{$goods->stock}}">
@@ -141,7 +141,7 @@
                     </div>
                     <div class="down">
                         <div class="down-left">
-                            <img src="/Public/Uploads/images/goods/logo/2017-05-24/mid_59252e977f2c1.jpg">
+                            <img src="{{env('APP_URL') . '/uploads/' . $goods->logo}}">
                         </div>
                         <div class="down-right">
                             <ul>
@@ -150,7 +150,6 @@
                                 @endforeach
                                 <li><p>零售价：<em><del>￥{{ $goods->price }}</del></em></p></li>
                                 <li><p>购买价：<em>￥{{ $goods->user_prices['level_'.$myLevel] }}</em></p></li>
-                                <li><p>规则名称：{{ $goods->attr_name }}</p></li>
                                 <li><p>PV值：<em>{{ $goods->pv }}</em></p></li>
                                 <li><p>库存：<i>{{ $goods->stock }}</i></p></li>
                                 <li><p>产品编号：<i>{{ $goods->id }}</i></p></li>

@@ -16,6 +16,7 @@ class CreateGoodsTable extends Migration
         Schema::create('goods', function (Blueprint $table) {
             $table->increments('id');
             $table->string('sn', 32)->comment('商品编号');
+            $table->string('logo')->comment('商品LOGO');
             $table->string('name', 64)->comment('商品名称');
             $table->string('short_name', 32)->comment('商品简称');
             $table->string('keywords', 128)->comment('关键词');

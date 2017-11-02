@@ -23,6 +23,13 @@ Route::group([
 	$router->resource('/goods/down', Goods\DownController::class);
 	$router->resource('/goods/soldout', Goods\SoldoutController::class);
 	$router->resource('/goods/cats', Goods\CatController::class);
+
+	// 订单
+    $router->resource('/orders/overview', Orders\OverviewController::class);
+    $router->resource('/orders/deliver', Orders\DeliverController::class);
+    $router->resource('/orders/receive', Orders\ReceiveController::class);
+    $router->resource('/orders/finish', Orders\FinishController::class);
+    $router->resource('/orders/cancel', Orders\CancelController::class);
     
     // 用户/代理商
     $router->resource('/users/levels', Users\LevelController::class);

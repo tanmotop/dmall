@@ -72,7 +72,7 @@
                 </div>
                 <div class="down">
                     <div class="down-left">
-                        <img src="" alt="商品logo" />
+                        <img src="{{env('APP_URL') . '/uploads/' . $goods->logo}}" alt="商品logo" />
                     </div>
                     <div class="down-right">
                         <ul>
@@ -86,7 +86,7 @@
                                     </div>
                                 </div>
                             </li>
-                            <li><p>规则：<span class="active-kw">{{ $goods->attr_name }}</span></p></li>
+                            <li><p>规格：<span class="active-kw">{{ $goods->attr_name }}</span></p></li>
                             <li><p>PV值：<i>{{ $goods->pv }}</i></p></li>
                             <li><p>产品编号：<i>{{ $goods->goods_id }}</i></p></li>
                         </ul>

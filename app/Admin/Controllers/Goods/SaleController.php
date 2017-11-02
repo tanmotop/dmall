@@ -77,6 +77,10 @@ class SaleController extends Controller
         $grid = Admin::grid(Goods::class, function (Grid $grid) {
             // 第一列显示id字段，并将这一列设置为可排序列
             $grid->id('ID')->sortable();
+            $grid->logo('商品LOGO')->display(function ($logo) {
+                $src = env('APP_URL') . '/uploads/' . $logo;
+                return "<img src='{$src}' width='50' height='50'>";
+            });
             $grid->sn('商品编号');
             $grid->name('商品名称');
             $grid->short_name('商品简称');
@@ -117,7 +121,7 @@ class SaleController extends Controller
         $userLevels = \App\Models\UserLevel::where('level', '>', 0)->orderBy('level', 'desc')->get();
         return Admin::form(Goods::class, function (Form $form) use ($userLevels) {
 
-            $form->tab('商品基本信息', function ($form) {
+            $form->tab('商品基本信息', function (Form $form) {
                 $form->display('id', '商品ID');
                 $form->text('name', '商品标题')->rules('required');
                 $form->text('short_name', '商品简称')->rules('required');
@@ -125,9 +129,10 @@ class SaleController extends Controller
                 $form->select('cat_id', '商品分类')->options((new GoodsCat)->getIdNameArray())->rules('required');
                 $form->text('keywords', '商品关键字');
                 $form->number('sort', '商品排序')->default(50)->placeholder('商品排序');
+                $form->image('logo', '商品LOGO');
                 // $form->display('created_at', '创建时间');
                 // $form->display('updated_at', '更新时间');
-            })->tab('商品基本信息', function ($form) use ($userLevels) {
+            })->tab('商品规格', function ($form) use ($userLevels) {
                 $form->hasMany('attrs', '商品规格', function (Form\NestedForm $form) use ($userLevels)  {
                     $form->hidden('goods_id');
                     $form->text('name', '规则名称');
