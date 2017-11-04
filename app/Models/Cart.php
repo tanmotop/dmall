@@ -7,7 +7,7 @@ use App\Models\Freight;
 
 class Cart extends Model
 {
-    protected $fillable = ['user_id', 'goods_id', 'goods_attr_id', 'count'];
+    protected $fillable = ['user_id', 'goods_id', 'attr_id', 'count'];
 
     /**
      * 添加商品到购物车
@@ -15,7 +15,7 @@ class Cart extends Model
     public function addToCart($uid, $attrs)
     {
         foreach ($attrs as $attrId => $count) {
-            if ($row = $this->where('user_id', '=', $uid)->where('goods_attr_id', '=', $attrId)->first()) {
+            if ($row = $this->where('user_id', '=', $uid)->where('attr_id', '=', $attrId)->first()) {
                 $row->count = $row->count + $count;
                 $row->save();
             } else {
@@ -23,7 +23,7 @@ class Cart extends Model
                 $this->create([
                     'user_id' => $uid,
                     'goods_id' => $goodsAttr->goods_id,
-                    'goods_attr_id' => $attrId,
+                    'attr_id' => $attrId,
                     'count'   => $count,
                 ]);
             }
@@ -44,11 +44,12 @@ class Cart extends Model
                 ->where('goods.status', '=', 1)
                 ->where('goods_attrs.id', '=', $row->attr_id)
                 ->first(['goods_attrs.stock']);
+            $row->count = $count;
             if ($count > $goods->stock) {
                 $flag ?: $flag = false;
                 $row->count = $goods->stock;
-                $row->save();
             }
+            $row->save();
         }
 
         return $flag;
@@ -75,7 +76,7 @@ class Cart extends Model
             'goods_attrs.stock',
             'goods_attrs.weight',
         ];
-        $goodsList = $this->join('goods_attrs', 'carts.goods_attr_id', '=', 'goods_attrs.id')
+        $goodsList = $this->join('goods_attrs', 'carts.attr_id', '=', 'goods_attrs.id')
             ->join('goods', 'goods_attrs.goods_id', '=', 'goods.id')
             ->select($fields)
             ->get();
@@ -93,5 +94,29 @@ class Cart extends Model
         });
 
         return $goodsList;
+    }
+    
+    public function getSelectGoodsTotalInfo()
+    {
+        $selCarts = session('carts_prepare');
+        $myBuyLevel = (new \App\Models\UserLevel)->getMyBuyLevel();
+        $totalPrice = 0;
+        $totalWeight = 0;
+        $totalPv = 0;
+        foreach ($selCarts as $cartId => $count) {
+            $cart = $this->find($cartId);
+            $attr = \App\Models\GoodsAttr::find($cart->attr_id);
+            $userPrices = json_decode($attr->user_prices, true);
+            $myPrice = $userPrices['level_' . $myBuyLevel];
+            $totalPrice += $myPrice * $count;
+            $totalWeight += $attr->weight * $count;
+            $totalPv += $attr->pv * $count;
+        }
+
+        return [
+            'price'  => $totalPrice,
+            'weight' => $totalWeight,
+            'pv'     => $totalPv,
+        ];
     }
 }

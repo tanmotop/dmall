@@ -58,6 +58,10 @@ Route::group(['middleware' => ['auth:user']], function () {
 		Route::get('carts', 'CartsController@index')->name('carts');
 		Route::post('carts/del', 'CartsController@del')->name('carts_del');
 		Route::post('carts/prepare', 'CartsController@prepare')->name('carts_prepare');
+
+		Route::get('address/regions', 'AddressController@regions')->name('address_regions');
+		Route::get('address/freights', 'AddressController@freights')->name('address_freights');
+		Route::get('address/customers', 'AddressController@customers')->name('address_customers');
 	});
 
 	Route::namespace('Finances')->prefix('finances')->group(function() {

@@ -42,4 +42,15 @@ class Region extends Model
 
         return $arr;
     }
+
+    public function getChildrenByPid($pid)
+    {
+        $regs = $this->where('parent_id', '=', $pid)->get();
+        $arr = [];
+        foreach ($regs as $reg) {
+            $arr[$reg->id] = $reg->name;
+        }
+
+        return $arr;
+    }
 }

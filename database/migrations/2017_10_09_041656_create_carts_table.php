@@ -17,7 +17,7 @@ class CreateCartsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->comment('代理商id');
             $table->unsignedInteger('goods_id')->comment('商品id');
-            $table->unsignedInteger('goods_attr_id')->comment('商品规则id');
+            $table->unsignedInteger('attr_id')->comment('商品规则id');
             $table->unsignedInteger('count')->comment('数量');
             $table->timestamps();
         });

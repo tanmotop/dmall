@@ -52,4 +52,17 @@ class UserLevel extends Model
             'first_level' => $firstLevel,
         ]]);
     }
+
+    public function getMyBuyLevel()
+    {
+        $myBuyLevel = session('auth_user')->level;
+        if ($myBuyLevel == 0) {
+            if (!session()->has('user_levels')) {
+                $this->saveUserLevelsToSession();
+            }
+            $myBuyLevel = session('user_levels')['first_level'];
+        }
+
+        return $myBuyLevel;
+    }
 }
