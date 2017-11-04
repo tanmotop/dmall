@@ -35,7 +35,7 @@
     <form id="order_form">
         <div class="zc-bottom">
             <ul>
-                <li><label>搜索客户：</label><input class="info" type="text" value="" id='btn'placeholder="客户太多可以搜索后再选择"></li>
+                <li><label>搜索客户：</label><input class="info" type="text" value="" id='search' placeholder="客户太多可以搜索后再选择"></li>
                 <li>
                     <label>我的客户：</label>
                     <select id="select" style="width: 72%">
@@ -45,31 +45,31 @@
                 <li><label style="font-size: 0.7em;color: red">* 请填写收件人的具体信息</label></li>
                 <li>
                     <label>收件地区：</label>
-                    <select required name="shr_province" id="province" data-type="Y">
+                    <select required name="province_id" id="province" data-type="Y">
                         <option value="">请选择</option>
                     </select>
-                    <select required name="shr_city" id="city">
+                    <select required name="city_id" id="city">
                         <option value="">请选择</option>
                     </select>
-                    <select required name="shr_area" id="district">
+                    <select required name="area_id" id="district">
                         <option value="">请选择</option>
                     </select>
                 </li>
                 <li>
                     <label>收件人：</label>
-                    <input style="background: white" class="shr_name" type="text" name="shr_name">
+                    <input style="background: white" class="user_name" type="text" name="user_name">
                 </li>
                 <li>
                     <label>手机：</label>
-                    <input style="background: white"  class="shr_tel" type="number" name="shr_tel">
+                    <input style="background: white"  class="user_tel" type="number" name="user_tel">
                 </li>
                 <li>
                     <label>详细地址：</label>
-                    <input style="background: white"  class="shr_address" type="text" name="shr_address">
+                    <input style="background: white"  class="user_address" type="text" name="user_address">
                 </li>
                 <li>
                     <label>备注：</label>
-                    <input type="text" name="remarks">
+                    <input type="text" name="remarks" class="remarks">
                 </li>
                 <li>
                     <label>运费：</label>
@@ -89,13 +89,13 @@
                 <input style="background: white" class="post-way" value="" type="checkbox"/> <span>到店自提</span>
             </label>
             <label style="margin-left: 10px;">
-                <input style="background: white" name="address" type="checkbox" value="Y" /> <span>把信息存储到我的客户资料</span>
+                <input style="background: white" name="save_address" type="checkbox" value="Y" /> <span>把信息存储到我的客户资料</span>
             </label>
         </div>
     </form>
 
     <div class="btn">
-        <button type="button" class="style btn-register">确 认</button>
+        <button type="button" class="style btn-submit">确 认</button>
     </div>
 </div>
 <br/><br/>
@@ -181,9 +181,9 @@
         var id = $(this).val()
         var customer = customers[id]
         setOptionsByCustomerInfo(customer.province_id, customer.city_id, customer.area_id)
-        $('.shr_name').val(customer.name)
-        $('.shr_tel').val(customer.tel)
-        $('.shr_address').val(customer.address)
+        $('.user_name').val(customer.name)
+        $('.user_tel').val(customer.tel)
+        $('.user_address').val(customer.address)
         getFreight(customer.province_id)
     })
     // 到店自提
@@ -220,6 +220,69 @@
             })
         })
     }
+    // 搜索客户
+    $('#search').on('keyup', function() {
+        var val = $(this).val()
+        if (val == '') $('#select option').show()
+        $('#select option').each(function(i, item) {
+            var text = $(item).text();
+            if (text.indexOf(val) != -1) {
+                $(item).show();
+            } else {
+                $(item).hide();
+            }
+        });
+    })
+    // 提交订单
+    $('.btn-submit').on('click', function() {
+        var data = {
+            user_province : $('#province').val(),
+            user_city: $('#city').val(),
+            user_area: $('#district').val(),
+            user_name: $('.user_name').val(),
+            user_tel: $('.user_tel').val(),
+            user_address: $('.user_address').val(),
+            freight: $('.freight').val(),
+            total_price: $('.total_price').val(),
+            total_pv: '{{ $totalInfo['pv'] }}',
+            remarks: $('.remarks').val(),
+            post_way: $('.post-way').is(':checked') ? 2 : 1,
+            _token: '{{ csrf_token() }}',
+        }
+        var notice = $('.notice');
+        $.ajax( {
+            url: "{{ route('orders_submit') }}",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function ( json ) {
+                if(json.code == 10000){
+                    var html = '<div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
+                        '<div class="modal-dialog">' +
+                        '<div class="out-zx">' +
+                        '<i style="color: green" class="fa fa-check-circle fa-5x"></i>' +
+                        '<p>下单成功！</p>' +
+                        '<div class="change-btn">' +
+                        '<button style="margin-left: 0" type="button" class="right-btn btn-login">确定</button>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="modal-back fade in"></div>';
+                    $('#add_dialog').html(html);
+                }else{
+                    notice.css( {'display': 'block', 'color': 'red' } ).html( json.msg );
+                }
+            },
+            error: function(json) {
+                var errors = json.responseJSON.errors;
+                for (i in errors) {
+                    notice.css( {'display': 'block', 'color': 'red' } ).html(errors[i][0]);
+                    break;
+                }
+            }
+        } );
+    })
 </script>
 @endsection
 

@@ -31,7 +31,7 @@ class OrderSubmitRequest extends FormRequest
             'user_tel'      => 'required',
             // 'remarks'       => 'required',
             // 'freight'       => 'required',
-            // 'total_price'   => 'required',
+            'total_price'   => 'required',
             // 'post_way'      => 'required',
         ];
     }
@@ -39,12 +39,12 @@ class OrderSubmitRequest extends FormRequest
     public function messages()
     {
         return [
-            'user_name.required'     => '请输入收货人',
             'user_province.required' => '请选择省份',
             'user_city.required'     => '请选择城市',
             'user_area.required'     => '请选择地区',
+            'user_name.required'     => '请输入收货人',
             'user_tel.required'      => '请输入手机号',
-            // 'remarks.required'    => '请输入备注',
+            'total_price.required'   => '订单有误，请刷新页面重试',
         ];
     }
 }

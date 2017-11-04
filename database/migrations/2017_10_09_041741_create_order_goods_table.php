@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrdersGoodsTable extends Migration
+class CreateOrderGoodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateOrdersGoodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders_goods', function (Blueprint $table) {
+        Schema::create('order_goods', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('order_id')->comment('订单id');
-            $table->unsignedInteger('goods_id')->comment('商品id');
+            $table->unsignedInteger('attr_id')->comment('商品规格id');
             $table->timestamps();
         });
     }

@@ -51,9 +51,12 @@ Route::group(['middleware' => ['auth:user']], function () {
 		// 商品
 		Route::get('goods', 'GoodsController@index')->name('goods');
 		Route::any('goods/addToCart', 'GoodsController@addToCart')->name('goods_add_to_cart');
+		
 		// 订单
 		Route::get('orders', 'OrdersController@index')->name('orders');
 		Route::get('orders/prepare', 'OrdersController@prepare')->name('orders_prepare');
+		Route::post('orders/submit', 'OrdersController@submit')->name('orders_submit');
+
 		// 购物车
 		Route::get('carts', 'CartsController@index')->name('carts');
 		Route::post('carts/del', 'CartsController@del')->name('carts_del');
