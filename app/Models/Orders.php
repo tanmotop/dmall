@@ -30,6 +30,8 @@ class Orders extends Model
             $user->save();
             // 清空session
             session()->forget('carts_prepare');
+
+            return true;
         }
 
         return false;

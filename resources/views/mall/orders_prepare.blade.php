@@ -89,7 +89,7 @@
                 <input style="background: white" class="post-way" value="" type="checkbox"/> <span>到店自提</span>
             </label>
             <label style="margin-left: 10px;">
-                <input style="background: white" name="save_address" type="checkbox" value="Y" /> <span>把信息存储到我的客户资料</span>
+                <input style="background: white" name="save_address" class="save_address" type="checkbox" value="Y" /> <span>把信息存储到我的客户资料</span>
             </label>
         </div>
     </form>
@@ -247,6 +247,7 @@
             total_pv: '{{ $totalInfo['pv'] }}',
             remarks: $('.remarks').val(),
             post_way: $('.post-way').is(':checked') ? 2 : 1,
+            save_address: $('.save_address').is(':checked') ? 1 : 0,
             _token: '{{ csrf_token() }}',
         }
         var notice = $('.notice');
@@ -263,14 +264,28 @@
                         '<i style="color: green" class="fa fa-check-circle fa-5x"></i>' +
                         '<p>下单成功！</p>' +
                         '<div class="change-btn">' +
-                        '<button style="margin-left: 0" type="button" class="right-btn btn-login">确定</button>' +
+                        '<button style="margin-left: 0" type="button" class="right-btn btn-ok">确定</button>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
                         '<div class="modal-back fade in"></div>';
                     $('#add_dialog').html(html);
-                }else{
+                }else if (json.code == 10003) {
+                    var html = '<div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
+                                '<div class="modal-dialog">' +
+                                '<div class="out-zx">' +
+                                '<i style="color: red" class="fa fa-close fa-5x"></i>' +
+                                '<p>账户余额不足</p>' +
+                                '<div class="change-btn">' +
+                                '<button type="button" class="left-btn btn-close" style="margin-right:0;">我知道了</button>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="modal-back fade in"></div>';
+                        $('#add_dialog').html( html );
+                } else {
                     notice.css( {'display': 'block', 'color': 'red' } ).html( json.msg );
                 }
             },
@@ -281,7 +296,14 @@
                     break;
                 }
             }
-        } );
+        });
+    })
+    /* 关闭模态框 */
+    $('#add_dialog').on('click', '.btn-close', function () {
+        $('#add_dialog').html('');
+    })
+    $('#add_dialog').on('click', '.btn-ok', function() {
+        window.location.href = '{{ route('orders') }}'
     })
 </script>
 @endsection

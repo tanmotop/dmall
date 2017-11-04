@@ -7,16 +7,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Http\Requests\OrderSubmitRequest;
 use App\Models\Orders;
+use App\Models\CustomerAddress;
 
 class OrdersController extends Controller
 {
     private $cartModel;
     private $orderModel;
+    private $addressModel;
 
-    public function __construct(Cart $cart, Orders $order)
+    public function __construct(Cart $cart, Orders $order, CustomerAddress $address)
     {
         $this->cartModel  = $cart;
         $this->orderModel = $order;
+        $this->addressModel = $address;
     }
 
     public function index()
@@ -45,7 +48,6 @@ class OrdersController extends Controller
      */
     public function submit(OrderSubmitRequest $request)
     {
-        $data = $request->all();
         $totalInfo = $this->cartModel->getSelectGoodsTotalInfo();
         // 判断订单价格是否变动
         if ($totalInfo['price'] != $request->total_price - $request->freight) {
@@ -57,10 +59,15 @@ class OrdersController extends Controller
             return ['code' => 10003, 'msg' => '账户余额不足'];
         }
         // 生成下单
-        if ($this->orderModel->generate($data)) {
-            
+        $data = $request->all();
+        if ($data['save_address']) {
+            $this->addressModel->saveAddress($data);
         }
-
-        return ['code' => 10000, 'msg'  => '下单成功'];
+        unset($data['save_address']);
+        if ($this->orderModel->generate($data)) {
+            return ['code' => 10000, 'msg'  => '下单成功'];
+        } else {
+            return ['code' => 10001, 'msg'  => '下单失败'];
+        }
     }
 }
