@@ -20,6 +20,8 @@ class OrderGoods extends Model
         foreach ($selCarts as $cartId => $count) {
             $cart = \App\Models\Cart::find($cartId);
             $attr = \App\Models\GoodsAttr::find($cart->attr_id);
+            $attr->stock = $attr->stock - $count; // 更新库存
+            $attr->save();
             $userPrices = json_decode($attr->user_prices, true);
             $myPrice = $userPrices['level_' . $myBuyLevel];
             $cart->delete(); // 删除购物车记录
