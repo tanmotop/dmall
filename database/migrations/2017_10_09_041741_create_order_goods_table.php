@@ -17,6 +17,9 @@ class CreateOrderGoodsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('order_id')->comment('订单id');
             $table->unsignedInteger('attr_id')->comment('商品规格id');
+            $table->double('price', 15, 2)->comment('购买价格');
+            $table->unsignedInteger('count')->comment('购买数量');
+            $table->unsignedInteger('pv')->comment('购买时pv');
             $table->timestamps();
         });
     }

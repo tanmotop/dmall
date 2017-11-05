@@ -22,9 +22,25 @@ class OrdersController extends Controller
         $this->addressModel = $address;
     }
 
-    public function index()
+    /**
+     * 订单列表
+     */
+    public function index(Request $request)
     {
-        return view('mall/orders', ['title' => '我的订单']);
+        $uid = session('auth_user')->id;
+        $status = $request->input('status', 0);
+        $orderList = $this->orderModel->getMyOrderList($uid, $status);
+
+        // 获取更多/分页数据 => 直接返回json
+        if ($request->has('dataType') && $request->dataType == 'json') {
+            return $orderList;
+        }
+
+        return view('mall/orders', [
+            'title' => '我的订单',
+            'orderList' => $orderList,
+            'status' => $status,
+        ]);
     }
 
     /**
@@ -69,5 +85,51 @@ class OrdersController extends Controller
         } else {
             return ['code' => 10001, 'msg'  => '下单失败'];
         }
+    }
+
+    /**
+     * 取消订单
+     */
+    public function cancel(Request $request)
+    {
+        $id = $request->id;
+        $uid = session('auth_user')->id;
+
+        if ($this->orderModel->cancelOrder($uid, $id)) {
+            return ['code' => 10000];
+        } else {
+            return ['code' => 10001];
+        }
+    }
+
+    /**
+     * 确认收货
+     */
+    public function confirm(Request $request)
+    {
+        $id = $request->id;
+
+        if ($this->orderModel->confirmOrder($id)) {
+            return ['code' => 10000];
+        } else {
+            return ['code' => 10001];
+        }
+    }
+
+    /**
+     * 订单详情
+     */
+    public function detail(Request $request)
+    {
+        $tab = $request->input('tab', '');
+        $id  = $request->id;
+
+        $order = $this->orderModel->find($id);
+
+        return view('mall/orders_detail', [
+            'title' => '订单详情',
+            'order' => $order,
+            'tab'   => $tab,
+        ]);
     }
 }

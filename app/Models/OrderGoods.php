@@ -10,6 +10,11 @@ class OrderGoods extends Model
     protected $table = 'order_goods';
     protected $guarded = [];
 
+    public function goodsAttr()
+    {
+        return $this->hasOne(\App\Models\GoodsAttr::class, 'id', 'attr_id');
+    }
+
     /**
      * 生成订单的商品信息
      */
@@ -30,6 +35,7 @@ class OrderGoods extends Model
                 'order_id' => $orderId,
                 'attr_id'  => $attr->id,
                 'price'    => $myPrice,
+                'pv'       => $attr->pv,
                 'count'    => $count,
             ];
             $this->create($data);

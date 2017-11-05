@@ -55,7 +55,10 @@ Route::group(['middleware' => ['auth:user']], function () {
 		// 订单
 		Route::get('orders', 'OrdersController@index')->name('orders');
 		Route::get('orders/prepare', 'OrdersController@prepare')->name('orders_prepare');
+		Route::get('orders/detail', 'OrdersController@detail')->name('orders_detail');
 		Route::post('orders/submit', 'OrdersController@submit')->name('orders_submit');
+		Route::post('orders/cancel', 'OrdersController@cancel')->name('orders_cancel');
+		Route::post('orders/confirm', 'OrdersController@confirm')->name('orders_confirm');
 
 		// 购物车
 		Route::get('carts', 'CartsController@index')->name('carts');

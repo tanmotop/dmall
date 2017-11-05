@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Goods;
 use App\Models\GoodsAttrPrice;
+use App\Models\OrderGoods;
 
 class GoodsAttr extends Model
 {
@@ -18,10 +19,5 @@ class GoodsAttr extends Model
     public function goods()
     {
     	return $this->belongsTo(Goods::class, 'goods_id');
-    }
-
-    public function prices()
-    {
-        return $this->hasMany(GoodsAttrPrice::class, 'goods_attr_id');
     }
 }
