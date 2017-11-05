@@ -77,7 +77,7 @@
                 </li>
                 <li>
                     <label>订单金额：</label>
-                    <input class="total_price" data-value="{{$totalInfo['price']}}" readonly type="text" name="total_price">
+                    <input class="total_price" data-value="{{$totalInfo['price']}}" value="{{$totalInfo['price']}}" readonly type="text" name="total_price">
                 </li>
                 <li class="notice" style="height: 30px;text-align: center;font-size: 14px;color: red;display: none;"></li>
             </ul>
@@ -240,7 +240,7 @@
             user_city: $('#city').val(),
             user_area: $('#district').val(),
             user_name: $('.user_name').val(),
-            user_tel: $('.user_tel').val(),
+            user_phone: $('.user_tel').val(),
             user_address: $('.user_address').val(),
             freight: $('.freight').val(),
             total_price: $('.total_price').val(),

@@ -28,7 +28,7 @@ class OrderSubmitRequest extends FormRequest
             'user_province' => 'required',
             'user_city'     => 'required',
             'user_area'     => 'required',
-            'user_tel'      => 'required',
+            'user_phone'      => 'required',
             // 'remarks'       => 'required',
             // 'freight'       => 'required',
             'total_price'   => 'required',
@@ -43,7 +43,7 @@ class OrderSubmitRequest extends FormRequest
             'user_city.required'     => '请选择城市',
             'user_area.required'     => '请选择地区',
             'user_name.required'     => '请输入收货人',
-            'user_tel.required'      => '请输入手机号',
+            'user_phone.required'      => '请输入手机号',
             'total_price.required'   => '订单有误，请刷新页面重试',
         ];
     }

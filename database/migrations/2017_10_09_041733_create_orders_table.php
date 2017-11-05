@@ -26,7 +26,7 @@ class CreateOrdersTable extends Migration
             $table->string('remarks', 256)->nullable()->comment('用户备注');
             $table->double('freight', 15, 2)->comment('运费');
             $table->double('total_price', 15, 2)->comment('总价');
-            $talbe->double('total_pv', 15, 2)->commnet('订单总pv');
+            $table->double('total_pv', 15, 2)->commnet('订单总pv');
             $table->unsignedTinyInteger('post_way')->comment('配送方式1快递配送2到店自提');
             $table->string('postid')->nullable()->comment('快递单号');
             $table->timestamp('canceled_at')->nullable()->comment('订单取消时间');

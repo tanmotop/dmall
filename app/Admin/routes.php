@@ -40,3 +40,11 @@ Route::group([
     $router->resource('/finances/recharge', Finances\RechargeController::class);
     $router->resource('/finances/refund', Finances\RefundController::class);
 });
+
+Route::group([
+    'prefix'        => 'admin/api',
+    'namespace'     => 'App\Admin\Controllers\Api',
+    'middleware'    => config('admin.route.middleware'),
+], function (Router $router) {
+    $router->post('orders/deliver', 'OrdersController@deliver')->name('one_key_deliver');
+});

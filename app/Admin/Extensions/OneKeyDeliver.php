@@ -36,17 +36,47 @@ $('.grid-row-one-key').on('click', function () {
     // Your code.
     //console.log($(this).data('id'));
     //console.log($(this).data('sn'));
-    swal({
+    var id = $(this).data('id');
+    swal({ 
       title: '订单号:' + $(this).data('sn'),
-      text: '请输入快递单号',
-      type: 'input',
-      input: 'text',
-      showCancelButton: true,
+      text: "快捷发货",
+      type: "input", 
+      showCancelButton: true, 
+      closeOnConfirm: false, 
+      animation: "slide-from-top", 
       confirmButtonText: '提交',
       cancelButtonText: '取消',
-      showLoaderOnConfirm: true,
-      allowOutsideClick: true
-    }, function(value) {
+      inputPlaceholder: "请输入快递单号" 
+    },
+    function(inputValue){ 
+        if (inputValue === false) return false; 
+      
+        if (inputValue === "") { 
+            swal.showInputError("请输入快递单号！");
+            return false 
+        } 
+      
+        $.ajax({
+            url: '/admin/api/orders/deliver',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id:id,
+                postid:inputValue,
+                _token:LA.token
+            },
+            success: function (data) {
+                $.pjax.reload('#pjax-container');
+                
+                if (typeof data === 'object') {
+                    if(data.status) {
+                        swal(data.message, '', 'success');
+                    } else {
+                        swal(data.message, '', 'error');
+                    }
+                }
+            }
+        });
     });
 });
 SCRIPT;
