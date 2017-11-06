@@ -49,6 +49,11 @@ class User extends Model
         $this->setOrderColumn('level');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Orders::class, 'user_id');
+    }
+
     /**
      * 获取未激活的用户
      */
