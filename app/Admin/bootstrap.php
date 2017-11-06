@@ -1,6 +1,7 @@
 <?php
 
 use App\Admin\Extensions\WangEditor;
+use \App\Admin\Extensions\Field\JsonNumber;
 use Encore\Admin\Form;
 
 /**
@@ -26,3 +27,4 @@ Encore\Admin\Form::forget(['map', 'editor']);
 app('view')->prependNamespace('admin', resource_path('admin-views'));
 
 Form::extend('editor', WangEditor::class);
+Form::extend('json_number', JsonNumber::class);

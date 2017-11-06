@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Goods;
-use App\Models\GoodsPrice;
 
 class GoodsCat extends Model
 {
@@ -17,11 +15,6 @@ class GoodsCat extends Model
     public function goods()
     {
         return $this->belongsTo(Goods::class);
-    }
-
-    public function prices()
-    {
-        return $this->hasManyThrough(GoodsPrice::class, Goods::class, 'goods_id', 'goods_cat_id');
     }
 
     public function scopeEnable($query)
