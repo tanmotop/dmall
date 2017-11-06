@@ -125,6 +125,7 @@ class OrdersController extends Controller
         $id  = $request->id;
 
         $order = $this->orderModel->find($id);
+        $order->status_text = Orders::$status[$order->status];
 
         return view('mall/orders_detail', [
             'title' => '订单详情',
