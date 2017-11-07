@@ -20,7 +20,7 @@ class CreateCustomerAddressesTable extends Migration
             $table->unsignedInteger('city_id')->comment('市');
             $table->unsignedInteger('area_id')->comment('地区');
             $table->string('name', 32)->comment('联系人');
-            $table->string('tel', 18)->comment('联系方式');
+            $table->string('phone', 18)->comment('联系方式');
             $table->string('address', 256)->comment('联系地址');
             $table->timestamps();
         });

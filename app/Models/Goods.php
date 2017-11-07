@@ -28,7 +28,7 @@ class Goods extends Model
         return $query->where('status', 1);
     }
 
-    public function getSaleGoodsList($catId)
+    public function getSaleGoodsList($catId, $keyword)
     {
         $fields = [
             'goods.id',
@@ -48,6 +48,12 @@ class Goods extends Model
             ->where('goods.status', '=', 1)
             ->orderBy('goods.sort', 'asc')
             ->select($fields);
+        if ($keyword) {
+            $query = $query->where(function($query) use ($keyword) {
+                return $query->where('goods.id', '=', $keyword)
+                    ->orWhere('goods.name', 'like', '%'.$keyword.'%');
+            });
+        }
         if ($catId != 0) {
             $query = $query->where('goods.cat_id', '=', $catId);
         }

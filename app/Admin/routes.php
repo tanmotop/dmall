@@ -19,7 +19,9 @@ Route::group([
     $router->resource('/base/protocol', Base\ProtocolController::class);
 
     // 商品
+    $router->get('/goods/sale/down', 'Goods\SaleController@down');
 	$router->resource('/goods/sale', Goods\SaleController::class);
+    $router->get('/goods/down/up', 'Goods\DownController@up');
 	$router->resource('/goods/down', Goods\DownController::class);
 	$router->resource('/goods/soldout', Goods\SoldoutController::class);
 	$router->resource('/goods/cats', Goods\CatController::class);

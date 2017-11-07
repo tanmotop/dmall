@@ -27,9 +27,10 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
+        $keyword = $request->keyword;
         $uid = session('auth_user')->id;
         $status = $request->input('status', 0);
-        $orderList = $this->orderModel->getMyOrderList($uid, $status);
+        $orderList = $this->orderModel->getMyOrderList($uid, $status, $keyword);
 
         // 获取更多/分页数据 => 直接返回json
         if ($request->has('dataType') && $request->dataType == 'json') {
@@ -40,6 +41,7 @@ class OrdersController extends Controller
             'title' => '我的订单',
             'orderList' => $orderList,
             'status' => $status,
+            'keyword' => $keyword,
         ]);
     }
 

@@ -24,7 +24,7 @@ class CustomerAddress extends Model
             ->where('city_id', '=', $data['user_city'])
             ->where('area_id', '=', $data['user_area'])
             ->where('name', '=', $data['user_name'])
-            ->where('tel', '=', $data['user_tel'])
+            ->where('phone', '=', $data['user_phone'])
             ->where('address', '=', $data['user_address'])
             ->first();
         if ($address) return false;
@@ -35,7 +35,7 @@ class CustomerAddress extends Model
             'city_id'     => $data['user_city'],
             'area_id'     => $data['user_area'],
             'name'        => $data['user_name'],
-            'tel'         => $data['user_tel'],
+            'phone'       => $data['user_phone'],
             'address'     => $data['user_address'],
         ];
 

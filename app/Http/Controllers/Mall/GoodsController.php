@@ -33,8 +33,9 @@ class GoodsController extends Controller
      */
     public function index(Request $request)
     {
+        $keyword = $request->input('keyword', '');
         $catId = $request->input('cat_id', 0);
-        $goodsList = $this->goodsModel->getSaleGoodsList($catId);
+        $goodsList = $this->goodsModel->getSaleGoodsList($catId, $keyword);
 
         // 获取更多/分页数据 => 直接返回json
         if ($request->has('dataType') && $request->dataType == 'json') {
@@ -57,6 +58,7 @@ class GoodsController extends Controller
             'goodsList'  => $goodsList,
             'userLevels' => $userLevels,
             'myLevel'    => $myLevel,
+            'keyword'    => $keyword,
         ]);
     }
 

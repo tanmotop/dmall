@@ -102,10 +102,10 @@
                 </a>
             </div>
             <div class="tdcymd-top-center">
-                <input type="text" placeholder="商品名称 / 商品编号">
+                <input type="text" class="search-value" value="{{ $keyword }}" placeholder="商品名称 / 商品编号">
             </div>
             <div style="margin-top: 5px;margin-right: 10px;" class="top-right">
-                <a onclick="goods_search( this );">
+                <a class="search-btn">
                     <i style="font-size: 22px;color: #b3b3b3;" class="fa fa-search"></i>
                 </a>
             </div>
@@ -333,7 +333,8 @@
             $('.tips span').html('正在获取 <i class="fa fa-spinner fa-spin"></i>');
             $.get('{{ route('goods') }}', {
                 page: currentPage + 1,
-                dataType: 'json'
+                dataType: 'json',
+                keyword: '{{ $keyword }}',
             }, function(json) {
                 currentPage = json.current_page
                 var data = json.data
@@ -348,7 +349,7 @@
                         + '            <input value="Y" type="checkbox" class="chk_1" id="check_' + item.attr_id + '">'
                         + '            <label for="check_' + item.attr_id + '" class="select-btn"></label>'
                         + '        </div>'
-                        + '        <h4>海带条试吃装</h4>'
+                        + '        <h4>'+item.name+'</h4>'
                         + '        <div class="up-right">'
                         + '            <img class="reduce-btn" src="/assets/img/goods_del.png">'
                         + '            <input type="number" class="input-numer" value="1" data-buy-price="'+buyPrice+'" data-stock="' + item.stock + '">'
@@ -383,5 +384,9 @@
                 },500)
             });
         }
+        $('.search-btn').on('click', function() {
+            var val = $('.search-value').val()
+            window.location = '{{ route('goods') }}?keyword=' + val
+        })
     </script>
 @endsection

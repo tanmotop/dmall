@@ -50,7 +50,7 @@ class StockController
             $grid->price('零售价')->display(function ($price) {
                 return '￥' . $price;
             });
-            $grid->column('库存状态')->display(function () {
+            $grid->column('stock_status', '库存状态')->display(function () {
                 if ($this->stock <= 200) {
                     $msg = '<span class="label label-warning">库存不足</span>';
                 }
