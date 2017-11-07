@@ -64,7 +64,7 @@ class StockController
                 return $msg;
             });
             $grid->order_goods('产品销量')->display(function ($orderGoods) {
-                return count($orderGoods);
+                return array_sum(array_column($orderGoods, 'count'));
             });
 
             $grid->tools(function (Grid\Tools $tools) {

@@ -43,6 +43,8 @@ Route::group([
     // 大数据分析
     $router->resource('/data/stock', Data\StockController::class);
     $router->resource('/data/personal', Data\PersonalController::class);
+    $router->resource('/data/sale', Data\SaleController::class);
+    $router->resource('/data/team', Data\TeamController::class);
 });
 
 Route::group([
