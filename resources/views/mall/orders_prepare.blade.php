@@ -61,7 +61,7 @@
                 </li>
                 <li>
                     <label>手机：</label>
-                    <input style="background: white"  class="user_tel" type="number" name="user_tel">
+                    <input style="background: white"  class="user_phone" type="number" name="user_phone">
                 </li>
                 <li>
                     <label>详细地址：</label>
@@ -182,7 +182,7 @@
         var customer = customers[id]
         setOptionsByCustomerInfo(customer.province_id, customer.city_id, customer.area_id)
         $('.user_name').val(customer.name)
-        $('.user_tel').val(customer.tel)
+        $('.user_phone').val(customer.tel)
         $('.user_address').val(customer.address)
         getFreight(customer.province_id)
     })
@@ -240,7 +240,7 @@
             user_city: $('#city').val(),
             user_area: $('#district').val(),
             user_name: $('.user_name').val(),
-            user_phone: $('.user_tel').val(),
+            user_phone: $('.user_phone').val(),
             user_address: $('.user_address').val(),
             freight: $('.freight').val(),
             total_price: $('.total_price').val(),

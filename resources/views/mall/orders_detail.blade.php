@@ -40,7 +40,7 @@
                 <li>订单运费：<input readonly type="text" value="￥{{ $order->freight }}"></li>
                 <li>PV值：<input readonly type="text" value="{{ $order->total_pv }}"></li>
                 <li>收货人：<input readonly type="text" value="{{ $order->user_name }}"></li>
-                <li>手机：<input readonly type="text" value="{{ $order->user_tel }}"></li>
+                <li>手机：<input readonly type="text" value="{{ $order->user_phone }}"></li>
                 <li>收货地区：<input readonly type="text" value="{{ $order->user_province }} {{ $order->user_city }} {{ $order->user_area }}"></li>
                 <li>详细地址：<input readonly type="text" value="{{ $order->user_address }}"></li>
                 <li>下单时间：<input readonly type="text" value="{{ $order->created_at }}"></li>

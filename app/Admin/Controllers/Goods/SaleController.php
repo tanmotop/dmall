@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
 use App\Models\Goods;
 use App\Models\GoodsCat;
+use Illuminate\Http\Request;
 
 class SaleController extends Controller
 {
@@ -102,7 +103,8 @@ class SaleController extends Controller
         });
 
         $grid->actions(function ($actions) {
-            $actions->prepend('<a class="btn btn-link" href="">下架</a>');
+            $row = $actions->row;
+            $actions->prepend('<a class="btn btn-link" href="/admin/goods/sale/down?id='.$row->id.'">下架</a>');
         });
 
         $grid->model()->where('goods.status', '=', 1);
@@ -122,7 +124,6 @@ class SaleController extends Controller
         return Admin::form(Goods::class, function (Form $form) use ($userLevels) {
 
             $form->tab('商品基本信息', function (Form $form) {
-                $form->display('id', '商品ID');
                 $form->text('name', '商品标题')->rules('required');
                 $form->text('short_name', '商品简称')->rules('required');
                 $form->text('sn', '商品编号')->rules('required');
@@ -130,8 +131,6 @@ class SaleController extends Controller
                 $form->text('keywords', '商品关键字');
                 $form->number('sort', '商品排序')->default(50)->placeholder('商品排序');
                 $form->image('logo', '商品LOGO');
-                // $form->display('created_at', '创建时间');
-                // $form->display('updated_at', '更新时间');
             })->tab('商品规格', function ($form) use ($userLevels) {
                 $form->hasMany('attrs', '商品规格', function (Form\NestedForm $form) use ($userLevels)  {
                     $form->hidden('goods_id');
@@ -140,10 +139,15 @@ class SaleController extends Controller
                     $form->text('weight', '规则重量');
                     $form->text('price', '零售价');
                     $form->text('pv', 'PV值');
-                    $form->hidden('user_prices');
-                    foreach ($userLevels as $key => $level) {         
-                        $form->text('level_' . $level->level, $level->name . '价');
-                    }
+                    // $form->hidden('user_prices');
+                    // $priceArr = [];
+                    // foreach ($userLevels as $key => $level) {
+                    //     $priceArr['level_'.$level->level] = $level->name. '价';         
+                    //     // $form->text('level_' . $level->level, $level->name . '价');
+                    // }
+                    // $form->json_number('user_prices', ['level_1' => '钻石级价', 'level_2' => '经销商价', 'level_3' => 'VIP价']);
+
+                    // $form->json_number('user_prices', $priceArr);
                 });
             });
 
@@ -158,19 +162,23 @@ class SaleController extends Controller
                     $attrs[$key]['user_prices'] = json_encode($prices);
                 }
                 $form->attrs = $attrs;
-                // \DB::connection()->enableQueryLog();  
             });
 
             $form->saved(function (Form $form) {
-                //
-                // $log = \DB::getQueryLog();
-                // dd($log);   //打印sql语句
             });
         });
     }
 
-    // public function update()
-    // {
-    //     dd($_POST);
-    // }
+    /**
+     * 下架商品
+     */
+    public function down(Request $request)
+    {
+        $id = $request->id;
+        $goods = Goods::find($id);
+        $goods->status = 0;
+        $goods->save();
+
+        return redirect('/admin/goods/sale');
+    }
 }

@@ -48,12 +48,19 @@ class Orders extends Model
     /**
      * 获取订单列表
      */
-    public function getMyOrderList($uid, $status)
+    public function getMyOrderList($uid, $status, $keyword)
     {
-        $orderList = $this->where('user_id', '=', $uid)
-            ->where('status', '=', $status)
-            ->orderBy('created_at', 'desc')
-            ->paginate(3);
+        $query = $this->where('user_id', '=', $uid)
+            ->where('status', '=', $status);
+        if ($keyword) {
+            $query = $query->where(function($query) use ($keyword) {
+                return $query->where('id', 'like', '%'.$keyword.'%')
+                    ->orWhere('user_name', 'like', '%'.$keyword.'%')
+                    ->orWhere('user_phone', 'like', '%'.$keyword.'%')
+                    ->orWhere('total_price', '=', $keyword);
+            });
+        }
+        $orderList = $query->orderBy('created_at', 'desc')->paginate(3);
         $orderList->each(function($item, $i) {
             $item->user_province = Region::find($item->user_province)->name;
             $item->user_city = Region::find($item->user_city)->name;

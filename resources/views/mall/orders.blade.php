@@ -80,10 +80,10 @@
                 </a>
             </div>
             <div class="tdcymd-top-center">
-                <input type="text" placeholder="订单号 / 姓名 / 手机 / 价格">
+                <input type="text" class="search-value" value="{{ $keyword }}" placeholder="订单号 / 姓名 / 手机 / 价格">
             </div>
             <div style="margin-top: 5px;margin-right: 10px;" class="top-right">
-                <a onclick="goods_search( this )">
+                <a class="search-btn">
                     <i style="font-size: 22px;color: #b3b3b3;" class="fa fa-search"></i>
                 </a>
             </div>
@@ -121,7 +121,7 @@
                     </div>
                     <div class="mysale-bottom">
                         <p>姓名：{{ $order->user_name }}</p>
-                        <p>手机：{{ $order->user_tel }}</p>
+                        <p>手机：{{ $order->user_phone }}</p>
                         <p>收货地区：{{ $order->user_province }} {{ $order->user_city }} {{ $order->user_area }}</p>
                         <p>详细地址：{{ $order->user_address }}</p>
                         <p>订单时间：{{ $order->created_at }}</p>
@@ -201,7 +201,7 @@
                         + '    </div>'
                         + '    <div class="mysale-bottom">'
                         + '        <p>姓名：'+item.user_name+'</p>'
-                        + '        <p>手机：'+item.user_tel+'</p>'
+                        + '        <p>手机：'+item.user_phone+'</p>'
                         + '        <p>收货地区：'+item.user_province+' '+item.user_city+' '+item.user_area+'</p>'
                         + '        <p>详细地址：'+item.user_address+'</p>'
                         + '        <p>订单时间：'+item.user_created_at+'</p>'
@@ -312,5 +312,14 @@
                 })
             });
         }
+        $('.search-btn').on('click', function() {
+            var val = $('.search-value').val()
+            var url = window.location.href
+            if (url.indexOf('?') != -1) {
+                window.location = url + '&keyword=' + val
+            } else {
+                window.location = url + '?keyword=' + val
+            }
+        })
     </script>
 @endsection
