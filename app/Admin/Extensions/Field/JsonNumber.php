@@ -25,12 +25,12 @@ class JsonNumber extends Field
 
     public function render()
     {
-        $labels = $this->label();
+        $labels = (array) $this->label();
         $list = json_decode($this->value(), true);
 
         ///
         $this->script = '';
-        foreach ($list as $k => $v) {
+        foreach ($labels as $k => $v) {
             $this->script .= <<<EOT
 
 $('.{$k}:not(.initialized)')
