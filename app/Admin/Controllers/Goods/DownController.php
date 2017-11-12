@@ -139,10 +139,15 @@ class DownController extends Controller
                     $form->text('weight', '规则重量');
                     $form->text('price', '零售价');
                     $form->text('pv', 'PV值');
-                    $form->hidden('user_prices');
-                    foreach ($userLevels as $key => $level) {         
+                    $form->hidden('user_prices')->attribute(['data-up' => '1']);;
+                    $priceArr = [];
+                    foreach ($userLevels as $key => $level) {
+//                        $priceArr['level_'.$level->level] = $level->name. '价';
                         $form->text('level_' . $level->level, $level->name . '价');
                     }
+                    // $form->json_number('user_prices', ['level_1' => '钻石级价', 'level_2' => '经销商价', 'level_3' => 'VIP价']);
+
+                    // $form->json_number('user_prices', $priceArr);
                 });
             });
 

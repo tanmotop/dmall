@@ -63,4 +63,13 @@
         <!-- /.box-footer -->
     {!! $form->close() !!}
 </div>
+<script type="text/javascript">
+    $('input[data-up=1]').each(function(i, item) {
+        var $parent = $(this).parents('.has-many-attrs-form');
+        var arr = $.parseJSON($(this).val())
+        for (var i in arr) {
+            $parent.find('input.' + i).val(arr[i])
+        }
+    })
+</script>
 

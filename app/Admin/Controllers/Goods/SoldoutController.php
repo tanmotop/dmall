@@ -114,31 +114,51 @@ class SoldoutController extends Controller
      */
     protected function form()
     {
-        return Admin::form(Goods::class, function (Form $form) {
-            $form->display('id', '商品ID');
-            $form->text('name', '商品标题')->rules('required');
-            $form->text('short_name', '商品简称')->rules('required');
-            $form->text('sn', '商品编号')->rules('required');
-            $form->select('cat_id', '商品分类')->options((new GoodsCat)->getIdNameArray())->rules('required');
-            $form->text('keywords', '商品关键字');
-            $form->number('sort', '商品排序')->default(50)->placeholder('商品排序');
-            // $form->display('created_at', '创建时间');
-            // $form->display('updated_at', '更新时间');
+        $userLevels = \App\Models\UserLevel::where('level', '>', 0)->orderBy('level', 'desc')->get();
+        return Admin::form(Goods::class, function (Form $form) use ($userLevels) {
 
-            $form->hasMany('attrs', '商品规格', function (Form\NestedForm $form) {
-                $form->hidden('goods_id');
-                $form->text('name', '规则名称');
-                $form->text('price', '规格价格');
-                $form->text('stock', '库存');
-                $form->text('weight', '规则重量');
+            $form->tab('商品基本信息', function (Form $form) {
+                $form->text('name', '商品标题')->rules('required');
+                $form->text('short_name', '商品简称')->rules('required');
+                $form->text('sn', '商品编号')->rules('required');
+                $form->select('cat_id', '商品分类')->options((new GoodsCat)->getIdNameArray())->rules('required');
+                $form->text('keywords', '商品关键字');
+                $form->number('sort', '商品排序')->default(50)->placeholder('商品排序');
+                $form->image('logo', '商品LOGO');
+            })->tab('商品规格', function ($form) use ($userLevels) {
+                $form->hasMany('attrs', '商品规格', function (Form\NestedForm $form) use ($userLevels)  {
+                    $form->hidden('goods_id');
+                    $form->text('name', '规则名称');
+                    $form->text('stock', '库存');
+                    $form->text('weight', '规则重量');
+                    $form->text('price', '零售价');
+                    $form->text('pv', 'PV值');
+                    $form->hidden('user_prices')->attribute(['data-up' => '1']);;
+                    $priceArr = [];
+                    foreach ($userLevels as $key => $level) {
+//                        $priceArr['level_'.$level->level] = $level->name. '价';
+                        $form->text('level_' . $level->level, $level->name . '价');
+                    }
+                    // $form->json_number('user_prices', ['level_1' => '钻石级价', 'level_2' => '经销商价', 'level_3' => 'VIP价']);
+
+                    // $form->json_number('user_prices', $priceArr);
+                });
             });
 
-            $form->saving(function (Form $form) {
-                // $form->name = '商品3_x';
+            $form->saving(function (Form $form) use ($userLevels) {
+                $attrs = $form->attrs;
+                foreach ($attrs as $key => $attr) {
+                    foreach ($userLevels as $level) {
+                        $k = 'level_' . $level->level;
+                        $prices[$k] = $attr[$k];
+                        unset($attrs[$key][$k]);
+                    }
+                    $attrs[$key]['user_prices'] = json_encode($prices);
+                }
+                $form->attrs = $attrs;
             });
 
             $form->saved(function (Form $form) {
-                //
             });
         });
     }

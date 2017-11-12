@@ -139,7 +139,7 @@ class SaleController extends Controller
                     $form->text('weight', '规则重量');
                     $form->text('price', '零售价');
                     $form->text('pv', 'PV值');
-                    $form->hidden('user_prices');
+                    $form->hidden('user_prices')->attribute(['data-up' => '1']);;
                     $priceArr = [];
                     foreach ($userLevels as $key => $level) {
 //                        $priceArr['level_'.$level->level] = $level->name. '价';
