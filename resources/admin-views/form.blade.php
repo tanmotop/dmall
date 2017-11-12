@@ -64,6 +64,7 @@
     {!! $form->close() !!}
 </div>
 <script type="text/javascript">
+    // 只针对商品编辑
     $('input[data-up=1]').each(function(i, item) {
         var $parent = $(this).parents('.has-many-attrs-form');
         var arr = $.parseJSON($(this).val())

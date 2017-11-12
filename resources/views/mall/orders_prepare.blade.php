@@ -19,12 +19,12 @@
 <div class="zc-body">
     <div class="body-top">
         <div style="margin-top: 5px;margin-left: 10px;" class="top-left">
-            <a href="{:U('Cart/lst')}">
+            <a href="{{ route('carts') }}">
                 <i style="font-size: 22px;margin-left: 5px;color: #b3b3b3;" class="fa fa-chevron-left"></i>
             </a>
         </div>
         <div style="margin-top: 8px;margin-right: 10px;" class="top-right">
-            <a href="{:U('Index/index')}">
+            <a href="{{ route('home') }}">
                 <i style="font-size: 26px;margin-left: -5px;color: #b3b3b3;" class="fa fa-home"></i>
             </a>
         </div>
