@@ -25,9 +25,9 @@
                     <li>代理商编号：<input disabled type="text" value="{{$user->id}}"></li>
                     <li>上级代理商：<input disabled type="text" value=""></li>
                     <li>注册日期：<input disabled type="text" value="{{$user->created_at}}"></li>
-                    <li>真实姓名：<input type="text" name="real_name"  value="{{$user->realname}}" placeholder="请输入真实姓名"></li>
+                    <li>真实姓名：<input type="text" name="realname"  value="{{$user->realname}}" placeholder="请输入真实姓名"></li>
                     <li>手机号码：<input type="text" name="phone" value="{{$user->phone}}" placeholder="请输入手机号码（将检测唯一性）"></li>
-                    <li>微信号码：<input type="text" name="wecha" value="{{$user->wechat}}" placeholder="请输入微信号（将检测唯一性）"></li>
+                    <li>微信号码：<input type="text" name="wechat" value="{{$user->wechat}}" placeholder="请输入微信号（将检测唯一性）"></li>
                     <li>旧密码：<input type="password" name="old_password" placeholder="请输入旧密码"></li>
                     <li>新密码：<input type="password" name="new_password" placeholder="请输入新密码"></li>
                     <li>新密码确认：<input type="password" name="confirm_password" placeholder="请再次输入新密码"></li>
@@ -60,18 +60,17 @@
                 data: $( '#register_form' ).serialize(),
                 dataType: 'json',
                 success: function ( json ) {
-                    if( json.code == 'success' ){
+                    if( json.code === 10000 ){
                         notice.css( {'display': 'block', 'color': 'green' } ).html( json.msg );
                         setTimeout( function (){
-                            window.location.href = "{:U('Personal/my_information')}";
+                            window.location.href = "{{ route('info') }}";
                         }, 1000 );
-                    }else{
-                        notice.css( {'display': 'block', 'color': 'red' } ).html( json.msg );
                     }
+                },
+                error: function (xhr) {
+                    notice.css( {'display': 'block', 'color': 'red' } ).html( xhr.responseJSON.msg );
                 }
             } );
         } );
-
-
     </script>
 @endsection

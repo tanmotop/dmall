@@ -31,6 +31,11 @@ Route::group(['middleware' => ['auth:user']], function () {
         Route::get('/ucenter', 'UserController@center')->name('ucenter');
         Route::get('/info', 'UserController@info')->name('info');
         Route::put('/info', 'UserController@update')->name('edit_user');
+
+        // 客户资料
+        Route::get('/customer', 'CustomerController@index')->name('customer.list');
+        Route::put('/customer', 'CustomerController@update')->name('customer.update');
+        Route::get('/customer/region', 'CustomerController@region')->name('customer.region');
     });
 
 	Route::namespace('Agents')->prefix('agents')->group(function() {

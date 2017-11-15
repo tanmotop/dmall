@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.user')
 
 @section('styles')
     <link href="/css/personal_center.css" rel="stylesheet"/>
@@ -156,21 +156,19 @@
     <br/>
     <div class="summary">
         <div style="float: left;padding-top: 10px;">
-            <img onclick="edit_face( this );" data-id="{$data.id}" style="width: 100px;height: 100px;" class="img-circle" src="{$data.mid_face|showImg=###, 'member/', 'face/'}"/>
+            <img onclick="edit_face( this );" data-id="{{ $user->id }}" style="width: 100px;height: 100px;" class="img-circle" src="" title="头像"/>
         </div>
         <div style="float: left;margin-left: 10px;">
-            <p>{{$user->realname}} | <span style="color: deepskyblue">{{$user->level}}</span></p>
+            <p>{{$user->realname}} | <span style="color: deepskyblue">{{$levels[$user->level]}}</span></p>
             <p style="font-size: small">代理商编号：{{$user->id}}</p>
             <p style="font-size: small"><a style="color: #1b8dcc;" href="{{route('info')}}">我的资料 <i class="fa fa-chevron-right"></i></a></p>
         </div>
     </div>
     <div class="content">
-        <p>余额：￥{$data.balance}</p><hr>
-        <p>团队充值金额：￥{$data.recharge_amount}</p><hr>
-        <p>团队人数：{$data.m_number}</p><hr>
-        <p><a href="{:U('Personal/my_address')}">客户资料<img style="width: 20px;margin-left: 50%" src="/img/icon_@2x_09.png"/></a></p><hr>
-        <p><a href="{:U('Personal/my_password')}">修改密码<img style="width: 20px;margin-left: 50%" src="/img/icon_@2x_09.png"/></a></p><hr/>
-        <p><a onclick="edit_face( this );" data-id="{$data.id}" >修改头像<img style="width: 20px;margin-left: 50%" src="/img/icon_@2x_09.png"/></a></p>
+        <p>余额：￥{{$user->money}}</p><hr>
+        <p>团队充值金额：￥</p><hr>
+        <p>团队人数：</p><hr>
+        <p><a href="{{ route('customer.list') }}">客户资料<img style="width: 20px;margin-left: 50%" src="/img/icon_@2x_09.png"/></a></p><hr>
         <br/>
     </div>
     <br/><br/><br/>

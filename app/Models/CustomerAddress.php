@@ -7,13 +7,35 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerAddress extends Model
 {
     protected $guarded = [];
-    
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
+
     public function getList($uid)
     {
         $list = $this->where('user_id', '=', $uid)
             ->get();
 
         return $list;
+    }
+
+    public function getCustomerInfoList($uid)
+    {
+        $users = $this->where('user_id', '=', $uid)->paginate(1);
+
+        $regionModel = new Region();
+        foreach ($users as &$user)
+        {
+            $cities = $regionModel->getRegionIdNameArray($user->province_id, 2);
+            $areas = $regionModel->getRegionIdNameArray($user->city_id, 3);
+
+            $user->cities = $cities;
+            $user->areas = $areas;
+        }
+
+        return $users;
     }
 
     public function saveAddress($data)
