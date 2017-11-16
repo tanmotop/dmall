@@ -88,7 +88,9 @@ class DownController extends Controller
             $grid->keywords('关键词');
             // $grid->cat_id('商品分类');
             $grid->cat()->name('商品分类');
-            $grid->status('商品状态');
+            $grid->column('商品状态')->display(function () {
+                return '<a class="btn btn-primary" href="/admin/goods/down/up?id='.$this->id.'">上架</a>';
+            });
             $grid->created_at('创建时间');
             $grid->updated_at('更新时间');
         });
@@ -100,11 +102,6 @@ class DownController extends Controller
         $grid->filter(function($filter){
             $filter->disableIdFilter(); // 去掉默认的id过滤器
             $filter->like('name', 'name'); // 在这里添加字段过滤器
-        });
-
-        $grid->actions(function ($actions) {
-            $row = $actions->row;
-            $actions->prepend('<a class="btn btn-link" href="/admin/goods/down/up?id='.$row->id.'">上架</a>');
         });
 
         $grid->model()->where('goods.status', '=', 0);
