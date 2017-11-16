@@ -114,6 +114,20 @@ class User extends Model
     }
 
     /**
+     * @param $uid
+     * @return mixed
+     */
+    public function getMemberCount($uid)
+    {
+        $count = $this->where([
+            ['parent_id', '=', $uid],
+            ['status', '=', 1]
+        ])->count();
+
+        return $count;
+    }
+
+    /**
      * 统计用户团队相关信息
      */
     private function statUserTeamInfo($user)

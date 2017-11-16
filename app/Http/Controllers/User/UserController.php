@@ -10,6 +10,7 @@ namespace App\Http\Controllers\User;
 
 
 use App\Http\Requests\UserEditRequest;
+use App\Models\RechargeLog;
 use App\Models\User;
 use App\Models\UserLevel;
 use Illuminate\Http\Request;
@@ -40,8 +41,11 @@ class UserController
         $user = session()->get('auth_user');
         $user = User::find($user->id);
         $levels = $this->userLevel->getLevelNameArray();
+        $title = '个人中心';
+        $teamCount = (new User)->getMemberCount($user->id);
+        $recharge = (new RechargeLog)->getMembersRecharge($user->id);
 
-        return view('user/ucenter', ['title' => '个人中心', 'user' => $user, 'levels' => $levels]);
+        return view('user/ucenter', compact('title', 'user', 'levels', 'teamCount', 'recharge'));
     }
 
     /**
@@ -51,8 +55,9 @@ class UserController
     {
         $user = session()->get('auth_user');
         $user = User::find($user->id);
+        $title = '我的资料';
 
-        return view('user/info', ['title' => '我的资料', 'user' => $user]);
+        return view('user/info', compact('title', 'user', 'teamCount'));
     }
 
     public function update(UserEditRequest $request)

@@ -166,8 +166,8 @@
     </div>
     <div class="content">
         <p>余额：￥{{$user->money}}</p><hr>
-        <p>团队充值金额：￥</p><hr>
-        <p>团队人数：</p><hr>
+        <p>团队充值金额：￥{{ $recharge }}</p><hr>
+        <p>团队人数：{{ $teamCount }}</p><hr>
         <p><a href="{{ route('customer.list') }}">客户资料<img style="width: 20px;margin-left: 50%" src="/img/icon_@2x_09.png"/></a></p><hr>
         <br/>
     </div>
