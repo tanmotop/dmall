@@ -49,6 +49,14 @@ class User extends Model
         $this->setOrderColumn('level');
     }
 
+    /**
+     * 前置0
+     */
+    public function getIdAttribute($id)
+    {
+        return substr(1000000 + $id, 1);
+    }
+
     public function orders()
     {
         return $this->hasMany(Orders::class, 'user_id');

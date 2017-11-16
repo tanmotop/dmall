@@ -24,6 +24,8 @@ class CreateUserCodes extends Migration
             $table->timestamp('used_at')->nullable()->comment('使用时间');
             $table->timestamps();
         });
+        DB::statement('ALTER TABLE `user_codes` CHANGE `create_uid` `create_uid` INT(6)  UNSIGNED  ZEROFILL  NULL  DEFAULT NULL');
+        DB::statement('ALTER TABLE `user_codes` CHANGE `use_uid` `use_uid` INT(6)  UNSIGNED  ZEROFILL  NULL  DEFAULT NULL');
         DB::statement("ALTER TABLE `{$userCodesTable}` comment '用户邀请码表'");
     }
 

@@ -13,8 +13,7 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-    	$usersTable = 'users';
-        Schema::create($usersTable, function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
 	        $table->string('username', 50)->unique()->comment('用户名');
 	        $table->string('password', 60)->comment('密码');
@@ -35,7 +34,8 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->index('parent_id');
         });
-	    DB::statement("ALTER TABLE `{$usersTable}` comment '用户表'");
+        DB::statement('ALTER TABLE `users` change id id int(6) ZEROFILL');
+	    DB::statement("ALTER TABLE `users` comment '用户表'");
     }
 
     /**

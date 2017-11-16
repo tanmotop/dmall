@@ -91,7 +91,7 @@
                     var html = '<div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
                             '<div class="modal-dialog">' +
                             '<div class="out-zx">' +
-                            '<img src="__PUBLIC__/Home/default/img/icon_@2x_28.png">' +
+                            '<img src="/assets/img/icon_@2x_28.png">' +
                             '<p>注册成功</p>' +
                             '<div class="change-btn">' +
                             '<button type="button" class="left-btn btn-close">我知道了</button>' +

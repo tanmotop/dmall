@@ -22,6 +22,7 @@ Route::namespace('Auth')->prefix('auth')->group(function() {
 
 Route::group(['middleware' => ['auth:user']], function () {
 	Route::get('/', 'HomeController@home')->name('home');
+	Route::get('/unactive', 'HomeController@unactive')->name('home_unactive');
 	Route::get('/agents', 'HomeController@agents')->name('agents');
 	Route::get('/mall', 'HomeController@mall')->name('mall');
 	Route::get('/finances', 'HomeController@finances')->name('finances');

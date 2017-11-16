@@ -20,6 +20,23 @@ class Orders extends Model
         3 => '已取消',
     ];
 
+    /**
+     * 前置0
+     */
+    public function getUserIdAttribute($id)
+    {
+        dd($id);
+        return substr(1000000 + $id, 1);
+    }
+
+    /**
+     * 前置0
+     */
+    public function getIdAttribute($id)
+    {
+        return substr(1000000 + $id, 1);
+    }
+
     public function orderGoods()
     {
         return $this->hasMany(OrderGoods::class, 'order_id');

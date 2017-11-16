@@ -46,7 +46,7 @@
                 <div class="yqmff-bottom-left ">
                     <p>编号：<input name="create_uid" value="{{ $user->id }}"/></p>
                     <p>邀请码：<input name="code" id="code" placeholder="点击刷新生成邀请码"/></p>
-                    <p>有效时间：<input name="expire_time" class="" id="time" placeholder="点我设置时间"/></p>
+                    <p>有效时间：<input name="expire_time" class="" value="{{ $date }}" id="time" placeholder="点我设置时间"/></p>
                 </div>
                 <div class="yqmff-bottom-right">
                     <button onclick="getInvitationCode();" type="button" class="sx-btn">刷新</button>
@@ -106,7 +106,6 @@
         $('#time').datetimepicker({
             language: 'zh-CN',
             format: 'yyyy-mm-dd',
-            initialDate: new Date(),
             autoclose: true,
             minView: 'month'
         });
