@@ -156,7 +156,7 @@
     <br/>
     <div class="summary">
         <div style="float: left;padding-top: 10px;">
-            <img onclick="edit_face( this );" data-id="{{ $user->id }}" style="width: 100px;height: 100px;" class="img-circle" src="" title="头像"/>
+            <img onclick="edit_face( this );" data-id="{{ $user->id }}" style="width: 100px;height: 100px;" class="img-circle" src="{{ config('filesystems.disks.avatar.url') . $user->avatar }}" title="头像"/>
         </div>
         <div style="float: left;margin-left: 10px;">
             <p>{{$user->realname}} | <span style="color: deepskyblue">{{$levels[$user->level]}}</span></p>
@@ -215,11 +215,11 @@
         /* 点击选择修改头像 */
         function edit_face( option ) {
             var id = $( option ).attr( 'data-id' );
-            var url = "{:U('Personal/editFace')}";
+            var url = "{{ route('ucenter.edit_avatar') }}";
             var html = '<form action="' + url + '" method="post" enctype="multipart/form-data"><div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
                 '<div class="modal-dialog">' +
                 '<div class="out-zx ">' +
-                '<a class="file">点击这里上传头像<input onchange="add_notice( this )" type="file" name="face"/></a>' +
+                '<a class="file">点击这里上传头像<input onchange="add_notice( this )" type="file" name="avatar"/></a>' +
                 '<p></p>' +
                 '<p>上传格式为: jpg, gif, png, jpeg</p>' +
                 '<p>使用1:1的图片效果最佳</p>' +
@@ -232,7 +232,7 @@
                 '</div>' +
                 '<div class="modal-back fade in"></div>' +
                 '<input type="hidden" name="id" value="' + id + '"/>' +
-                '<input type="hidden" name="edit_face" value="Y"/>' +
+                '{{ csrf_field() }}' +
                 '</form>';
             $( '#order_dialog' ).html( html );
 

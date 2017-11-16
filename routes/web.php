@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:user']], function () {
 
 	Route::namespace('User')->prefix('user')->group(function () {
         Route::get('/ucenter', 'UserController@center')->name('ucenter');
+        Route::post('/avatar', 'UserController@avatar')->name('ucenter.edit_avatar');
         Route::get('/info', 'UserController@info')->name('info');
         Route::put('/info', 'UserController@update')->name('edit_user');
 

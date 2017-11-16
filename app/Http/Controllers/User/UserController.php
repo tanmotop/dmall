@@ -74,4 +74,22 @@ class UserController
 
         return response()->json(['code' => 10000, 'msg' => '修改成功']);
     }
+
+    public function avatar(Request $request)
+    {
+        $uid = $request->id;
+        $path = $request->file('avatar')->store('avatars', 'avatar');
+
+        $user = User::find($uid);
+        $oldAvatar = $user->avatar;
+        $user->avatar = $path;
+        $user->save();
+
+        $path = public_path('uploads/') . $oldAvatar;
+        if (file_exists($path)) {
+            @unlink($path);
+        }
+
+        return response()->redirectToRoute('ucenter');
+    }
 }
