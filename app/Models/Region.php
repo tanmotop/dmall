@@ -22,6 +22,20 @@ class Region extends Model
         $this->setTitleColumn('name');
     }
 
+    public function getRegionIdNameArray($parentId, $level)
+    {
+        $regs = $this->where([
+            ['level', '=', $level],
+            ['parent_id', '=', $parentId]
+        ])->get();
+
+        foreach ($regs as $reg) {
+            $arr[$reg->id] = $reg->name;
+        }
+
+        return $arr;
+    }
+
     // public function freight()
     // {
     //     return $this->belongsTo(Freight::class);
@@ -34,7 +48,7 @@ class Region extends Model
      */
     public function getProvinceIdNameArray()
     {
-       $regs = $this->where('level', '=', 1)->get();
+        $regs = $this->where('level', '=', 1)->get();
         $arr = ['0' => '请选择'];
         foreach ($regs as $reg) {
             $arr[$reg->id] = $reg->name;

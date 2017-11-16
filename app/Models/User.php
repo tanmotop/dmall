@@ -81,7 +81,7 @@ class User extends Model
     {
         $users = $this->where('parent_id', '=', $uid)
             ->where('status', '=', 1)
-            ->select('username', 'realname', 'level', 'phone', 'actived_at')
+            ->select('id', 'username', 'realname', 'level', 'phone', 'actived_at')
             ->paginate(10);
 
         foreach (UserLevel::all() as $item) {
@@ -119,6 +119,20 @@ class User extends Model
             'my' => $user,
             'members' => $members,
         ];
+    }
+
+    /**
+     * @param $uid
+     * @return mixed
+     */
+    public function getMemberCount($uid)
+    {
+        $count = $this->where([
+            ['parent_id', '=', $uid],
+            ['status', '=', 1]
+        ])->count();
+
+        return $count;
     }
 
     /**
