@@ -88,7 +88,7 @@ class SaleController extends Controller
             $grid->keywords('关键词');
             // $grid->cat_id('商品分类');
             $grid->cat()->name('商品分类');
-            $grid->status('商品状态')->display(function ($status) {
+            $grid->column('商品状态')->display(function () {
                 return '<a class="btn btn-primary" href="/admin/goods/sale/down?id='.$this->id.'">下架</a>';
             });
             $grid->created_at('创建时间');
@@ -97,10 +97,11 @@ class SaleController extends Controller
 
         $grid->perPages([10, 20]);
         $grid->disableExport();
+        $grid->disableCreation();
         $grid->paginate(10);
 
         $grid->filter(function($filter){
-            $filter->disableIdFilter(); // 去掉默认的id过滤器
+//            $filter->disableIdFilter(); // 去掉默认的id过滤器
             $filter->like('name', 'name'); // 在这里添加字段过滤器
         });
 
