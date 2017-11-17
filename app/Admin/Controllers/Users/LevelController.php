@@ -81,7 +81,9 @@ class LevelController extends Controller
             $grid->upgrade_condition('升级说明');
             $grid->first_amount('首充金额');
             $grid->second_amount('再充金额');
-            $grid->upgrade_way('升级方式');
+            $grid->upgrade_way('升级方式')->display(function ($way) {
+                return $way == 1 ? '手动' : '自动';
+            });
             $grid->created_at('创建时间');
             $grid->updated_at('更新时间');
         });
@@ -118,6 +120,10 @@ class LevelController extends Controller
             $form->text('name', '等级名称')->rules('required');
             $form->number('level', '等级')->rules('required|min:0');
             $form->number('first_amount', '首充金额')->rules('required');
+            $form->radio('upgrade_way', '升级模式')->options([
+                1 => '手动',
+                2 => '自动'
+            ]);
             $form->number('second_amount', '再充金额')->rules('required');  
             $form->textarea('upgrade_condition', '升级说明')->rules('required');
 
