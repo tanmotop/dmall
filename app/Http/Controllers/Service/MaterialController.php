@@ -23,7 +23,7 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        $list = $this->typeModel::all();
+        $list = $this->typeModel->enable()->get();
         return view('service/material', [
             'title' => '官方培训资料',
             'list'  => $list

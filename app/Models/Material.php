@@ -8,15 +8,19 @@ class Material extends Model
 {
     protected $guarded = [];
 
+    public function scopeEnable($query)
+    {
+        return $query->where('status', 1);
+    }
+
     /**
      * 获取列表
      */
     public function getList($typeId, $keyword)
     {
+        $query = $this->where('status', 1);
         if ($typeId) {
-            $query = $this;
-        } else {
-            $list = $this->where('type_id', $typeId);
+            $query = $this->where('type_id', $typeId);
         }
         if ($keyword) {
             $query = $query->where('title', 'like', '%'.$keyword.'%');

@@ -8,10 +8,9 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Layout\Content;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\ModelForm;
-use App\Models\Material;
-use App\Models\MaterialType;
+use App\Models\Notice;
 
-class MaterialController extends Controller
+class NoticeController extends Controller
 {
     use ModelForm;
 
@@ -74,18 +73,16 @@ class MaterialController extends Controller
      */
     protected function grid()
     {
-        $grid = Admin::grid(Material::class, function (Grid $grid) {
+        $grid = Admin::grid(Notice::class, function (Grid $grid) {
             // 第一列显示id字段，并将这一列设置为可排序列
             $grid->id('序号')->sortable();
             $grid->title('标题');
             $grid->sort('排序')->sortable();
-            $grid->attach('有无附件')->display(function ($status) {
-                return $status == '' ? '无显示' : '有附件';
-            });
             $grid->status('状态')->display(function ($status) {
                 return $status == 1 ? '显示' : '隐藏';
             });
             $grid->created_at('添加时间');
+            $grid->updated_at('更新时间');
         });
 
         $grid->perPages([10, 20]);
@@ -107,20 +104,11 @@ class MaterialController extends Controller
      */
     protected function form()
     {
-        $types = (new MaterialType)->getIdNameArray();
-        return Admin::form(Material::class, function (Form $form) use ($types) {
-            $form->select('type_id', '分类')->options($types)->rules('required');
+        return Admin::form(Notice::class, function (Form $form) {
             $form->text('title', '标题')->rules('required');
-            // $form->editor('content', '资料内容');
+            $form->editor('content', '资料内容');
             $form->number('sort', '排序')->default(50)->placeholder('排序');
-            // 添加文件删除按钮
-            $form->file('attach', '附件')->removable();
-            $form->radio('status', '分类状态')->options([1 => '显示', 0 => '隐藏'])->default(1);
+            $form->radio('status', '状态')->options([1 => '显示', 0 => '隐藏'])->default(1);
         });
     }
-
-    // public function update()
-    // {
-    //     dd($_POST);
-    // }
 }

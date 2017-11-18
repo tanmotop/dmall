@@ -4,82 +4,51 @@ namespace App\Http\Controllers\Service;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Notice;
 
 class NoticeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public $noticeModel;
+
+    public function __construct(Notice $notice)
     {
-        //
+        $this->noticeModel = $notice;
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 公告列表
      */
-    public function create()
+    public function index(Request $request)
     {
-        //
+        $keyword = $request->input('keyword', '');
+        $list = $this->noticeModel->getList($keyword);
+
+        // 获取更多/分页数据 => 直接返回json
+        if ($request->has('dataType') && $request->dataType == 'json') {
+            return $list;
+        }
+
+        return view('service/notice', [
+            'title' => '公告栏',
+            'list'  => $list,
+            'keyword' => $keyword,
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * 公告详情
      */
-    public function store(Request $request)
+    public function detail(Request $request)
     {
-        //
-    }
+        $id = $request->input('id', 0);
+        $notice = $this->noticeModel->find($id);
+        if (!$id || empty($notice)) {
+            return redirect()->route('service_notice');
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return view('service/notice_detail', [
+            'title'   => $notice->title,
+            'notice'  => $notice,
+        ]);
     }
 }

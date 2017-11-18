@@ -52,6 +52,7 @@ Route::group([
     $router->resource('/service/message', Service\MessageController::class);
     $router->resource('/service/material/type', Service\MaterialTypeController::class);
     $router->resource('/service/materials', Service\MaterialController::class);
+    $router->resource('/service/notice', Service\NoticeController::class);
 });
 
 Route::group([

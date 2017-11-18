@@ -15,7 +15,7 @@ class MaterialType extends Model
 
     public function getIdNameArray()
     {
-        $cats = $this->enable()->get();
+        $cats = $this->where('status', 1)->get();
         $arr = ['0' => '请选择'];
         foreach ($cats as $cat) {
             $arr[$cat->id] = $cat->name;
