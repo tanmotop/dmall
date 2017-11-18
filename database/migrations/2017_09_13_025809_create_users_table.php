@@ -34,7 +34,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->index('parent_id');
         });
-        DB::statement('ALTER TABLE `users` change id id int(6) ZEROFILL');
 	    DB::statement("ALTER TABLE `users` comment '用户表'");
     }
 

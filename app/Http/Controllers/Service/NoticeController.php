@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class TrainController extends Controller
+class NoticeController extends Controller
 {
     /**
      * Display a listing of the resource.

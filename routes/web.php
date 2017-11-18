@@ -89,6 +89,15 @@ Route::group(['middleware' => ['auth:user']], function () {
 		Route::get('charge/records', 'ChargeController@records')->name('finances_charge_records');
 	});
 
+	Route::namespace('Service')->prefix('service')->group(function() {
+		Route::get('online', 'OnlineController@index')->name('service_online');
+		Route::get('message', 'OnlineController@message')->name("service_message");
+		Route::post('message', 'OnlineController@submitMessage')->name('service_message_submit');
+		Route::get('material', 'MaterialController@index')->name('service_material');
+		Route::get('material/detail', 'MaterialController@detail')->name('service_material_detail');
+		Route::get('notice', 'NoticeController@index')->name('service_notice');
+	});
+
 });
 
 /// 邀请码

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1,
             maximum-scale=3, minimum-scale=1, user-scalable=no">
-    <title>{$_title}</title>
+    <title>{{ $title }}</title>
     <link rel="stylesheet" href="/assets/css/index.css"/>
 </head>
 <style type="text/css">

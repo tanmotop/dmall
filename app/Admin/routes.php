@@ -47,6 +47,11 @@ Route::group([
     $router->resource('/data/personal', Data\PersonalController::class);
     $router->resource('/data/sale', Data\SaleController::class);
     $router->resource('/data/team', Data\TeamController::class);
+
+    // 客服
+    $router->resource('/service/message', Service\MessageController::class);
+    $router->resource('/service/material/type', Service\MaterialTypeController::class);
+    $router->resource('/service/materials', Service\MaterialController::class);
 });
 
 Route::group([

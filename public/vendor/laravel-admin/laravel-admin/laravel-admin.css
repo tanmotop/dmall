@@ -1,0 +1,6 @@
+.file-actions {
+    display: none;
+}
+.select2-container {
+    z-index: 999999;
+}

@@ -49,6 +49,6 @@ class HomeController extends Controller
      */
     public function service()
     {
-        return view('service');
+        return view('service/index', ['title' => '客服中心']);
     }
 }
