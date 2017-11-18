@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers\Users;
 
+use Carbon\Carbon;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
@@ -38,8 +39,8 @@ class AgentController extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('编辑分类');
-            $content->description('编辑');
+            $content->header('编辑');
+            $content->description('代理商');
 
             $content->body($this->form()->edit($id));
         });
@@ -151,13 +152,28 @@ class AgentController extends Controller
             $form->text('phone', '手机号')->rules('required', [
                 'required' => '手机号不能为空'
             ]);
+            $form->switch('status', '激活状态')->states([
+                'on' => ['value' => 1, 'text' => '激活', 'color' => 'primary'],
+                'off' => ['value' => 0, 'text' => '未激活', 'color' => 'danger']
+            ]);
+            $form->ignore(['repasswd']);
+            $form->image('avatar', '头像');
             
             $form->saving(function (Form $form) {
-                // if ($form->repasswd != $form->password) {
-                //     $error = new MessageBag(['repasswd' => '两次密码不一致']);
-                //     return back()->with(compact('error'));
-                // }
-                // unset($form->repasswd);
+                ///
+                $pwd = $form->input('password');
+                if (!empty($pwd)) {
+                    $form->password = md5($pwd);
+                }
+                else {
+                    unset($form->password);
+                }
+
+                ///
+                $user = $form->model();
+                if ($user->status == 0 && $form->status == 'on') {
+                    $user->actived_at = Carbon::now();
+                }
             });
 
             $form->saved(function (Form $form) {
