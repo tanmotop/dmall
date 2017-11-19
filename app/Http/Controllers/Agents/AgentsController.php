@@ -28,7 +28,7 @@ class AgentsController extends Controller
         $uid = session('auth_user')->id;
         $users = $this->userModel->getInactiveUsers($uid);
 
-         // 获取更多/分页数据 => 直接返回json
+        // 获取更多/分页数据 => 直接返回json
         if ($request->has('dataType') && $request->dataType == 'json') {
             return $users;
         }
@@ -47,9 +47,11 @@ class AgentsController extends Controller
     public function codeSending()
     {
         $user = session('auth_user');
+        $date =  date('Y-m-d', strtotime('+15 day'));
         return view('agents/code_sending', [
             'title' => '邀请码发放',
             'user'  => $user,
+            'date'  => $date,
         ]);
     }
 

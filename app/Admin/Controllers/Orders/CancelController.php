@@ -56,7 +56,9 @@ class CancelController extends Controller
     {
         $grid = Admin::grid(Orders::class, function (Grid $grid) {
             $grid->sn('订单号');
-            $grid->user_id('下单代理商');
+            $grid->user_id('下单代理商')->display(function ($uid) {
+                return substr(1000000 + (int)$uid, 1);
+            });
             $grid->user_name('买家');
             $grid->user_phone('手机');
             $grid->total_price('订单总价');

@@ -68,12 +68,12 @@ class UserCode extends Model
     {
         $query = $this->where('create_uid', '=', $cuid);
         if ($type == 1) {
-            $query = $query->where('use_uid', '<>', '');
+            $query = $query->where('use_uid', '<>', '0');
         } elseif ($type == 2) {
-            $query = $query->where('use_uid', '=', '');
+            $query = $query->where('use_uid', '=', '0');
         }
 
-        $codes = $query->paginate(5);
+        $codes = $query->orderBy('created_at', 'desc')->paginate(5);
 
         $codes->each(function ($item, $i) {
             if ($item->use_uid) {

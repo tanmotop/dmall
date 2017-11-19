@@ -9,7 +9,15 @@ class HomeController extends Controller
     //
     public function home()
     {
+        if (session('auth_user')->status == 0) {
+            return redirect()->route('home_unactive');;
+        }
         return view('home', ['title' => '团队管理系统']);
+    }
+
+    public function unactive()
+    {
+        return view('home_unactive', ['title' => '团队管理系统']);
     }
 
     /**
@@ -41,6 +49,6 @@ class HomeController extends Controller
      */
     public function service()
     {
-        return view('service');
+        return view('service/index', ['title' => '客服中心']);
     }
 }

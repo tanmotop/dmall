@@ -22,6 +22,7 @@ Route::namespace('Auth')->prefix('auth')->group(function() {
 
 Route::group(['middleware' => ['auth:user']], function () {
 	Route::get('/', 'HomeController@home')->name('home');
+	Route::get('/unactive', 'HomeController@unactive')->name('home_unactive');
 	Route::get('/agents', 'HomeController@agents')->name('agents');
 	Route::get('/mall', 'HomeController@mall')->name('mall');
 	Route::get('/finances', 'HomeController@finances')->name('finances');
@@ -86,6 +87,17 @@ Route::group(['middleware' => ['auth:user']], function () {
 		// 充值
 		Route::get('charge', 'ChargeController@index')->name('finances_charge');
 		Route::get('charge/records', 'ChargeController@records')->name('finances_charge_records');
+	});
+
+	// 客服中心
+	Route::namespace('Service')->prefix('service')->group(function() {
+		Route::get('online', 'OnlineController@index')->name('service_online');
+		Route::get('message', 'OnlineController@message')->name("service_message");
+		Route::post('message', 'OnlineController@submitMessage')->name('service_message_submit');
+		Route::get('material', 'MaterialController@index')->name('service_material');
+		Route::get('material/detail', 'MaterialController@detail')->name('service_material_detail');
+		Route::get('notice', 'NoticeController@index')->name('service_notice');
+		Route::get('notice/detail', 'NoticeController@detail')->name('service_notice_detail');
 	});
 
 });
