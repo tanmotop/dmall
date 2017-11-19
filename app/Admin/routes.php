@@ -41,6 +41,7 @@ Route::group([
     // 财务
     $router->resource('/finances/recharge', Finances\RechargeController::class);
     $router->resource('/finances/refund', Finances\RefundController::class);
+    $router->resource('/finances/payConfig', Finances\PayConfigController::class);
 
     // 大数据分析
     $router->resource('/data/stock', Data\StockController::class);
