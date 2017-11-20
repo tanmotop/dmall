@@ -25,7 +25,6 @@ class Orders extends Model
      */
     public function getUserIdAttribute($id)
     {
-        dd($id);
         return substr(1000000 + $id, 1);
     }
 

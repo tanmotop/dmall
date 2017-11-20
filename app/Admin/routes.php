@@ -42,12 +42,15 @@ Route::group([
     $router->resource('/finances/recharge', Finances\RechargeController::class);
     $router->resource('/finances/refund', Finances\RefundController::class);
     $router->resource('/finances/payConfig', Finances\PayConfigController::class);
+    $router->resource('/finances/pv', Finances\PvController::class);
+    $router->resource('/finances/invite', Finances\InviteController::class);
+    $router->resource('/finances/bonus', Finances\BonusController::class);
 
     // 大数据分析
     $router->resource('/data/stock', Data\StockController::class);
     $router->resource('/data/personal', Data\PersonalController::class);
     $router->resource('/data/sale', Data\SaleController::class);
-    $router->resource('/data/team', Data\TeamController::class);
+    $router->resource('/data/teams', Data\TeamsController::class);
 
     // 客服
     $router->resource('/service/message', Service\MessageController::class);

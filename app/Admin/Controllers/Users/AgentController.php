@@ -139,7 +139,7 @@ class AgentController extends Controller
             $form->password('repasswd', '确认密码')->rules('same:password', [
                 'same' => '两次密码不一致',
             ]);
-            $form->select('level', '代理级别')->options((new UserLevel)->getIdNameArray())->rules('required');
+            $form->select('level', '代理级别')->options((new UserLevel)->getLevelNameArray())->rules('required');
             $form->text('realname', '真实姓名')->rules('required', [
                 'required' => '真实姓名不能为空'
             ]);

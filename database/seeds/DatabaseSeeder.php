@@ -14,5 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RegionsTableSeeder::class);
         $this->call(RegProtocolsTableSeeder::class);
         $this->call(PayConfigSeeder::class);
+        $this->call(InviteBonusSeeder::class);
+        $this->call(PvSeeder::class);
     }
 }
