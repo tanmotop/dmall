@@ -38,9 +38,10 @@ class FinishController extends Controller
         return Admin::content(function (Content $content) use ($id) {
             $content->header('订单详情');
 
-            $content->row(function (Row $row) {
-                $row->column(12, function (Column $column) {
-                    $column->append(view('admin::orders.detail'));
+            $order = Orders::find($id);
+            $content->row(function (Row $row) use ($order) {
+                $row->column(12, function (Column $column) use ($order) {
+                    $column->append(view('admin::orders.detail', compact('order')));
                 });
             });
             $content->row(function (Row $row) {

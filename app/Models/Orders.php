@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Region;
-use App\Models\OrderGoods;
 use Illuminate\Support\Facades\DB;
 
 class Orders extends Model
@@ -49,7 +47,7 @@ class Orders extends Model
             // 更新商品订单信息
             (new \App\Models\OrderGoods)->createOrderGoods($order['id']);
             // 更新用户账户表，并删除购物车记录
-            $user = \App\Models\User::find($data['user_id']);
+            $user = User::find($data['user_id']);
             $user->money = $user->money - $data['total_price'];
             $user->save();
             // 清空session

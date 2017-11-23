@@ -87,6 +87,9 @@ Route::group(['middleware' => ['auth:user']], function () {
 		// 充值
 		Route::get('charge', 'ChargeController@index')->name('finances_charge');
 		Route::get('charge/records', 'ChargeController@records')->name('finances_charge_records');
+
+		// 团队
+        Route::get('team', 'TeamController@index')->name('finances_team');
 	});
 
 	// 客服中心

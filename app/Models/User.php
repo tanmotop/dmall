@@ -49,17 +49,22 @@ class User extends Model
         $this->setOrderColumn('level');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Orders::class, 'user_id');
+    }
+
+    public function bonus()
+    {
+        return $this->hasMany(UserBonus::class, 'user_id');
+    }
+
     /**
      * 前置0
      */
     public function getIdAttribute($id)
     {
         return substr(1000000 + $id, 1);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany(Orders::class, 'user_id');
     }
 
     /**
@@ -133,6 +138,24 @@ class User extends Model
         ])->count();
 
         return $count;
+    }
+
+    public function getMemberPvByMonth($uid, $month)
+    {
+        $members = $this->where([
+            ['parent_id', '=', $uid],
+            ['status', '=', 1]
+        ])->orWhere('id', $uid)->get();
+
+        ///
+        $between = [date('Y-m-01 00:00:00', strtotime($month)), date('Y-m-t 23:59:59', strtotime($month))];
+        $members->each(function ($member, $i) use ($between) {
+            $pv = UserBonus::where('user_id', $member->id)->whereBetween('created_at', $between)->sum('personal_pv');
+            $member->personal_pv = $pv;
+        });
+
+        ///
+        return $members;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Mall;
 
+use App\Models\Region;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
@@ -72,7 +74,7 @@ class OrdersController extends Controller
             return ['code' => 10002, 'msg' => '订单价格异常，请重新下单'];
         }
         // 判断用户账户金额
-        $user = \App\Models\User::find(session('auth_user')->id);
+        $user = User::find(session('auth_user')->id);
         if ($user->money < $request->total_price) {
             return ['code' => 10003, 'msg' => '账户余额不足'];
         }
@@ -128,6 +130,9 @@ class OrdersController extends Controller
 
         $order = $this->orderModel->find($id);
         $order->status_text = Orders::$status[$order->status];
+        $order->user_province = Region::find($order->user_province)->name;
+        $order->user_city = Region::find($order->user_city)->name;
+        $order->user_area = Region::find($order->user_area)->name;
 
         return view('mall/orders_detail', [
             'title' => '订单详情',

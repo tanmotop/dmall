@@ -46,7 +46,7 @@
                 </a>
             </li>
             <li class="five">
-                <a href="{:U('Finance/team_level')}">
+                <a href="{{ route('finances_team') }}">
                     <img src="/assets/img/icon_@2x_87.png">
                     <p>团队业绩</p>
                 </a>

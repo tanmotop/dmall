@@ -2,84 +2,37 @@
 
 namespace App\Http\Controllers\Finances;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        if ($request->has('uid')) {
+            $user = User::find($request->uid);
+        }
+        else {
+            $user = session('auth_user');
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+        ///
+        $parent = null;
+        if ($user->parent_id > 0) {
+            $parent = User::find($user->parent_id);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        ///
+        $allPv = 0;
+        $month = $request->month ?? date('Y-m');
+        $teams = (new User)->getMemberPvByMonth($user->id, $month);
+        foreach ($teams as $team) {
+            $allPv += $team->personal_pv;
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        ///
+        $title = '团队业绩';
+        return view('finances.team', compact('title', 'user', 'parent', 'teams', 'allPv'));
     }
 }

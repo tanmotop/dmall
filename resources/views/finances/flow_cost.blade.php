@@ -258,42 +258,39 @@
 
         /* 默认加载 */
         $( function () {
-            $.ajax( {
-                url: "{:U( 'Finance/ajaxGetFcData' )}",
-                type: 'POST',
-                dataType: 'json',
-                success: function ( json ) {
-                    if( json.code == 'success' ){
-                        var html = '';
-                        if( json.data != '' ){
-                            data.push( json.data );
-                            $.each( json.data, function ( k, v ){
-                                totalNumber++;
-                                if( k < singleNumber ){
-                                    html += '<div class="zc-bottom">' +
-                                            '<ul>' +
-                                            '<li>类型：<input readonly type="text" value="订单消费"></li>' +
-                                            '<li>消费：<input readonly type="text" value="￥' + v.total_price + '"></li>' +
-                                            '<li>时间：<input readonly type="text" value="' + v.add_time + '"></li>' +
-                                            '<li>说明：<input style="color: orange" readonly type="text" value="订单号【' + v.order_sn + '】"></li>' +
-                                            '</ul>' +
-                                            '</div>';
-                                    eachNumber++;
-                                }
-                            } );
-                            if( totalNumber > eachNumber ){
-                                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多消费记录</span></div>';
-                            }else{
-                                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多消费记录了</span></div>';
-                                status = 'false';
+            $.get("{{ route('finances_flow_cost') }}", {
+                dataType:'json'
+            },function ( json ) {
+                if( json.code ==  10000){
+                    var html = '';
+                    if( json.data != '' ){
+                        data.push( json.data );
+                        $.each( json.data, function ( k, v ){
+                            totalNumber++;
+                            if( k < singleNumber ){
+                                html += '<div class="zc-bottom">' +
+                                    '<ul>' +
+                                    '<li>类型：<input readonly type="text" value="订单消费"></li>' +
+                                    '<li>消费：<input readonly type="text" value="￥' + v.total_price + '"></li>' +
+                                    '<li>时间：<input readonly type="text" value="' + v.created_at + '"></li>' +
+                                    '<li>说明：<input style="color: orange" readonly type="text" value="订单号【' + v.sn + '】"></li>' +
+                                    '</ul>' +
+                                    '</div>';
+                                eachNumber++;
                             }
+                        } );
+                        if( totalNumber > eachNumber ){
+                            html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多消费记录</span></div>';
                         }else{
-                            html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的消费记录</span></div>';
+                            html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多消费记录了</span></div>';
+                            status = 'false';
                         }
-                        $( '#member_list' ).html( html );
+                    }else{
+                        html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的消费记录</span></div>';
                     }
+                    $( '#member_list' ).html( html );
                 }
-            } );
+            });
 
             /* 默认选择当前月 */
             var time = new Date();
@@ -326,8 +323,8 @@
                                 '<ul>' +
                                 '<li>类型：<input readonly type="text" value="订单消费"></li>' +
                                 '<li>消费：<input readonly type="text" value="￥' + v.total_price + '"></li>' +
-                                '<li>时间：<input readonly type="text" value="' + v.add_time + '"></li>' +
-                                '<li>说明：<input style="color: orange" readonly type="text" value="订单号【' + v.order_sn + '】"></li>' +
+                                '<li>时间：<input readonly type="text" value="' + v.created_at + '"></li>' +
+                                '<li>说明：<input style="color: orange" readonly type="text" value="订单号【' + v.sn + '】"></li>' +
                                 '</ul>' +
                                 '</div>';
                         eachNumber++;
@@ -365,43 +362,41 @@
                     '<div class="sk-double-bounce1"></div>' +
                     '<div class="sk-double-bounce2"></div></div>';
             list.html( spinner );
-            $.ajax( {
-                url: "{:U( 'Finance/ajaxGetFcData' )}",
-                type: 'POST',
-                data: { 'time': val },
-                dataType: 'json',
-                success: function ( json ){
-                    if( json.code == 'success' ){
-                        var html = '';
-                        if( json.data != '' ){
-                            data.push( json.data );
-                            $.each( json.data, function ( k, v ){
-                                totalNumber++;
-                                if( k < singleNumber ){
-                                    html += '<div class="zc-bottom">' +
-                                            '<ul>' +
-                                            '<li>类型：<input readonly type="text" value="订单消费"></li>' +
-                                            '<li>消费：<input readonly type="text" value="￥' + v.total_price + '"></li>' +
-                                            '<li>时间：<input readonly type="text" value="' + v.add_time + '"></li>' +
-                                            '<li>说明：<input style="color: orange" readonly type="text" value="订单号【' + v.order_sn + '】"></li>' +
-                                            '</ul>' +
-                                            '</div>';
-                                    eachNumber++;
-                                }
-                            } );
-                            if( totalNumber > eachNumber ){
-                                html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多消费记录</span></div>';
-                            }else{
-                                html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多消费记录了</span></div>';
-                                status = 'false';
+
+            $.get("{{ route('finances_flow_cost') }}", {
+                dataType:'json',
+                time: val
+            }, function ( json ){
+                if( json.code == 10000 ){
+                    var html = '';
+                    if( json.data != '' ){
+                        data.push( json.data );
+                        $.each( json.data, function ( k, v ){
+                            totalNumber++;
+                            if( k < singleNumber ){
+                                html += '<div class="zc-bottom">' +
+                                    '<ul>' +
+                                    '<li>类型：<input readonly type="text" value="订单消费"></li>' +
+                                    '<li>消费：<input readonly type="text" value="￥' + v.total_price + '"></li>' +
+                                    '<li>时间：<input readonly type="text" value="' + v.created_at + '"></li>' +
+                                    '<li>说明：<input style="color: orange" readonly type="text" value="订单号【' + v.sn + '】"></li>' +
+                                    '</ul>' +
+                                    '</div>';
+                                eachNumber++;
                             }
+                        } );
+                        if( totalNumber > eachNumber ){
+                            html += '<div align="center" onclick="getNewGoods();" class="sp-list-bottom goods-last-notice"><span>上拉/点击获取更多消费记录</span></div>';
                         }else{
-                            html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的消费记录</span></div>';
+                            html += '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多消费记录了</span></div>';
+                            status = 'false';
                         }
-                        list.html( html );
+                    }else{
+                        html = '<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有相应的消费记录</span></div>';
                     }
+                    list.html( html );
                 }
-            } );
+            });
         }
         /* 时间控件 */
         $('#time').datetimepicker({
