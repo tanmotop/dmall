@@ -24,7 +24,7 @@
     </div>
 </a>
 
-<a href="javascript:;">
+<a href="{{ route('finances_charge') }}">
     <div style="margin: 0.8rem 1rem;">
         <img src="/assets/img/200.png">
         <span>在线充值激活</span>

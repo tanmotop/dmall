@@ -18,7 +18,7 @@ class CreateMessagesTable extends Migration
             $table->string('username', 32)->comment('用户名');
             $table->string('phone', 16)->comment('联系方式');
             $table->string('wechat', 32)->comment('微信号');
-            $table->string('order_sn', 64)->comment('订单编号');
+            $table->string('order_sn', 64)->nullable()->comment('订单编号');
             $table->text('msg')->comment('留言内容');
             $table->timestamps();
         });

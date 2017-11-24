@@ -6,12 +6,20 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (session('auth_user')->status == 0) {
+                return redirect()->route('home_unactive');
+            }
+
+            return $next($request);
+        })->except('unactive');
+    }
+
     //
     public function home()
     {
-        if (session('auth_user')->status == 0) {
-            return redirect()->route('home_unactive');;
-        }
         return view('home', ['title' => '团队管理系统']);
     }
 

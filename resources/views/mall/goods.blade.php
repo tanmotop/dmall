@@ -150,9 +150,10 @@
                                 @endforeach
                                 <li><p>零售价：<em><del>￥{{ $goods->price }}</del></em></p></li>
                                 <li><p>购买价：<em>￥{{ $goods->user_prices['level_'.$myLevel] }}</em></p></li>
+                                <li><p>{{ $goods->attr_name }}：{{ $goods->weight }}克</p></li>
                                 <li><p>PV值：<em>{{ $goods->pv }}</em></p></li>
                                 <li><p>库存：<i>{{ $goods->stock }}</i></p></li>
-                                <li><p>产品编号：<i>{{ $goods->id }}</i></p></li>
+                                <li><p>产品编号：<i>{{ $goods->sn }}</i></p></li>
                             </ul>
                         </div>
                     </div>

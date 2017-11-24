@@ -12,6 +12,7 @@ namespace App\Admin\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Models\Orders;
+use App\Models\Region;
 use Carbon\Carbon;
 use Encore\Admin\Controllers\ModelForm;
 use Encore\Admin\Facades\Admin;
@@ -38,9 +39,11 @@ class CancelController extends Controller
         return Admin::content(function (Content $content) use ($id) {
             $content->header('订单详情');
 
-            $content->row(function (Row $row) {
-                $row->column(12, function (Column $column) {
-                    $column->append(view('admin::orders.detail'));
+            $order = Orders::find($id);
+            $content->row(function (Row $row) use ($order) {
+                $regions = (new Region)->getAllIdNameArray();
+                $row->column(12, function (Column $column) use ($order, $regions) {
+                    $column->append(view('admin::orders.detail', compact('order', 'regions')));
                 });
             });
             $content->row(function (Row $row) {

@@ -86,9 +86,9 @@
                                     </div>
                                 </div>
                             </li>
-                            <li><p>规格：<span class="active-kw">{{ $goods->attr_name }}</span></p></li>
+                            <li><p>{{ $goods->attr_name }}：<span class="active-kw">{{ $goods->weight }}克</span></p></li>
                             <li><p>PV值：<i>{{ $goods->pv }}</i></p></li>
-                            <li><p>产品编号：<i>{{ $goods->goods_id }}</i></p></li>
+                            <li><p>产品编号：<i>{{ $goods->sn }}</i></p></li>
                         </ul>
                     </div>
                 </div>

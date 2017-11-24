@@ -22,6 +22,20 @@ class Region extends Model
         $this->setTitleColumn('name');
     }
 
+    public function getAllIdNameArray()
+    {
+        $all = $this->all();
+
+        ///
+        $arr = [];
+        foreach ($all as $item) {
+            $arr[$item->id] = $item->name;
+        }
+
+        ///
+        return $arr;
+    }
+
     public function getRegionIdNameArray($parentId, $level)
     {
         $regs = $this->where([

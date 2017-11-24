@@ -97,6 +97,9 @@ class Orders extends Model
     public function cancelOrder($uid, $orderId)
     {
         $order = $this->find($orderId);
+        if ($order->status == 1) {
+            return 10001;
+        }
 
         // 金额回退
         $user = \App\Models\User::find($uid);
@@ -115,7 +118,7 @@ class Orders extends Model
         $order->canceled_at = \Carbon\Carbon::now();
         $order->save();
 
-        return true;
+        return 10000;
     }
 
     /**

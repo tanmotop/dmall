@@ -42,7 +42,11 @@
                         <option value="">请选择</option>
                     </select>
                 </li>
-                <li><label style="font-size: 0.7em;color: red">* 请填写收件人的具体信息</label></li>
+                <li><label style="font-size: 0.7em;color: red">* 填写收件人、手机、地址三个信息需用顿号"、"隔开</label></li>
+                <li>
+                    <label>收件人信息：</label>
+                    <input class="info" type="text" name="info" placeholder="收货人、手机、详细地址">
+                </li>
                 <li>
                     <label>收件地区：</label>
                     <select required name="province_id" id="province" data-type="Y">
@@ -117,6 +121,15 @@
         getCustomers();
     });
 
+    /* 信息黏贴 */
+    $( "input[name='info']" ).change( function (){
+        var info = $( this ).val();
+        info = info.split( '、' );
+        $( '.user_name' ).val( info[0] );
+        $( '.user_phone' ).val( info[1] );
+        $( '.user_address' ).val( info[2] );
+    } );
+
     function regions(pid, level)
     {
         resetOptions(level);
@@ -154,6 +167,7 @@
             $('.total_price').val(parseFloat($('.total_price').attr('data-value')) + parseFloat($freight.val()))
         })
     }
+
     function getCustomers()
     {
         $.get('{{ route('address_customers') }}', {}, function(response) {
@@ -186,6 +200,7 @@
         $('.user_address').val(customer.address)
         getFreight(customer.province_id)
     })
+
     // 到店自提
     $('.post-way').on('change', function() {
         var $freight = $('.freight')
@@ -199,6 +214,7 @@
         }
         $('.total_price').val(parseFloat($('.total_price').attr('data-value')) + parseFloat($freight.val()))
     })
+
     function setOptionsByCustomerInfo(provinceId, cityId, areaId)
     {
         // 设置省份

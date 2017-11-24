@@ -156,10 +156,12 @@
     <br/>
     <div class="summary">
         <div style="float: left;padding-top: 10px;">
-            <img onclick="edit_face( this );" data-id="{{ $user->id }}" style="width: 100px;height: 100px;" class="img-circle" src="{{ config('filesystems.disks.avatar.url') . $user->avatar }}" title="头像"/>
+            <img onclick="edit_face( this );" data-id="{{ $user->id }}" style="width: 100px;height: 100px;" class="img-circle"
+                 src="{{ $user->avatar ? config('filesystems.disks.avatar.url') . $user->avatar : '/img/avatar_default.jpg'}}"
+                 title="头像"/>
         </div>
         <div style="float: left;margin-left: 10px;">
-            <p>{{$user->realname}} | <span style="color: deepskyblue">{{$levels[$user->level]}}</span></p>
+            <p>{{$user->realname}} | <span style="color: deepskyblue">{{ $user->status == 0 ? '未激活' : $levels[$user->level]}}</span></p>
             <p style="font-size: small">代理商编号：{{$user->id}}</p>
             <p style="font-size: small"><a style="color: #1b8dcc;" href="{{route('info')}}">我的资料 <i class="fa fa-chevron-right"></i></a></p>
         </div>

@@ -12,6 +12,7 @@ namespace App\Admin\Controllers\Orders;
 
 use App\Http\Controllers\Controller;
 use App\Models\Orders;
+use App\Models\Region;
 use Carbon\Carbon;
 use Encore\Admin\Controllers\ModelForm;
 use Encore\Admin\Facades\Admin;
@@ -40,8 +41,9 @@ class ReceiveController extends Controller
 
             $order = Orders::find($id);
             $content->row(function (Row $row) use ($order) {
-                $row->column(12, function (Column $column) use ($order) {
-                    $column->append(view('admin::orders.detail', compact('order')));
+                $regions = (new Region)->getAllIdNameArray();
+                $row->column(12, function (Column $column) use ($order, $regions) {
+                    $column->append(view('admin::orders.detail', compact('order', 'regions')));
                 });
             });
             $content->row(function (Row $row) {

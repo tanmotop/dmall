@@ -99,11 +99,13 @@ class OrdersController extends Controller
         $id = $request->id;
         $uid = session('auth_user')->id;
 
-        if ($this->orderModel->cancelOrder($uid, $id)) {
-            return ['code' => 10000];
-        } else {
-            return ['code' => 10001];
-        }
+        return ['code' => $this->orderModel->cancelOrder($uid, $id)];
+
+//        if ($this->orderModel->cancelOrder($uid, $id)) {
+//            return ['code' => 10000];
+//        } else {
+//            return ['code' => 10001];
+//        }
     }
 
     /**

@@ -131,9 +131,9 @@ class SoldoutController extends Controller
                     $form->hidden('goods_id');
                     $form->text('name', '规则名称');
                     $form->text('stock', '库存');
-                    $form->text('weight', '规则重量');
+                    $form->number('weight', '规则重量(克)');
                     $form->text('price', '零售价');
-                    $form->text('pv', 'PV值');
+                    $form->number('pv', 'PV值');
                     $form->hidden('user_prices')->attribute(['data-up' => '1']);;
                     $priceArr = [];
                     foreach ($userLevels as $key => $level) {

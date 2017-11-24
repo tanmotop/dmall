@@ -265,7 +265,11 @@
                 }, function(json) {
                     if (json.code == 10000) {
                         alert('订单取消成功');
-                    } else {
+                    }
+                    else if(json.code == 10001) {
+                        alert('订单已发货');
+                    }
+                    else {
                         alert('订单取消失败');
                     }
                     location = location.href;

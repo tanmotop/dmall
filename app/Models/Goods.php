@@ -50,7 +50,7 @@ class Goods extends Model
             ->select($fields);
         if ($keyword) {
             $query = $query->where(function($query) use ($keyword) {
-                return $query->where('goods.id', '=', $keyword)
+                return $query->where('goods.sn', '=', $keyword)
                     ->orWhere('goods.name', 'like', '%'.$keyword.'%');
             });
         }

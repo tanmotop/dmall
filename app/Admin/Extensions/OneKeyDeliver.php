@@ -83,7 +83,7 @@ SCRIPT;
 
     }
 
-    protected function render()
+    public function render()
     {
         Admin::script($this->script());
 

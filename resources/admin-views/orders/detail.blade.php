@@ -13,7 +13,7 @@
                     <th width="120px">订单编号</th>
                     <td>{{ $order->sn }}</td>
                     <th width="120px">收货地址</th>
-                    <td>{{ $order->user_province }} {{ $order->user_city }} {{ $order->user_area }}</td>
+                    <td>{{ $regions[$order->user_province] }} {{ $regions[$order->user_city] }} {{ $regions[$order->user_area] }}</td>
                 </tr>
                 <tr>
                     <th width="120px">订单总价</th>
