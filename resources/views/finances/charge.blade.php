@@ -46,9 +46,9 @@
                 <li style="width: 50%;">
                     <select style="height: 30px;" required onchange="select_amount( this )">
                         <option value="">请选择</option>
-                        <foreach name="data" item="v">
-                            <option value="{$v.amount}">{$v.level_name}</option>
-                        </foreach>
+                        @foreach($levels as $name => $money)
+                            <option value="{{ $money }}">{{ $name }}</option>
+                        @endforeach
                     </select>
                 </li>
                 <li style="width: 50%;">

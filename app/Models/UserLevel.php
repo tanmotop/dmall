@@ -11,6 +11,27 @@ class UserLevel extends Model
      */
     protected $table = 'user_levels';
 
+    public function getActiveRecharge($level)
+    {
+        $level = $this->where('level', $level)->first();
+
+        return [$level->name => $level->second_amount];
+    }
+
+    public function getUnActiveRecharge()
+    {
+        $levels = $this->all();
+
+        ///
+        $arr = [];
+        foreach ($levels as $level) {
+            $arr[$level->name] = $level->first_amount;
+        }
+
+        ///
+        return $arr;
+    }
+
     public function getIdNameArray()
     {
         $levels = [];
