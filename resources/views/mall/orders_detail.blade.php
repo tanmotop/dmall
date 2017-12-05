@@ -12,7 +12,7 @@
 <div class="zc-body">
     <div class="body-top">
         <div style="margin-top: 5px;margin-left: 10px;" class="top-left">
-            <a href="{{ route('orders') }}">
+            <a href="{{ url()->previous() }}">
                 <i style="font-size: 22px;margin-left: 5px;color: #b3b3b3;" class="fa fa-chevron-left"></i>
             </a>
         </div>

@@ -127,6 +127,7 @@
                         <p>订单时间：{{ $order->created_at }}</p>
                     </div>
                     <div class="mysale-btn">
+                        余额：{{ $order->money }}
                         @if ($order->status == 0)
                             <button onclick="cancel_order({{ $order->id }})" type="button" class="btn left-btn">取消订单</button>
                         @elseif ($order->status == 1)

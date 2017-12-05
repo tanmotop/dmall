@@ -49,9 +49,10 @@ class AddressController extends Controller
 
     public function freights(Request $request)
     {
+        $courierId = $request->courier_id;
         $regionId = $request->region_id;
         $weight = $request->weight;
-        $freight = $this->freightModel->calculate($regionId, $weight);
+        $freight = $this->freightModel->calculate($courierId, $regionId, $weight);
 
         return $freight;
     }

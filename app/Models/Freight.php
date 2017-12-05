@@ -19,14 +19,27 @@ class Freight extends Model
     }
 
     /**
-     * 计算运费
+     * @param $courierId
+     * @param $regionId
+     * @param $weight
+     * @return array
      */
-    public function calculate($regionId, $weight)
+    public function calculate($courierId, $regionId, $weight)
     {
-        $freight = $this->where('region_id', '=', $regionId)->first();
+        $freight = $this->where([
+            ['courier_id', '=', $courierId],
+            ['region_id', '=', $regionId]
+        ])->first();
+
+        if (empty($freight))
+            return ['code' => 10001];
+
+        ///
         if ($weight < $freight->norm_weight * 1000) {
-            return $freight->norm_price;
+            return ['code' => 10000, 'freight' => $freight->norm_price];
         }
-        return $freight->over_first_price + (ceil($weight/1000) - 1) * $freight->over_next_price;
+
+        ///
+        return ['code' => 10000, 'freight' => $freight->over_first_price + (ceil($weight/1000) - 1) * $freight->over_next_price];
     }
 }

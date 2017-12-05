@@ -72,9 +72,12 @@ class ReceiveController extends Controller
             });
 
             $grid->disableCreation();
+            $grid->actions(function (Grid\Displayers\Actions $actions) {
+                $actions->disableDelete();
+            });
         });
 
-        $grid->model()->where('status', 1);
+        $grid->model()->where('status', 1)->orderBy('posted_at', 'desc');
 
         return $grid;
     }

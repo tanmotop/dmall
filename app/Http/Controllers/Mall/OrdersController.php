@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Mall;
 
+use App\Models\Courier;
 use App\Models\Region;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,20 +51,22 @@ class OrdersController extends Controller
     /**
      * 提交订单
      */
-    public function prepare(Request $request)
+    public function prepare(Courier $courier)
     {
         if (empty(session('carts_prepare'))) {
             return redirect()->route('carts');
         }
         $totalInfo = $this->cartModel->getSelectGoodsTotalInfo();
 
+        $couriers = $courier->getIdNameArray();
         return view('mall/orders_prepare', [
             'title'     => '订单确认',
             'totalInfo' => $totalInfo,
+            'couriers' => $couriers
         ]);
     }
 
-    /**
+    /*
      * 提交订单
      */
     public function submit(OrderSubmitRequest $request)
@@ -84,15 +87,20 @@ class OrdersController extends Controller
             $this->addressModel->saveAddress($data);
         }
         unset($data['save_address']);
-        if ($this->orderModel->generate($data)) {
-            return ['code' => 10000, 'msg'  => '下单成功'];
-        } else {
-            return ['code' => 10001, 'msg'  => '下单失败'];
-        }
+        $res = $this->orderModel->generate($data);
+        return $res;
+//        if ($this->orderModel->generate($data)) {
+//            return ['code' => 10000, 'msg'  => '下单成功'];
+//        } else {
+//            return ['code' => 10001, 'msg'  => '下单失败'];
+//        }
     }
 
     /**
      * 取消订单
+     *
+     * @param Request $request
+     * @return array
      */
     public function cancel(Request $request)
     {
@@ -104,6 +112,9 @@ class OrdersController extends Controller
 
     /**
      * 确认收货
+     *
+     * @param Request $request
+     * @return array
      */
     public function confirm(Request $request)
     {
@@ -118,6 +129,9 @@ class OrdersController extends Controller
 
     /**
      * 订单详情
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function detail(Request $request)
     {

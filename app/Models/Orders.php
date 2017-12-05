@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -39,6 +40,21 @@ class Orders extends Model
         return $this->hasMany(OrderGoods::class, 'order_id');
     }
 
+    public function province()
+    {
+        return $this->hasOne(Region::class, 'id', 'user_province');
+    }
+
+    public function city()
+    {
+        return $this->hasOne(Region::class, 'id', 'user_city');
+    }
+
+    public function area()
+    {
+        return $this->hasOne(Region::class, 'id', 'user_area');
+    }
+
     public function generate($data)
     {
         $data['user_id'] = session('auth_user')->id;
@@ -48,15 +64,21 @@ class Orders extends Model
             (new \App\Models\OrderGoods)->createOrderGoods($order['id']);
             // 更新用户账户表，并删除购物车记录
             $user = User::find($data['user_id']);
-            $user->money = $user->money - $data['total_price'];
+            $money = $user->money - $data['total_price'];
+            $user->money = $money;
             $user->save();
+
+            //
+            $order->money = $money;
+            $order->save();
+
             // 清空session
             session()->forget('carts_prepare');
 
-            return true;
+            return ['code' => 10000, 'msg' => '下单成功', 'money' => $money];
         }
 
-        return false;
+        return ['code' => 10001];
     }
 
     /**
@@ -213,6 +235,10 @@ class Orders extends Model
 //        $order->postid = $postId;
 //        $order->status = 1;
 
-        return $this->where('id', $orderId)->update(['postid' => $postId, 'status' => 1]);
+        return $this->where('id', $orderId)->update([
+            'postid' => $postId,
+            'status' => 1,
+            'posted_at' => Carbon::now()
+            ]);
     }
 }

@@ -42,7 +42,7 @@
                         <option value="">请选择</option>
                     </select>
                 </li>
-                <li><label style="font-size: 0.7em;color: red">* 填写收件人、手机、地址三个信息需用顿号"、"隔开</label></li>
+                <li><label style="font-size: 0.7em;color: red">* 填写收件人、手机、地址（必须包含省市区）三个信息需用顿号"、"隔开</label></li>
                 <li>
                     <label>收件人信息：</label>
                     <input class="info" type="text" name="info" placeholder="收货人、手机、详细地址">
@@ -65,7 +65,7 @@
                 </li>
                 <li>
                     <label>手机：</label>
-                    <input style="background: white"  class="user_phone" type="number" name="user_phone">
+                    <input style="background: white"  class="user_phone" type="text" name="user_phone">
                 </li>
                 <li>
                     <label>详细地址：</label>
@@ -77,7 +77,12 @@
                 </li>
                 <li>
                     <label>运费：</label>
-                    <input class="freight" readonly type="text" name="freight">
+                    <input class="freight" readonly type="text" name="freight" style="width: 50%">
+                    <select required name="courier_id" id="courier_id">
+                        @foreach($couriers as $id => $courier)
+                            <option value="{{ $id }}">{{ $courier }}</option>
+                        @endforeach
+                    </select>
                 </li>
                 <li>
                     <label>订单金额：</label>
@@ -86,7 +91,6 @@
                 <li class="notice" style="height: 30px;text-align: center;font-size: 14px;color: red;display: none;"></li>
             </ul>
             <input class="total_pv" type="hidden" name="total_pv" value="{{ $totalInfo['pv'] }}" />
-            <input type="hidden" name="token" value="{$token}"/>
         </div>
         <div align="center">
             <label>
@@ -151,20 +155,34 @@
         }
     }
     // 获取运费
-    function getFreight(regionId)
+    function getFreight(courierId, regionId)
     {
+        if (courierId == 0 || regionId == 0)
+            return;
+
         $.get('{{ route('address_freights') }}', {
+            courier_id:courierId,
             region_id:regionId,
             weight: '{{ $totalInfo['weight'] }}'
         }, function(response){
             var $freight = $('.freight');
-            $freight.attr('data-value', response)
-            if (!$('.post-way').is(':checked')) {
-                 $freight.val(response)
-            } else {
-                $freight.val(0)
+
+            if (response.code == 10000) {
+                $freight.attr('data-value', response.freight);
+                if (!$('.post-way').is(':checked')) {
+                    $freight.val(response.freight)
+                } else {
+                    $freight.val(0)
+                }
+                $('.total_price').val(parseFloat($('.total_price').attr('data-value')) + parseFloat($freight.val()))
             }
-            $('.total_price').val(parseFloat($('.total_price').attr('data-value')) + parseFloat($freight.val()))
+            else {
+                $('.total_price').val(parseFloat($('.total_price').attr('data-value')));
+                $freight.attr('data-value', '');
+                $freight.val('');
+                $("select[name='courier_id']").val(0);
+                alert('无法送达')
+            }
         })
     }
 
@@ -172,34 +190,44 @@
     {
         $.get('{{ route('address_customers') }}', {}, function(response) {
             if (!response.length) return false;
-            var html = ''
+            var html = '';
             for(var i in response) {
-                var item = response[i]
-                customers[item.id] = item
-                html += '<option value="'+item.id+'">'+item.name+'</option>'
+                var item = response[i];
+                customers[item.id] = item;
+                html += '<option value="'+item.id+'">'+item.name+'</option>';
             }
             $('#select').append(html)
         })
     }
     $('#province').on('change', function() {
         var pid = $(this).val();
+        var courierId = $("select[name='courier_id']").val();
         regions(pid, 2);
-        getFreight(pid);
+        getFreight(courierId, pid);
     });
+
     $('#city').on('change', function() {
         var pid = $(this).val();
         regions(pid, 3);
     });
+
+    $("select[name='courier_id']").on('change', function () {
+        var courierId = $(this).val();
+        var provinceId = $('#province').val();
+        getFreight(courierId, provinceId);
+    });
+
     // 选择客户
     $('#select').on('change', function () {
-        var id = $(this).val()
-        var customer = customers[id]
-        setOptionsByCustomerInfo(customer.province_id, customer.city_id, customer.area_id)
-        $('.user_name').val(customer.name)
-        $('.user_phone').val(customer.tel)
-        $('.user_address').val(customer.address)
-        getFreight(customer.province_id)
-    })
+        var id = $(this).val();
+        var customer = customers[id];
+        setOptionsByCustomerInfo(customer.province_id, customer.city_id, customer.area_id);
+        $('.user_name').val(customer.name);
+        $('.user_phone').val(customer.phone);
+        $('.user_address').val(customer.address);
+        var courierId = $("select[name='courier_id']").val();
+        getFreight(courierId, customer.province_id)
+    });
 
     // 到店自提
     $('.post-way').on('change', function() {
@@ -264,8 +292,8 @@
             remarks: $('.remarks').val(),
             post_way: $('.post-way').is(':checked') ? 2 : 1,
             save_address: $('.save_address').is(':checked') ? 1 : 0,
-            _token: '{{ csrf_token() }}',
-        }
+            _token: '{{ csrf_token() }}'
+        };
         var notice = $('.notice');
         $.ajax( {
             url: "{{ route('orders_submit') }}",
@@ -278,7 +306,7 @@
                         '<div class="modal-dialog">' +
                         '<div class="out-zx">' +
                         '<i style="color: green" class="fa fa-check-circle fa-5x"></i>' +
-                        '<p>下单成功！</p>' +
+                        '<p>下单成功！余额:'+ json.money + '</p>' +
                         '<div class="change-btn">' +
                         '<button style="margin-left: 0" type="button" class="right-btn btn-ok">确定</button>' +
                         '</div>' +

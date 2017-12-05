@@ -11,6 +11,7 @@ namespace App\Admin\Controllers\Orders;
 
 
 use App\Admin\Extensions\OneKeyDeliver;
+use App\Admin\Extensions\XCsvExporter;
 use App\Http\Controllers\Controller;
 use App\Models\Orders;
 use App\Models\Region;
@@ -70,9 +71,25 @@ class DeliverController extends Controller
             $grid->post_way('配送方式')->display(function ($way) {
                 return $way == 1 ? '快递配送' : '到店自提';
             });
+            $grid->province()->name('省份');
+            $grid->city()->name('城市');
+            $grid->area()->name('地区');
 
+//            $grid->exporter(
+//                (new XCsvExporter())->setFilename('')->setKeyMap([
+//                    'sn' => '业务单号',
+//                    'user_id' => '下单代理商',
+//                    'user_name' => '收件人姓名',
+//                    'province.name' => '收件省',
+//                    'city.name' => '收件市',
+//                    'area.name' => '收件区/县',
+//                    'user_address' => '收件人地址',
+//                    'remarks' => '备注'
+//                ])
+//            );
             $grid->disableCreation();
             $grid->actions(function (Grid\Displayers\Actions $actions) {
+                $actions->disableDelete();
                 $row = $actions->row;
                 $actions->prepend(new OneKeyDeliver($row->id, $row->sn));
             });
@@ -102,6 +119,11 @@ class DeliverController extends Controller
         $form->saving(function (Form $form) {
             $status = $form->status;
             $order = $form->model();
+
+            if ($status == 1 && $order->status != 1) {
+                $order->posted_at = Carbon::now();
+                $order->save();
+            }
 
             if ($status == 2 && $order->status != 2) {
                 $order->canceled_at = null;

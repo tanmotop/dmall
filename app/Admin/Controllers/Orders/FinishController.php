@@ -74,6 +74,9 @@ class FinishController extends Controller
             });
 
             $grid->disableCreation();
+            $grid->actions(function (Grid\Displayers\Actions $actions) {
+                $actions->disableDelete();
+            });
         });
 
         $grid->model()->where('status', 2);
