@@ -35,6 +35,11 @@ class Orders extends Model
         return substr(1000000 + $id, 1);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function orderGoods()
     {
         return $this->hasMany(OrderGoods::class, 'order_id');
@@ -53,6 +58,11 @@ class Orders extends Model
     public function area()
     {
         return $this->hasOne(Region::class, 'id', 'user_area');
+    }
+
+    public function courier()
+    {
+        return $this->hasOne(Courier::class, 'id', 'courier_id');
     }
 
     public function generate($data)

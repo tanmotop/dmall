@@ -10,6 +10,7 @@
 namespace App\Admin\Controllers\Finances;
 
 
+use App\Models\Orders;
 use App\Models\User;
 use App\Models\UserBonus;
 use Encore\Admin\Facades\Admin;
@@ -33,6 +34,21 @@ class BonusController
             $grid->id('代理商编号');
             $grid->realname('姓名');
             $grid->avatar('头像')->image(config('filesystems.disks.admin.url') . '/', 60, 60);
+            $grid->column('上级代理商')->display(function () {
+                if ($this->parent_id > 0) {
+                    $parent = User::where('id', $this->parent_id)->first();
+                }
+
+                return $this->parent_id > 0 ? $parent->realname : '顶级代理商';
+            });
+            $grid->column('实际销售额')->display(function () {
+                $totalPrice = Orders::where([
+                    ['user_id', $this->id],
+                    ['status', 2]
+                ])->sum('total_price');
+
+                return $totalPrice;
+            });
             $grid->column('级别差价')->display(function () {
                 return $this->bonus()->sum('level_money');
             });

@@ -29,6 +29,17 @@
             right: -60%;
             /*float: right;*/
         }
+
+        .right-del {
+            margin-right:1.8em;
+        }
+
+        .right-del button.sc-btn {
+            background: #fff;
+            border: 1px solid #1B8DCC;
+            color: #1B8DCC;
+            width: 5.3em;
+        }
     </style>
 @endsection
 
@@ -49,15 +60,19 @@
         </div>
         
         @if (count($goodsList))
-        <div id="remove1" style="height: 30px;" class="sp-list-bottom">
+        <div id="remove1" class="sp-list-bottom">
             <div style="margin-top: 4px;margin-left: 6px;" class="zh-check">
                 <input value="Y" type="checkbox" class="chk_1 check-all" id="check_all1">
                 <label for="check_all1" class="select-all-btn"></label>
             </div>
-            <h4 style="margin-top: 6px;">选择全部商品</h4>
+            <h4 style="margin-top: 6px;float: left">选择全部商品</h4>
+            <div class="right-del">
+                <button data-id="" type="button" class="sc-btn del-invalid-goods">删除无效</button>
+            </div>
         </div>
         @endif
 
+        @inject('GoodsPresenter', 'App\Presenters\GoodsPresenter')
         @forelse($goodsList as $goods)
             <div class="sp-list-bottom splistbottom cart-item" data-attr-id="{{ $goods->attr_id }}" data-cart-id="{{ $goods->cart_id }}">
                 <div class="up">
@@ -67,6 +82,7 @@
                     </div>
                     <h4>{{ $goods->name }}</h4>
                     <div class="up-right-delet">
+                        {!! $GoodsPresenter->isInvaild($goods) !!}
                         <button data-id="{{ $goods->cart_id }}" type="button" class="sc-btn del-goods">删除</button>
                     </div>
                 </div>
@@ -150,12 +166,34 @@
             $('#cart_dialog').show();
             var cartId = $(this).attr('data-id')
             $('.btn-sure-del').attr('data-del-id', cartId)
-        })
+        });
+
+        $('.del-invalid-goods').on('click', function () {
+            var ids = [];
+            $("input[name='invalid_cart_ids']").each(function (i) {
+                ids.push($(this).val());
+            });
+
+            if (ids.length > 0) {
+                $.post('{{route('carts_del')}}', {
+                    ids: ids,
+                    _token: '{{ csrf_token() }}'
+                }, function(response) {
+                    if (response.code == 10000) {
+                        location.reload();
+                    } else {
+                        alert('删除失败');
+                    }
+                })
+            }
+        });
+
         // 关闭弹窗事件
         $('.btn-close').on('click', function () {
             $('#cart_dialog').hide();
             $('.btn-sure-del').attr('data-del-id', '')
         });
+
         // 确定删除事件
         $('.btn-sure-del').on('click', function() {
             var cartId = $(this).attr('data-del-id')
@@ -171,7 +209,8 @@
                 }
                 $('#cart_dialog').hide();
             })
-        })
+        });
+
         // 全选框选择事件
         $('#check_all1,#check_all2').on('change', function() {
             var checkboxLength = $('.cart-item').find('input[type=checkbox]').length

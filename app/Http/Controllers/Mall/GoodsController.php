@@ -49,7 +49,7 @@ class GoodsController extends Controller
             }
         }
         list($userLevels, $myLevel) = $this->getUserLevelsInfo();
-    	// dd($cats);
+
         return view('mall/goods', [
         	'title'      => '商品',
             'catId'      => $catId,

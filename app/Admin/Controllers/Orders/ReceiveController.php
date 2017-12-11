@@ -11,6 +11,7 @@ namespace App\Admin\Controllers\Orders;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Courier;
 use App\Models\Orders;
 use App\Models\Region;
 use Carbon\Carbon;
@@ -59,7 +60,7 @@ class ReceiveController extends Controller
     {
         $grid = Admin::grid(Orders::class, function (Grid $grid) {
             $grid->sn('订单号');
-            $grid->user_id('下单代理商');
+            $grid->user()->realname('下单代理商');
             $grid->user_name('买家');
             $grid->user_phone('手机');
             $grid->total_price('订单总价');
@@ -70,10 +71,22 @@ class ReceiveController extends Controller
             $grid->post_way('配送方式')->display(function ($way) {
                 return $way ==1 ? '快递配送' : '到店自提';
             });
+            $grid->courier()->name('快递')->display(function ($name) {
+                return $name ?? '无';
+            });
 
             $grid->disableCreation();
             $grid->actions(function (Grid\Displayers\Actions $actions) {
                 $actions->disableDelete();
+            });
+            $grid->filter(function (Grid\Filter $filter) {
+                $couriers = (new Courier())->getIdNameArray();
+                $filter->equal('courier_id', '快递')->select($couriers);
+                $filter->between('created_at', '下单/支付时间')->date();
+                $filter->equal('sn', '订单号');
+                $filter->like('user_name', '买家');
+                $filter->equal('user_phone', '手机');
+                $filter->equal('total_price', '总价');
             });
         });
 

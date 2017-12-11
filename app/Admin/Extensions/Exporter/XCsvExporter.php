@@ -7,12 +7,14 @@
  * Function:
  */
 
-namespace App\Admin\Extensions;
+namespace App\Admin\Extensions\Exporter;
 
 
 use Encore\Admin\Grid\Exporters\AbstractExporter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
 class XCsvExporter extends AbstractExporter
 {
@@ -55,8 +57,8 @@ class XCsvExporter extends AbstractExporter
 
         $headers = [
             'Content-Encoding'    => 'UTF-8',
-//            'Content-Type'        => 'text/csv;charset=UTF-8',
-//            'Content-Disposition' => "attachment; filename=\"$filename\"",
+            'Content-Type'        => 'text/csv;charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
         ];
 
         response()->stream(function () {
@@ -65,10 +67,10 @@ class XCsvExporter extends AbstractExporter
             $titles = [];
             fputcsv($handle, array_values($this->keyMap));
 
-            dd(collect($this->getData())->map(function ($item) use ($handle) {
-//                fputcsv($handle, array_values(array_only(array_dot($item), $this->only)));
-                return array_only(array_dot($item), $this->only);
-            }));
+            collect($this->getData())->map(function ($item) use ($handle) {
+                fputcsv($handle, array_values(array_only(array_dot($item), $this->only)));
+//                return array_only(array_dot($item), $this->only);
+            });
 
             // Close the output stream
             fclose($handle);

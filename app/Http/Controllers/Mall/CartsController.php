@@ -17,6 +17,9 @@ class CartsController extends Controller
 
     /**
      * 购物车
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -33,10 +36,19 @@ class CartsController extends Controller
      */
     public function del(Request $request)
     {
-        if (Cart::where('id', '=', $request->cart_id)->delete()) {
-            return ['code' => 10000];
-        } else {
-            return ['code' => 10001];
+        if ($request->has('ids')) {
+            if (Cart::whereIn('id', $request->ids)->delete()) {
+                return ['code' => 10000];
+            } else {
+                return ['code' => 10001];
+            }
+        }
+        else {
+            if (Cart::where('id', '=', $request->cart_id)->delete()) {
+                return ['code' => 10000];
+            } else {
+                return ['code' => 10001];
+            }
         }
     }
 

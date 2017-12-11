@@ -10,9 +10,10 @@
 namespace App\Admin\Controllers\Orders;
 
 
+use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Admin\Extensions\OneKeyDeliver;
-use App\Admin\Extensions\XCsvExporter;
 use App\Http\Controllers\Controller;
+use App\Models\Courier;
 use App\Models\Orders;
 use App\Models\Region;
 use Carbon\Carbon;
@@ -61,9 +62,7 @@ class DeliverController extends Controller
     {
         $grid = Admin::grid(Orders::class, function (Grid $grid) {
             $grid->sn('订单号');
-            $grid->user_id('下单代理商')->display(function ($uid) {
-                return substr(1000000 + (int)$uid, 1);
-            });
+            $grid->user()->realname('下单代理商');
             $grid->user_name('买家');
             $grid->user_phone('手机');
             $grid->total_price('订单总价');
@@ -71,12 +70,18 @@ class DeliverController extends Controller
             $grid->post_way('配送方式')->display(function ($way) {
                 return $way == 1 ? '快递配送' : '到店自提';
             });
+            $grid->courier()->name('快递')->display(function ($name) {
+                return $name ?? '无';
+            });
+
             $grid->province()->name('省份');
             $grid->city()->name('城市');
             $grid->area()->name('地区');
 
 //            $grid->exporter(
-//                (new XCsvExporter())->setFilename('')->setKeyMap([
+//                (new ExcelExporter())
+//                    ->setFilename('待发货订单')
+//                    ->setKeyMap([
 //                    'sn' => '业务单号',
 //                    'user_id' => '下单代理商',
 //                    'user_name' => '收件人姓名',
@@ -93,9 +98,19 @@ class DeliverController extends Controller
                 $row = $actions->row;
                 $actions->prepend(new OneKeyDeliver($row->id, $row->sn));
             });
+            $grid->filter(function (Grid\Filter $filter) {
+                $couriers = (new Courier)->getIdNameArray();
+                $filter->equal('courier_id', '快递')->select($couriers);
+                $filter->between('created_at', '下单/支付时间')->date();
+                $filter->equal('sn', '订单号');
+                $filter->like('user_name', '买家');
+                $filter->equal('user_phone', '手机');
+                $filter->equal('total_price', '总价');
+            });
+            $grid->exportUrl();
         });
 
-        $grid->model()->where('status', 0);
+        $grid->model()->where('status', 0)->orderBy('created_at', 'desc');
 
         return $grid;
     }

@@ -68,6 +68,7 @@ class Cart extends Model
             'goods.name',
             'goods.cat_id',
             'goods.sn',
+            'goods.status',
             'goods_attrs.id as attr_id',
             'goods_attrs.pv',
             'goods_attrs.price',

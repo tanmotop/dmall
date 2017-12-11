@@ -78,7 +78,7 @@
                 <li>
                     <label>运费：</label>
                     <input class="freight" readonly type="text" name="freight" style="width: 50%">
-                    <select required name="courier_id" id="courier_id">
+                    <select class="courier_id" required name="courier_id" id="courier_id">
                         @foreach($couriers as $id => $courier)
                             <option value="{{ $id }}">{{ $courier }}</option>
                         @endforeach
@@ -287,6 +287,7 @@
             user_phone: $('.user_phone').val(),
             user_address: $('.user_address').val(),
             freight: $('.freight').val(),
+            courier_id: $('.courier_id').val(),
             total_price: $('.total_price').val(),
             total_pv: '{{ $totalInfo['pv'] }}',
             remarks: $('.remarks').val(),

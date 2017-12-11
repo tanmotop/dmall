@@ -88,7 +88,7 @@
             -ms-text-size-adjust: none;
             -o-text-size-adjust: none;
             text-size-adjust: none;
-            width: {{count($cats)*100}}px;
+            width: {{(count($cats)+1)*100}}px;
         }
     </style>
 @endsection
@@ -184,7 +184,12 @@
     <script type="text/javascript" src="/plugins/iscroll/iscroll.js"></script>
     <script type="text/javascript">
         $(function() {
-            var myScroll = new IScroll('#wrapper', { eventPassthrough: true, scrollX: true, scrollY: false, preventDefault: false });
+            var myScroll = new IScroll('#wrapper', {
+                eventPassthrough: true,
+                scrollX: true,
+                scrollY: false,
+                preventDefault: false
+            });
             myScroll.scrollToElement('#cat_{{$catPlace}}', true, true);
         })
     </script>
