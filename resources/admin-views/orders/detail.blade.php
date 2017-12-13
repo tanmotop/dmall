@@ -23,7 +23,7 @@
                 </tr>
                 <tr>
                     <th width="120px">客户备注</th>
-                    <td>{{ $order->remark }}</td>
+                    <td>{{ $order->remarks }}</td>
                     <th width="120px">下单时间</th>
                     <td>{{ $order->created_at }}</td>
                 </tr>

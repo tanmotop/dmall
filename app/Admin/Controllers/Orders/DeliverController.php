@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Courier;
 use App\Models\Orders;
 use App\Models\Region;
+use App\Models\User;
 use Carbon\Carbon;
 use Encore\Admin\Controllers\ModelForm;
 use Encore\Admin\Facades\Admin;
@@ -74,24 +75,7 @@ class DeliverController extends Controller
                 return $name ?? '无';
             });
 
-            $grid->province()->name('省份');
-            $grid->city()->name('城市');
-            $grid->area()->name('地区');
-
-//            $grid->exporter(
-//                (new ExcelExporter())
-//                    ->setFilename('待发货订单')
-//                    ->setKeyMap([
-//                    'sn' => '业务单号',
-//                    'user_id' => '下单代理商',
-//                    'user_name' => '收件人姓名',
-//                    'province.name' => '收件省',
-//                    'city.name' => '收件市',
-//                    'area.name' => '收件区/县',
-//                    'user_address' => '收件人地址',
-//                    'remarks' => '备注'
-//                ])
-//            );
+            $grid->exporter($this->exporter($grid));
             $grid->disableCreation();
             $grid->actions(function (Grid\Displayers\Actions $actions) {
                 $actions->disableDelete();
@@ -107,7 +91,6 @@ class DeliverController extends Controller
                 $filter->equal('user_phone', '手机');
                 $filter->equal('total_price', '总价');
             });
-            $grid->exportUrl();
         });
 
         $grid->model()->where('status', 0)->orderBy('created_at', 'desc');
@@ -154,5 +137,46 @@ class DeliverController extends Controller
         });
 
         return $form;
+    }
+
+    private function exporter(Grid $grid)
+    {
+        $header = ['业务单号', '下单代理商', '收件人姓名', '收件人手机', '收件省', '收件市', '收件区/县', '收件人地址', '品名', '数量', '备注'];
+
+        ///
+        return new ExcelExporter($grid, function (ExcelExporter $excelExporter) use ($header) {
+            $excelExporter->setFilename('待发货订单');
+            $excelExporter->setHeader($header);
+
+            ///
+            $excelExporter->model()->where('status', 0)->orderBy('created_at', 'desc');
+
+            ///
+            $regions = (new Region())->getAllIdNameArray();
+            $excelExporter->rowHandle(function (array $item) use ($regions) {
+                $count = 0;
+                $goods = [];
+                $user = User::find($item['user_id']);
+                $order = Orders::find($item['id']);
+                $order->orderGoods->map(function ($orderGoods) use (&$count, &$goods) {
+                    $count += $orderGoods->count;
+                    $goods[] = $orderGoods->goodsAttr->name . '*' . $orderGoods->count;
+                });
+
+                $row[] = $item['sn'];
+                $row[] = $user->realname . "({$user->userLevel->name})";
+                $row[] = $item['user_name'];
+                $row[] = $item['user_phone'];
+                $row[] = $regions[$item['user_province']];
+                $row[] = $regions[$item['user_city']];
+                $row[] = $regions[$item['user_area']];
+                $row[] = $item['user_address'];
+                $row[] = implode('、', $goods);
+                $row[] = $count;
+                $row[] = $item['remarks'];
+
+                return $row;
+            });
+        });
     }
 }

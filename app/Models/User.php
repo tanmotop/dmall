@@ -59,6 +59,11 @@ class User extends Model
         return $this->hasMany(UserBonus::class, 'user_id');
     }
 
+    public function userLevel()
+    {
+        return $this->hasOne(UserLevel::class, 'level');
+    }
+
     /**
      * 前置0
      */
