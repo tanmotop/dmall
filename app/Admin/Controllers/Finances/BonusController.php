@@ -10,6 +10,7 @@
 namespace App\Admin\Controllers\Finances;
 
 
+use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Models\Orders;
 use App\Models\User;
 use App\Models\UserBonus;
@@ -22,8 +23,7 @@ class BonusController
     public function index()
     {
         return Admin::content(function (Content $content) {
-            $content->header('奖金');
-            $content->description('查询');
+            $content->header('奖金查询');
             $content->body($this->grid());
         });
     }
@@ -34,21 +34,21 @@ class BonusController
             $grid->id('代理商编号');
             $grid->realname('姓名');
             $grid->avatar('头像')->image(config('filesystems.disks.admin.url') . '/', 60, 60);
-            $grid->column('上级代理商')->display(function () {
-                if ($this->parent_id > 0) {
-                    $parent = User::where('id', $this->parent_id)->first();
-                }
-
-                return $this->parent_id > 0 ? $parent->realname : '顶级代理商';
-            });
-            $grid->column('实际销售额')->display(function () {
-                $totalPrice = Orders::where([
-                    ['user_id', $this->id],
-                    ['status', 2]
-                ])->sum('total_price');
-
-                return $totalPrice;
-            });
+//            $grid->column('上级代理商')->display(function () {
+//                if ($this->parent_id > 0) {
+//                    $parent = User::where('id', $this->parent_id)->first();
+//                }
+//
+//                return $this->parent_id > 0 ? $parent->realname : '顶级代理商';
+//            });
+//            $grid->column('实际销售额')->display(function () {
+//                $totalPrice = Orders::where([
+//                    ['user_id', $this->id],
+//                    ['status', 2]
+//                ])->sum('total_price');
+//
+//                return $totalPrice;
+//            });
             $grid->column('级别差价')->display(function () {
                 return $this->bonus()->sum('level_money');
             });
@@ -64,6 +64,11 @@ class BonusController
             $grid->column('团队业绩合计(PV值)')->display(function () {
                 return $this->bonus()->sum('teams_pv');
             });
+            $grid->column('团队业绩抽成')->display(function () {
+                return 0;
+            });
+
+            $grid->exporter($this->exporter($grid));
         });
 
         $grid->disableRowSelector();
@@ -71,5 +76,31 @@ class BonusController
         $grid->disableActions();
 
         return $grid;
+    }
+
+    private function exporter(Grid $grid)
+    {
+        $header = ['代理商编号', '真实姓名', '团队业绩', '个人业绩', '级别差收入', '邀请代理商收入', '奖金收入', '个人零售利润', '团队业绩抽成'];
+
+        return new ExcelExporter($grid, function (ExcelExporter $excelExporter) use ($header) {
+            $excelExporter->setFilename('奖金查询');
+            $excelExporter->setHeader($header);
+
+            $excelExporter->rowHandle(function (array $item) {
+//                dd($item);
+                $user = User::find($item['id']);
+                $row[] = $item['id'];
+                $row[] = $item['realname'];
+                $row[] = $user->bonus->sum('teams_pv');
+                $row[] = $user->bonus->sum('personal_pv');
+                $row[] = $user->bonus->sum('level_money');
+                $row[] = $user->bonus->sum('invite_money');
+                $row[] = 0;
+                $row[] = $user->bonus->sum('retail_money');
+                $row[] = 0;
+
+                return $row;
+            });
+        });
     }
 }

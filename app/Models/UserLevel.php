@@ -32,15 +32,15 @@ class UserLevel extends Model
         return $arr;
     }
 
-    public function getIdNameArray()
-    {
-        $levels = [];
-    	foreach ($this->all() as $item) {
-            $levels[$item->id] = $item->name;
-        }
-
-        return $levels;
-    }
+//    public function getIdNameArray()
+//    {
+//        $levels = [];
+//    	foreach ($this->all() as $item) {
+//            $levels[$item->id] = $item->name;
+//        }
+//
+//        return $levels;
+//    }
 
     public function getLevelNameArray()
     {

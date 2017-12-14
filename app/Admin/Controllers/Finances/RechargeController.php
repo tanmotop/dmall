@@ -9,6 +9,7 @@
 namespace App\Admin\Controllers\Finances;
 
 
+use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Http\Controllers\Controller;
 use App\Models\RechargeLog;
 use App\Models\User;
@@ -58,6 +59,7 @@ class RechargeController extends Controller
             $grid->remark('备注');
             $grid->disableActions();
             $grid->disableRowSelector();
+            $grid->exporter($this->exporter($grid));
         });
 
         ///
@@ -126,6 +128,29 @@ class RechargeController extends Controller
 
                 $user->money = $form->money_after;
                 $user->save();
+            });
+        });
+    }
+
+    private function exporter(Grid $grid)
+    {
+        $header = ['充值单号', '姓名', '充值金额', '充值前金额', '充值后余额', '充值时间', '充值状态', '充值说明', '备注'];
+        return new ExcelExporter($grid, function (ExcelExporter $excelExporter) use ($header) {
+            $excelExporter->setFilename('充值记录');
+            $excelExporter->setHeader($header);
+
+            $excelExporter->rowHandle(function (array $item) {
+                $row[] = $item['sn'];
+                $row[] = $item['uid'] . '-' . $item['realname'];
+                $row[] = $item['money'];
+                $row[] = $item['money_pre'];
+                $row[] = $item['money_after'];
+                $row[] = $item['created_at'];
+                $row[] = $item['status'] == 1 ? '支付成功' : '支付失败';
+                $row[] = $item['describe'];
+                $row[] = $item['remark'];
+
+                return $row;
             });
         });
     }

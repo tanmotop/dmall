@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers\Users;
 
+use App\Admin\Extensions\Exporter\ExcelExporter;
 use Carbon\Carbon;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -93,8 +94,10 @@ class AgentController extends Controller
             $grid->status('激活状态')->display(function($status) {
                 return $status == 1 ? '已激活' : '未激活';
             });
+            $grid->exporter($this->exporter($grid));
         });
 
+        $grid->exporter($this->exporter($grid));
         $grid->perPages([10, 20]);
         // $grid->disableExport();
         $grid->disableCreation();
@@ -182,8 +185,31 @@ class AgentController extends Controller
         });
     }
 
-    // public function update()
-    // {
-    //     dd($_POST);
-    // }
+    private function exporter(Grid $grid)
+    {
+        $header = ['代理商编号', '激活码', '用户名', '真实姓名', '身份证', '邮箱', '微信号', '手机号', '注册时间', '激活时间', '激活状态', '账户余额', '代理商等级'];
+        return new ExcelExporter($grid, function (ExcelExporter $excelExporter) use ($header) {
+            $excelExporter->setFilename('代理商列表');
+            $excelExporter->setHeader($header);
+
+            $userLevel = (new UserLevel())->getLevelNameArray();
+            $excelExporter->rowHandle(function (array $item) use ($userLevel) {
+                $row[] = $item['id'];
+                $row[] = $item['invitation_code'];
+                $row[] = $item['username'];
+                $row[] = $item['realname'];
+                $row[] = $item['id_card_num'];
+                $row[] = $item['email'];
+                $row[] = $item['wechat'];
+                $row[] = $item['phone'];
+                $row[] = $item['created_at'];
+                $row[] = $item['actived_at'];
+                $row[] = $item['status'] == 1 ? '已激活' : '未激活';
+                $row[] = $item['money'];
+                $row[] = $userLevel[$item['level']];
+
+                return $row;
+            });
+        });
+    }
 }

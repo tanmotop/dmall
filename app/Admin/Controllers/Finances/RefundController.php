@@ -9,6 +9,7 @@
 namespace App\Admin\Controllers\Finances;
 
 
+use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Http\Controllers\Controller;
 use App\Models\RefundLog;
 use App\Models\User;
@@ -55,6 +56,7 @@ class RefundController extends Controller
 
             $grid->disableActions();
             $grid->disableRowSelector();
+            $grid->exporter($this->exporter($grid));
         });
 
         $grid->filter(function (Grid\Filter $filter) {
@@ -111,6 +113,27 @@ class RefundController extends Controller
 
                 $user->money = $form->money_after;
                 $user->save();
+            });
+        });
+    }
+
+    private function exporter(Grid $grid)
+    {
+        $header = ['退款单号', '姓名', '退款金额', '退款前余额', '退款后余额', '退款时间', '备注'];
+        return new ExcelExporter($grid, function (ExcelExporter $excelExporter) use ($header) {
+            $excelExporter->setFilename('退款记录');
+            $excelExporter->setHeader($header);
+
+            $excelExporter->rowHandle(function (array $item) {
+                $row[] = $item['sn'];
+                $row[] = $item['uid'] . '-' . $item['realname'];
+                $row[] = $item['money'];
+                $row[] = $item['money_pre'];
+                $row[] = $item['money_after'];
+                $row[] = $item['created_at'];
+                $row[] = $item['remark'];
+
+                return $row;
             });
         });
     }

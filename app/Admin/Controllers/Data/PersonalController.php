@@ -10,6 +10,8 @@
 namespace App\Admin\Controllers\Data;
 
 
+use App\Admin\Extensions\Exporter\ExcelExporter;
+use App\Models\Orders;
 use App\Models\User;
 use App\Models\UserLevel;
 use Encore\Admin\Facades\Admin;
@@ -46,6 +48,8 @@ class PersonalController
             $grid->column('总PV值')->display(function () {
                 return array_sum(array_column($this->orders, 'total_pv'));
             });
+
+            $grid->exporter($this->exporter($grid));
         });
 
         $grid->disableRowSelector();
@@ -53,5 +57,30 @@ class PersonalController
         $grid->disableCreation();
 
         return $grid;
+    }
+
+    private function exporter(Grid $grid)
+    {
+        $header = ['代理商编号', '姓名', '手机', '代理商等级', '订单量', '消费金额', '总PV值'];
+
+        return new ExcelExporter($grid, function (ExcelExporter $excelExporter) use ($header) {
+            $excelExporter->setFilename('个人消费排行');
+            $excelExporter->setHeader($header);
+
+            $userLevel = (new UserLevel())->getLevelNameArray();
+            $excelExporter->rowHandle(function (array $item) use ($userLevel) {
+                $orders = Orders::where('user_id', $item['id'])->get()->toArray();
+
+                $row[] = $item['id'];
+                $row[] = $item['realname'];
+                $row[] = $item['phone'];
+                $row[] = $userLevel[$item['level']];
+                $row[] = count($orders);
+                $row[] = array_sum(array_column($orders, 'total_price'));
+                $row[] = array_sum(array_column($orders, 'total_pv'));
+
+                return $row;
+            });
+        });
     }
 }
