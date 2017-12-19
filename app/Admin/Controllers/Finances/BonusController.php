@@ -34,21 +34,21 @@ class BonusController
             $grid->id('代理商编号');
             $grid->realname('姓名');
             $grid->avatar('头像')->image(config('filesystems.disks.admin.url') . '/', 60, 60);
-//            $grid->column('上级代理商')->display(function () {
-//                if ($this->parent_id > 0) {
-//                    $parent = User::where('id', $this->parent_id)->first();
-//                }
-//
-//                return $this->parent_id > 0 ? $parent->realname : '顶级代理商';
-//            });
-//            $grid->column('实际销售额')->display(function () {
-//                $totalPrice = Orders::where([
-//                    ['user_id', $this->id],
-//                    ['status', 2]
-//                ])->sum('total_price');
-//
-//                return $totalPrice;
-//            });
+            $grid->column('上级代理商')->display(function () {
+                if ($this->parent_id > 0) {
+                    $parent = User::where('id', $this->parent_id)->first();
+                }
+
+                return $this->parent_id > 0 ? $parent->realname : '不二大山';
+            });
+            $grid->column('实际销售额')->display(function () {
+                $totalPrice = Orders::where([
+                    ['user_id', $this->id],
+                    ['status', 2]
+                ])->sum('total_price');
+
+                return $totalPrice;
+            });
             $grid->column('级别差价')->display(function () {
                 return $this->bonus()->sum('level_money');
             });
@@ -69,6 +69,22 @@ class BonusController
             });
 
             $grid->exporter($this->exporter($grid));
+
+            $grid->filter(function (Grid\Filter $filter) {
+                $filter->disableIdFilter();
+                $filter->equal('id', '代理商编号');
+                $filter->like('realname', '真实姓名');
+                $filter->where(function ($query) {
+                    $query->whereHas('bonus', function ($query) {
+                        $query->where('created_at', '>=', $this->input);
+                    });
+                }, '开始时间')->date();
+                $filter->where(function ($query) {
+                    $query->whereHas('bonus', function ($query) {
+                        $query->where('created_at', '<=', $this->input);
+                    });
+                }, '结束时间')->date();
+            });
         });
 
         $grid->disableRowSelector();
@@ -87,7 +103,6 @@ class BonusController
             $excelExporter->setHeader($header);
 
             $excelExporter->rowHandle(function (array $item) {
-//                dd($item);
                 $user = User::find($item['id']);
                 $row[] = $item['id'];
                 $row[] = $item['realname'];

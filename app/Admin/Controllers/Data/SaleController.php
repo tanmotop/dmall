@@ -16,6 +16,7 @@ use App\Models\OrderGoods;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
+use Illuminate\Database\Eloquent\Builder;
 
 class SaleController
 {
@@ -32,7 +33,7 @@ class SaleController
         $grid = Admin::grid(GoodsAttr::class, function (Grid $grid) {
             $totalCount = OrderGoods::all()->sum('count');
             $totalPrice = OrderGoods::all()->sum('price');
-            $grid->goods()->name('商品名称');
+            $grid->name('商品名称');
             $grid->goods()->logo('商品LOGO')->image(env('APP_URL') . '/uploads/', 60, 60);
             $grid->order_goods('交易量')->display(function ($orderGoods) {
                 return array_sum(array_column($orderGoods, 'count'));
@@ -53,6 +54,21 @@ class SaleController
             $grid->disableActions();
             $grid->disableRowSelector();
             $grid->exporter($this->exporter($grid));
+
+            $grid->filter(function (Grid\Filter $filter) {
+                $filter->disableIdFilter();
+                $filter->like('name', '商品名称');
+                $filter->where(function (Builder $builder) {
+                    $builder->whereHas('order_goods', function (Builder $builder) {
+                        $builder->where('created_at', '>=', $this->input);
+                    });
+                }, '交易开始时间')->date();
+                $filter->where(function (Builder $builder) {
+                    $builder->whereHas('order_goods', function (Builder $builder) {
+                        $builder->where('created_at', '<=', $this->input);
+                    });
+                }, '交易结束时间')->date();
+            });
         });
 
         return $grid;

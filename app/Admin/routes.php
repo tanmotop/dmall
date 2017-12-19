@@ -17,6 +17,7 @@ Route::group([
     $router->resource('/base/regions', Base\RegionController::class);
     $router->resource('/base/freights', Base\FreightController::class);
     $router->resource('/base/protocol', Base\ProtocolController::class);
+    $router->resource('/base/stock', Base\StockController::class);
 
     // 商品
     $router->get('/goods/sale/down', 'Goods\SaleController@down');

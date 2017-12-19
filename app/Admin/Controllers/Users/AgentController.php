@@ -83,6 +83,13 @@ class AgentController extends Controller
             $grid->username('用户名');
             $grid->realname('真实姓名');
             $grid->invitation_code('激活码');
+            $grid->column('上级代理商')->display(function () {
+                if ($this->parent_id > 0) {
+                    $parent = User::where('id', $this->parent_id)->first();
+                }
+
+                return $this->parent_id > 0 ? $parent->realname : '不二大山';
+            });
             $grid->level('等级')->display(function($level) use ($levels) {
                 return $levels[$level];
             });

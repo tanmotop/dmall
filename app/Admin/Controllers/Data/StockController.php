@@ -10,6 +10,7 @@
 namespace App\Admin\Controllers\Data;
 
 
+use App\Models\Config;
 use App\Models\Goods;
 use App\Models\GoodsAttr;
 use Encore\Admin\Controllers\ModelForm;
@@ -41,7 +42,8 @@ class StockController
 
     protected function grid()
     {
-        $grid = Admin::grid(GoodsAttr::class, function (Grid $grid) {
+        $warning = Config::find('stock_warning')->value;
+        $grid = Admin::grid(GoodsAttr::class, function (Grid $grid) use ($warning) {
             $grid->id('序号');
             $grid->goods()->name('商品名称');
             $grid->goods()->logo('商品LOGO')->image(env('APP_URL') . '/uploads/', 60, 60);
@@ -50,8 +52,8 @@ class StockController
             $grid->price('零售价')->display(function ($price) {
                 return '￥' . $price;
             });
-            $grid->column('stock_status', '库存状态')->display(function () {
-                if ($this->stock <= 200) {
+            $grid->column('stock_status', '库存状态')->display(function () use ($warning) {
+                if ($this->stock <= $warning) {
                     $msg = '<span class="label label-warning">库存不足</span>';
                 }
                 else {

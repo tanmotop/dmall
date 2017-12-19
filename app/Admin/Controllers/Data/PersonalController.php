@@ -17,6 +17,7 @@ use App\Models\UserLevel;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
+use Illuminate\Database\Eloquent\Builder;
 
 class PersonalController
 {
@@ -50,6 +51,39 @@ class PersonalController
             });
 
             $grid->exporter($this->exporter($grid));
+
+            $grid->filter(function (Grid\Filter $filter) {
+                $userLevel = (new UserLevel())->getLevelNameArray();
+                $filter->disableIdFilter();
+                $filter->equal('realname', '姓名');
+                $filter->equal('phone', '手机');
+
+                $filter->where(function (Builder $query) {
+                    $query->whereHas('orders', function (Builder $query) {
+                        $query->where('created_at', '>=', $this->input);
+                    });
+                }, '开始时间')->date();
+
+                $filter->where(function (Builder $query) {
+                    $query->whereHas('orders', function (Builder $query) {
+                        $query->where('created_at', '<=', $this->input);
+                    });
+                }, '结束时间')->date();
+
+
+                $filter->equal('level', '代理商等级')->select($userLevel);
+                $filter->where(function (Builder $query) {
+                    if ($this->input != 0) {
+                        $query->where('parent_id', '<>', 0);
+                    }
+                    else {
+                        $query->where('parent_id', 0);
+                    }
+                }, '代理商类型')->select([
+                    0 => '顶级代理商',
+                    1 => '非顶级代理商'
+                ]);
+            });
         });
 
         $grid->disableRowSelector();

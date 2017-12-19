@@ -48,6 +48,14 @@ class RechargeController extends Controller
             $grid->sn('充值单号');
             $grid->uid('代理商编号');
             $grid->realname('姓名');
+            $grid->column('上级代理商')->display(function () {
+                $user = User::find($this->uid);
+                if ($user->parent_id > 0) {
+                    $parent = User::where('id', $user->parent_id)->first();
+                }
+
+                return $user->parent_id > 0 ? $parent->realname : '不二大山';
+            });
             $grid->money('充值金额');
             $grid->money_pre('充值前金额');
             $grid->money_after('充值后金额');

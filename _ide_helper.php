@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.19 on 2017-12-11.
+ * Generated for Laravel 5.5.26 on 2017-12-19.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -375,6 +375,18 @@ namespace Illuminate\Support\Facades {
         public static function getProvider($provider)
         {
             return \Illuminate\Foundation\Application::getProvider($provider);
+        }
+        
+        /**
+         * Get the registered service provider instances if any exist.
+         *
+         * @param \Illuminate\Support\ServiceProvider|string $provider
+         * @return array 
+         * @static 
+         */ 
+        public static function getProviders($provider)
+        {
+            return \Illuminate\Foundation\Application::getProviders($provider);
         }
         
         /**
@@ -7410,8 +7422,8 @@ namespace Illuminate\Support\Facades {
          * 
          * Order of precedence: PATH (routing placeholders or custom attributes), GET, BODY
          *
-         * @param string $key the key
-         * @param mixed $default the default value if the parameter key does not exist
+         * @param string $key The key
+         * @param mixed $default The default value if the parameter key does not exist
          * @return mixed 
          * @static 
          */ 
@@ -8044,6 +8056,24 @@ namespace Illuminate\Support\Facades {
         {
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::isMethodCacheable();
+        }
+        
+        /**
+         * Returns the protocol version.
+         * 
+         * If the application is behind a proxy, the protocol version used in the
+         * requests between the client and the proxy and between the proxy and the
+         * server might be different. This returns the former (from the "Via" header)
+         * if the proxy is trusted (see "setTrustedProxies()"), otherwise it returns
+         * the latter (from the "SERVER_PROTOCOL" server parameter).
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getProtocolVersion()
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request            
+            return \Illuminate\Http\Request::getProtocolVersion();
         }
         
         /**
@@ -9024,7 +9054,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Route an api resource to a controller.
+         * Register an array of API resource controllers.
+         *
+         * @param array $resources
+         * @return void 
+         * @static 
+         */ 
+        public static function apiResources($resources)
+        {
+            \Illuminate\Routing\Router::apiResources($resources);
+        }
+        
+        /**
+         * Route an API resource to a controller.
          *
          * @param string $name
          * @param string $controller
@@ -10605,6 +10647,35 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Create a streamed response for a given file.
+         *
+         * @param string $path
+         * @param string|null $name
+         * @param array|null $headers
+         * @param string|null $disposition
+         * @return \Symfony\Component\HttpFoundation\StreamedResponse 
+         * @static 
+         */ 
+        public static function response($path, $name = null, $headers = array(), $disposition = 'inline')
+        {
+            return \Illuminate\Filesystem\FilesystemAdapter::response($path, $name, $headers, $disposition);
+        }
+        
+        /**
+         * Create a streamed download response for a given file.
+         *
+         * @param string $path
+         * @param string|null $name
+         * @param array|null $headers
+         * @return \Symfony\Component\HttpFoundation\StreamedResponse 
+         * @static 
+         */ 
+        public static function download($path, $name = null, $headers = array())
+        {
+            return \Illuminate\Filesystem\FilesystemAdapter::download($path, $name, $headers);
+        }
+        
+        /**
          * Write the contents of a file.
          *
          * @param string $path
@@ -10821,7 +10892,7 @@ namespace Illuminate\Support\Facades {
          * @param \League\Flysystem\Rackspace\RackspaceAdapter $adapter
          * @param string $path
          * @param \DateTimeInterface $expiration
-         * @param $options
+         * @param array $options
          * @return string 
          * @static 
          */ 
@@ -10902,6 +10973,17 @@ namespace Illuminate\Support\Facades {
         public static function deleteDirectory($directory)
         {
             return \Illuminate\Filesystem\FilesystemAdapter::deleteDirectory($directory);
+        }
+        
+        /**
+         * Flush the Flysystem cache.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function flushCache()
+        {
+            \Illuminate\Filesystem\FilesystemAdapter::flushCache();
         }
         
         /**
@@ -12723,6 +12805,145 @@ namespace Barryvdh\Debugbar {
  
 }
 
+namespace Maatwebsite\Excel\Facades { 
+
+    class Excel {
+        
+        /**
+         * Create a new file
+         *
+         * @param $filename
+         * @param callable|null $callback
+         * @return \Maatwebsite\Excel\LaravelExcelWriter 
+         * @static 
+         */ 
+        public static function create($filename, $callback = null)
+        {
+            return \Maatwebsite\Excel\Excel::create($filename, $callback);
+        }
+        
+        /**
+         * Load an existing file
+         *
+         * @param string $file The file we want to load
+         * @param callback|null $callback
+         * @param string|null $encoding
+         * @param bool $noBasePath
+         * @param callback|null $callbackConfigReader
+         * @return \Maatwebsite\Excel\LaravelExcelReader 
+         * @static 
+         */ 
+        public static function load($file, $callback = null, $encoding = null, $noBasePath = false, $callbackConfigReader = null)
+        {
+            return \Maatwebsite\Excel\Excel::load($file, $callback, $encoding, $noBasePath, $callbackConfigReader);
+        }
+        
+        /**
+         * Set select sheets
+         *
+         * @param $sheets
+         * @return \Maatwebsite\Excel\LaravelExcelReader 
+         * @static 
+         */ 
+        public static function selectSheets($sheets = array())
+        {
+            return \Maatwebsite\Excel\Excel::selectSheets($sheets);
+        }
+        
+        /**
+         * Select sheets by index
+         *
+         * @param array $sheets
+         * @return $this 
+         * @static 
+         */ 
+        public static function selectSheetsByIndex($sheets = array())
+        {
+            return \Maatwebsite\Excel\Excel::selectSheetsByIndex($sheets);
+        }
+        
+        /**
+         * Batch import
+         *
+         * @param $files
+         * @param callback $callback
+         * @return \PHPExcel 
+         * @static 
+         */ 
+        public static function batch($files, $callback)
+        {
+            return \Maatwebsite\Excel\Excel::batch($files, $callback);
+        }
+        
+        /**
+         * Create a new file and share a view
+         *
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @return \Maatwebsite\Excel\LaravelExcelWriter 
+         * @static 
+         */ 
+        public static function shareView($view, $data = array(), $mergeData = array())
+        {
+            return \Maatwebsite\Excel\Excel::shareView($view, $data, $mergeData);
+        }
+        
+        /**
+         * Create a new file and load a view
+         *
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @return \Maatwebsite\Excel\LaravelExcelWriter 
+         * @static 
+         */ 
+        public static function loadView($view, $data = array(), $mergeData = array())
+        {
+            return \Maatwebsite\Excel\Excel::loadView($view, $data, $mergeData);
+        }
+        
+        /**
+         * Set filters
+         *
+         * @param array $filters
+         * @return \Excel 
+         * @static 
+         */ 
+        public static function registerFilters($filters = array())
+        {
+            return \Maatwebsite\Excel\Excel::registerFilters($filters);
+        }
+        
+        /**
+         * Enable certain filters
+         *
+         * @param string|array $filter
+         * @param bool|false|string $class
+         * @return \Excel 
+         * @static 
+         */ 
+        public static function filter($filter, $class = false)
+        {
+            return \Maatwebsite\Excel\Excel::filter($filter, $class);
+        }
+        
+        /**
+         * Get register, enabled (or both) filters
+         *
+         * @param string|boolean $key [description]
+         * @return array 
+         * @static 
+         */ 
+        public static function getFilters($key = false)
+        {
+            return \Maatwebsite\Excel\Excel::getFilters($key);
+        }
+         
+    }
+ 
+}
+
 namespace Encore\Admin\Facades { 
 
     class Admin {
@@ -12861,7 +13082,8 @@ namespace Encore\Admin\Facades {
         /**
          * Set navbar.
          *
-         * @param \Closure $builder
+         * @param \Closure|null $builder
+         * @return \Encore\Admin\Navbar 
          * @static 
          */ 
         public static function navbar($builder = null)
@@ -12892,152 +13114,16 @@ namespace Encore\Admin\Facades {
         }
         
         /**
-         * 
+         * Extend a extension.
          *
+         * @param string $name
+         * @param string $class
+         * @return void 
          * @static 
          */ 
         public static function extend($name, $class)
         {
-            return \Encore\Admin\Admin::extend($name, $class);
-        }
-         
-    }
- 
-}
-
-namespace Maatwebsite\Excel\Facades { 
-
-    class Excel {
-        
-        /**
-         * Create a new file
-         *
-         * @param $filename
-         * @param callable|null $callback
-         * @return \Maatwebsite\Excel\LaravelExcelWriter 
-         * @static 
-         */ 
-        public static function create($filename, $callback = null)
-        {
-            return \Maatwebsite\Excel\Excel::create($filename, $callback);
-        }
-        
-        /**
-         * Load an existing file
-         *
-         * @param string $file The file we want to load
-         * @param callback|null $callback
-         * @param string|null $encoding
-         * @param bool $noBasePath
-         * @param callback|null $callbackConfigReader
-         * @return \Maatwebsite\Excel\LaravelExcelReader 
-         * @static 
-         */ 
-        public static function load($file, $callback = null, $encoding = null, $noBasePath = false, $callbackConfigReader = null)
-        {
-            return \Maatwebsite\Excel\Excel::load($file, $callback, $encoding, $noBasePath, $callbackConfigReader);
-        }
-        
-        /**
-         * Set select sheets
-         *
-         * @param $sheets
-         * @return \Maatwebsite\Excel\LaravelExcelReader 
-         * @static 
-         */ 
-        public static function selectSheets($sheets = array())
-        {
-            return \Maatwebsite\Excel\Excel::selectSheets($sheets);
-        }
-        
-        /**
-         * Select sheets by index
-         *
-         * @param array $sheets
-         * @return $this 
-         * @static 
-         */ 
-        public static function selectSheetsByIndex($sheets = array())
-        {
-            return \Maatwebsite\Excel\Excel::selectSheetsByIndex($sheets);
-        }
-        
-        /**
-         * Batch import
-         *
-         * @param $files
-         * @param callback $callback
-         * @return \PHPExcel 
-         * @static 
-         */ 
-        public static function batch($files, $callback)
-        {
-            return \Maatwebsite\Excel\Excel::batch($files, $callback);
-        }
-        
-        /**
-         * Create a new file and share a view
-         *
-         * @param string $view
-         * @param array $data
-         * @param array $mergeData
-         * @return \Maatwebsite\Excel\LaravelExcelWriter 
-         * @static 
-         */ 
-        public static function shareView($view, $data = array(), $mergeData = array())
-        {
-            return \Maatwebsite\Excel\Excel::shareView($view, $data, $mergeData);
-        }
-        
-        /**
-         * Create a new file and load a view
-         *
-         * @param string $view
-         * @param array $data
-         * @param array $mergeData
-         * @return \Maatwebsite\Excel\LaravelExcelWriter 
-         * @static 
-         */ 
-        public static function loadView($view, $data = array(), $mergeData = array())
-        {
-            return \Maatwebsite\Excel\Excel::loadView($view, $data, $mergeData);
-        }
-        
-        /**
-         * Set filters
-         *
-         * @param array $filters
-         * @return \Excel 
-         * @static 
-         */ 
-        public static function registerFilters($filters = array())
-        {
-            return \Maatwebsite\Excel\Excel::registerFilters($filters);
-        }
-        
-        /**
-         * Enable certain filters
-         *
-         * @param string|array $filter
-         * @param bool|false|string $class
-         * @return \Excel 
-         * @static 
-         */ 
-        public static function filter($filter, $class = false)
-        {
-            return \Maatwebsite\Excel\Excel::filter($filter, $class);
-        }
-        
-        /**
-         * Get register, enabled (or both) filters
-         *
-         * @param string|boolean $key [description]
-         * @return array 
-         * @static 
-         */ 
-        public static function getFilters($key = false)
-        {
-            return \Maatwebsite\Excel\Excel::getFilters($key);
+            \Encore\Admin\Admin::extend($name, $class);
         }
          
     }
@@ -15159,9 +15245,9 @@ namespace  {
 
     class Debugbar extends \Barryvdh\Debugbar\Facade {}
 
-    class Admin extends \Encore\Admin\Facades\Admin {}
-
     class Excel extends \Maatwebsite\Excel\Facades\Excel {}
+
+    class Admin extends \Encore\Admin\Facades\Admin {}
  
 }
 
