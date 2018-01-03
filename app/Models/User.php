@@ -164,6 +164,59 @@ class User extends Model
     }
 
     /**
+     * @param $uid
+     * @return array
+     */
+    public function getTeamsPayRank($uid)
+    {
+        $self = $this->where('id', $uid)->first();
+        $count = $self->orders->count();
+        $totalPrice = $self->orders->sum('total_price');
+        $totalPv = $self->orders->sum('total_pv');
+
+        ///
+        $members = $this->getMembersPayRank($uid);
+        $count += $members['count'];
+        $totalPrice += $members['total_price'];
+        $totalPv += $members['total_pv'];
+
+        return [
+            'count' => $count,
+            'total_price' => $totalPrice,
+            'total_pv' => $totalPv
+        ];
+    }
+
+    /**
+     * @param $uid
+     * @return array
+     */
+    private function getMembersPayRank($uid)
+    {
+        $count = 0;
+        $totalPrice = 0;
+        $totalPv = 0;
+
+        ///
+        $users = $this->where('parent_id', $uid)->get();
+        if ($users->isNotEmpty()) {
+            foreach ($users as $user) {
+                $rank = $this->getMembersPayRank($user->id);
+
+                $count += $rank['count'] + $user->orders->count();
+                $totalPrice += $rank['total_price'] + $user->orders->sum('total_price');
+                $totalPv += $rank['total_pv'] + $user->orders->sum('total_pv');
+            }
+        }
+
+        return [
+            'count' => $count,
+            'total_price' => $totalPrice,
+            'total_pv' => $totalPv
+        ];
+    }
+
+    /**
      * 统计用户团队相关信息
      */
     private function statUserTeamInfo($user)

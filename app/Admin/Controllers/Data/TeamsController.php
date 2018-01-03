@@ -33,22 +33,32 @@ class TeamsController extends Controller
     protected function grid()
     {
         $grid = Admin::grid(User::class, function (Grid $grid) {
+            $grid->rows(function (&$item, $key) {
+                $rank = (new User())->getTeamsPayRank($item->id);
+                $item->column('count', $rank['count']);
+                $item->column('total_price', $rank['total_price']);
+                $item->column('total_pv', $rank['total_pv']);
+            });
             $levels = (new UserLevel())->getLevelNameArray();
+
             $grid->id('代理商编号');
             $grid->realname('姓名');
             $grid->phone('手机');
             $grid->level('代理商等级')->display(function ($level) use ($levels) {
                 return $levels[$level];
             });
-            $grid->column('订单量')->display(function () {
-                return 0;
-            });
-            $grid->column('消费金额')->display(function () {
-                return 0;
-            });
-            $grid->column('总PV值')->display(function () {
-                return 0;
-            });
+            $grid->count('订单量');
+            $grid->total_price('消费金额');
+            $grid->total_pv('总PV值');
+//            $grid->column('订单量')->display(function () use ($rank) {
+//                return $rank['count'];
+//            });
+//            $grid->column('消费金额')->display(function () use ($rank) {
+//                return $rank['total_price'];
+//            });
+//            $grid->column('总PV值')->display(function () use ($rank) {
+//                return $rank['total_pv'];
+//            });
 
             $grid->exporter($this->exporter($grid));
             $grid->filter(function (Grid\Filter $filter) {
