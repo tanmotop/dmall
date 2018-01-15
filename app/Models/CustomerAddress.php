@@ -23,7 +23,7 @@ class CustomerAddress extends Model
 
     public function getCustomerInfoList($uid)
     {
-        $users = $this->where('user_id', '=', $uid)->paginate(1);
+        $users = $this->where('user_id', '=', $uid)->paginate(10);
 
         $regionModel = new Region();
         foreach ($users as &$user)

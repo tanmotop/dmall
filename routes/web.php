@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth:user']], function () {
         // 客户资料
         Route::get('/customer', 'CustomerController@index')->name('customer.list');
         Route::put('/customer', 'CustomerController@update')->name('customer.update');
+        Route::delete('/customer', 'CustomerController@delete')->name('customer.delete');
         Route::get('/customer/region', 'CustomerController@region')->name('customer.region');
     });
 

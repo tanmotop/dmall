@@ -116,7 +116,7 @@
                 <div class="yqmcx-bottom">
                     <p>代理商编号： {{ $user['user_id'] }}</p>
                     <p>客户姓名：{{ $user['name'] }} </p>
-                    <p>收货人：<input type="text" style="width: 60px" name="name" value="{{ $user['name'] }}"><span style="color: orange">|</span> <input type="text" style="width: 100px" name="tel" value="{{ $user['tel'] }}"></p>
+                    <p>收货人：<input type="text" style="width: 60px" name="name" value="{{ $user['name'] }}"><span style="color: orange">|</span> <input type="text" style="width: 100px" name="phone" value="{{ $user['phone'] }}"></p>
                     <p>收货地区：
                         <select required name="province" class="province" data-content="2">
                             @foreach($provinces as $provinceId => $province)
@@ -135,7 +135,10 @@
                         </select>
                     </p>
                     <p>详细地址：<input style="width: 70%" type="text" name="address" value="{{ $user['address'] }}"></p>
-                    <p><button class="btn submit_btn" data-id="{{ $user['id'] }}" type="button">修改</button></p>
+                    <p>
+                        <button class="btn submit_btn" data-id="{{ $user['id'] }}" type="button">修改</button>
+                        <button class="btn del_btn" data-id="{{ $user['id'] }}" type="button">删除</button>
+                    </p>
                 </div>
             </form>
             @empty
@@ -282,6 +285,35 @@
                     })
                 }
             });
+        });
+
+        $(document).on('click', '.del_btn', function () {
+            var id = $(this).attr('data-id');
+
+            if (confirm('确定删除该客户资料吗？')) {
+                $.ajax({
+                    url: "{{ route('customer.delete') }}" + '?id=' + id,
+                    type: 'DELETE',
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function (json) {
+                        if (json.code === 10000) {
+                            $("#form_data_" + id).remove();
+                        }
+                        else {
+                            alert('删除失败');
+                        }
+                    },
+                    error: function (data) {
+                        $.each(data.responseJSON.errors, function (k, v) {
+                            alert(v[0]);
+                            return false
+                        })
+                    }
+                });
+            }
         });
     </script>
 @endsection

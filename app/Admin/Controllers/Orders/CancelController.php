@@ -24,6 +24,8 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
+use Encore\Admin\Widgets\Box;
+use Encore\Admin\Widgets\Table;
 
 class CancelController extends Controller
 {
@@ -49,9 +51,9 @@ class CancelController extends Controller
                     $column->append(view('admin::orders.detail', compact('order', 'regions')));
                 });
             });
-            $content->row(function (Row $row) {
-                $row->column(12, function (Column $column) {
-                    $column->append(view('admin::orders.goods'));
+            $content->row(function (Row $row) use ($order) {
+                $row->column(12, function (Column $column) use ($order) {
+                    $column->append(view('admin::orders.goods', ['orderGoods' => $order->orderGoods]));
                 });
             });
             $content->row($this->form()->edit($id));
@@ -62,6 +64,25 @@ class CancelController extends Controller
     {
         $grid = Admin::grid(Orders::class, function (Grid $grid) {
             $grid->sn('订单号');
+            $grid->column('商品')->expand(function () {
+                $headers = ['商品名称', '商品图片', '商品规格', '商品数量', '商品单价'];
+
+                $rows = $this->orderGoods->map(function ($item, $key) {
+                    $src = env('APP_URL') . '/uploads/' . $item->goodsAttr->goods->logo;
+
+                    $data = [
+                        $item->goodsAttr->goods->name,
+                        "<img src='{$src}' width='50' height='50'>",
+                        $item->goodsAttr->name,
+                        $item->count,
+                        $item->goodsAttr->price
+                    ];
+
+                    return $data;
+                });
+
+                return (new Box('订单详情', (new Table($headers, $rows->all()))))->style('primary')->solid();
+            }, '详情');
             $grid->user()->realname('下单代理商');
             $grid->user_name('买家');
             $grid->user_phone('手机');
@@ -76,6 +97,7 @@ class CancelController extends Controller
             $grid->courier()->name('快递')->display(function ($name) {
                 return $name ?? '无';
             });
+            $grid->money('余额');
 
             $grid->disableCreation();
             $grid->exporter($this->exporter($grid));

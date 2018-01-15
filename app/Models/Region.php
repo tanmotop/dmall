@@ -81,4 +81,22 @@ class Region extends Model
 
         return $arr;
     }
+
+    public function getRegionByLevel($level = 0)
+    {
+        $res = $this->where('level', '<=', $level)->get();
+        $arr = [];
+        foreach ($res as $region)
+        {
+            $arr[$region->id] = $region->name;
+        }
+
+        return $arr;
+    }
+
+    public function getLevelById($id)
+    {
+        $region = $this->find($id);
+        return $region->level;
+    }
 }

@@ -45,11 +45,11 @@ class CustomerController
     public function update(CustomerRequest $request)
     {
         $id = $request->get('id');
-        $data = $request->all(['name', 'tel', 'province', 'city', 'area', 'address']);
+        $data = $request->all(['name', 'phone', 'province', 'city', 'area', 'address']);
 
         $customer = $this->customerModel->find($id);
         $customer->name = $data['name'];
-        $customer->tel = $data['tel'];
+        $customer->phone = $data['phone'];
         $customer->province_id = $data['province'];
         $customer->city_id = $data['city'];
         $customer->area_id = $data['area'];
@@ -59,9 +59,17 @@ class CustomerController
         return response()->json(['code' => 10000, 'msg' => 'success']);
     }
 
-    public function delete()
+    public function delete(Request $request)
     {
+        $id = $request->id;
+        $res = $this->customerModel->find($id)->delete();
 
+        if ($res) {
+            return response()->json(['code' => 10000, 'msg' => 'success']);
+        }
+        else {
+            return response()->json(['code' => 10001, 'msg' => 'fail']);
+        }
     }
 
     public function region(Request $request)

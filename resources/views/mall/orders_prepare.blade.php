@@ -35,7 +35,10 @@
     <form id="order_form">
         <div class="zc-bottom">
             <ul>
-                <li><label>搜索客户：</label><input class="info" type="text" value="" id='search' placeholder="客户太多可以搜索后再选择"></li>
+                <li>
+                    <label>搜索客户：</label>
+                    <input class="info" type="text" value="" id='search' placeholder="客户太多可以搜索后再选择">
+                </li>
                 <li>
                     <label>我的客户：</label>
                     <select id="select" style="width: 72%">
@@ -71,6 +74,7 @@
                     <label>详细地址：</label>
                     <input style="background: white"  class="user_address" type="text" name="user_address">
                 </li>
+                <li><label style="font-size: 0.7em;color: red">* 选择顺丰快递详细地址必须填写完整的省市区</label></li>
                 <li>
                     <label>备注：</label>
                     <input type="text" name="remarks" class="remarks">
@@ -266,8 +270,8 @@
     }
     // 搜索客户
     $('#search').on('keyup', function() {
-        var val = $(this).val()
-        if (val == '') $('#select option').show()
+        var val = $(this).val();
+        if (val == '') $('#select option').show();
         $('#select option').each(function(i, item) {
             var text = $(item).text();
             if (text.indexOf(val) != -1) {
@@ -276,7 +280,7 @@
                 $(item).hide();
             }
         });
-    })
+    });
     // 提交订单
     $('.btn-submit').on('click', function() {
         var data = {

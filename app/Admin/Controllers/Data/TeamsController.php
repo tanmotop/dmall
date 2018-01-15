@@ -50,15 +50,6 @@ class TeamsController extends Controller
             $grid->count('订单量');
             $grid->total_price('消费金额');
             $grid->total_pv('总PV值');
-//            $grid->column('订单量')->display(function () use ($rank) {
-//                return $rank['count'];
-//            });
-//            $grid->column('消费金额')->display(function () use ($rank) {
-//                return $rank['total_price'];
-//            });
-//            $grid->column('总PV值')->display(function () use ($rank) {
-//                return $rank['total_pv'];
-//            });
 
             $grid->exporter($this->exporter($grid));
             $grid->filter(function (Grid\Filter $filter) {

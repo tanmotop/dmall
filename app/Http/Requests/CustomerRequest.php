@@ -23,7 +23,7 @@ class CustomerRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'tel' => 'required|regex:/^1[3,5,7,8][0-9]{9}$/',
+            'phone' => 'required|regex:/^1[3,5,7,8][0-9]{9}$/',
             'province' => 'required|regex:/^[1-9]\d*$/',
             'city' => 'required|regex:/^[1-9]\d*$/',
             'area' => 'required|regex:/^[1-9]\d*$/',
@@ -35,8 +35,8 @@ class CustomerRequest extends FormRequest
     {
         return [
             'name.required' => '请输入姓名',
-            'tel.required'       => '请输入手机号码',
-            'tel.regex'          => '手机号码格式有误',
+            'phone.required'       => '请输入手机号码',
+            'phone.regex'          => '手机号码格式有误',
             'province.required' => '请选择省份',
             'province.regex' => '请选择省份',
             'city.required' => '请选择城市',

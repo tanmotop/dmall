@@ -1,8 +1,10 @@
 <?php
 
 use App\Admin\Extensions\WangEditor;
-use \App\Admin\Extensions\Field\JsonNumber;
+use App\Admin\Extensions\Field\JsonNumber;
 use Encore\Admin\Form;
+use Encore\Admin\Grid\Column;
+use App\Admin\Extensions\ExpandRow;
 
 /**
  * Laravel-admin - admin builder based on Laravel.
@@ -28,3 +30,5 @@ app('view')->prependNamespace('admin', resource_path('admin-views'));
 
 Form::extend('editor', WangEditor::class);
 Form::extend('json_number', JsonNumber::class);
+
+Column::extend('expand', ExpandRow::class);

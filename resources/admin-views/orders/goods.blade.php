@@ -8,21 +8,20 @@
                     <th>商品规格</th>
                     <th>商品数量</th>
                     <th>商品单价</th>
+                    <th>备注</th>
                 </tr>
-                <tr>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                </tr>
+                @foreach($orderGoods as $item)
+                    <tr>
+                        <td>{{ $item->goodsAttr->goods->name }}</td>
+                        <td>
+                            <img src='{{ env('APP_URL') . '/uploads/' . $item->goodsAttr->goods->logo }}' width='50' height='50'>
+                        </td>
+                        <td>{{ $item->goodsAttr->name }}</td>
+                        <td>{{ $item->count }}</td>
+                        <td>{{ $item->price }}</td>
+                        <td></td>
+                    </tr>
+                @endforeach
             </table>
         </div>
     </div>
