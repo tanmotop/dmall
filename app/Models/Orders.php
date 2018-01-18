@@ -160,8 +160,16 @@ class Orders extends Model
     {
         $order = $this->find($orderId);
         $order->status = 2;
-        $order->completed_at = \Carbon\Carbon::now();
+        $order->completed_at = Carbon::now();
         $order->save();
+
+        /// 更新用户表的pv字段
+        $totalPv = $order->total_pv;
+        $order->user->pv = $order->user->pv + $totalPv;
+        $order->user->save();
+
+        /// 更新奖金表的personal_pv字段
+        (new UserBonus())->savePv($order->user_id, $totalPv);
 
         return true;
     }

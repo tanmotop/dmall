@@ -189,6 +189,38 @@ class User extends Model
 
     /**
      * @param $uid
+     * @return int
+     */
+    public function getTeamsPv($uid)
+    {
+        $self = $this->where('id', $uid)->first();
+        $pv = $self->bonus->sum('personal_pv');
+
+        $pv += $this->getMembersPv($uid);
+
+        return $pv;
+    }
+
+    /**
+     * @param $uid
+     * @return int
+     */
+    private function getMembersPv($uid)
+    {
+        $totalPv = 0;
+        $users = $this->where('parent_id', $uid)->get();
+        if ($users->isNotEmpty()) {
+            foreach ($users as $user) {
+                $pv = $this->getMembersPv($user->id);
+                $totalPv += $pv + $user->bonus->sum('personal_pv');
+            }
+        }
+
+        return $totalPv;
+    }
+
+    /**
+     * @param $uid
      * @return array
      */
     private function getMembersPayRank($uid)

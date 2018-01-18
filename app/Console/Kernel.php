@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->command('auto:recv')
+            ->daily()
+            ->appendOutputTo(sprintf('/tmp/dashan/autorecv/%s.log', date('Y-m-d')));
     }
 
     /**

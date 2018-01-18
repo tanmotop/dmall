@@ -12,6 +12,7 @@ namespace App\Admin\Controllers\Finances;
 
 use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Models\Orders;
+use App\Models\Pv;
 use App\Models\User;
 use App\Models\UserBonus;
 use Encore\Admin\Facades\Admin;
@@ -31,6 +32,19 @@ class BonusController
     protected function grid()
     {
         $grid = Admin::grid(User::class, function (Grid $grid) {
+            $pvModel = new Pv();
+            $pvConf = $pvModel->getPvConf();
+            $grid->rows(function (&$item, $key) use ($pvModel, $pvConf) {
+                $user = User::find($item->id);
+                $item->column('level_money', $user->bonus()->sum('level_money'));
+                $item->column('invite_money', $user->bonus()->sum('invite_money'));
+                $item->column('retail_money', $user->bonus()->sum('retail_money'));
+                $item->column('teams_pv', $user->getTeamsPv($item->id));
+                $item->column('personal_pv', $user->bonus()->sum('personal_pv'));
+                $item->column('personal_pv_bonus', $pvModel->getBonus($pvConf, $item->personal_pv));
+                $item->column('teams_pv_bonus', $pvModel->getBonus($pvConf, $item->teams_pv));
+                $item->column('total_bonus', $item->personal_pv_bonus + $item->invite_money + $item->level_money);
+            });
             $grid->id('代理商编号');
             $grid->realname('姓名');
             $grid->avatar('头像')->image(config('filesystems.disks.admin.url') . '/', 60, 60);
@@ -49,24 +63,14 @@ class BonusController
 
                 return $totalPrice;
             });
-            $grid->column('级别差价')->display(function () {
-                return $this->bonus()->sum('level_money');
-            });
-            $grid->column('邀代奖金')->display(function () {
-                return $this->bonus()->sum('invite_money');
-            });
-            $grid->column('个人零售利润')->display(function () {
-                return $this->bonus()->sum('retail_money');
-            });
-            $grid->column('个人业绩合计(PV值)')->display(function () {
-                return $this->bonus()->sum('personal_pv');
-            });
-            $grid->column('团队业绩合计(PV值)')->display(function () {
-                return $this->bonus()->sum('teams_pv');
-            });
-            $grid->column('团队业绩抽成')->display(function () {
-                return 0;
-            });
+            $grid->level_money('级别差价');
+            $grid->invite_money('邀代奖金');
+            $grid->retail_money('个人零售利润');
+            $grid->personal_pv('个人业绩合计(PV值)');
+            $grid->personal_pv_bonus('个人业绩抽成');
+            $grid->teams_pv('团队业绩合计(PV值)');
+            $grid->teams_pv_bonus('团队业绩抽成');
+            $grid->total_bonus('总奖金');
 
             $grid->exporter($this->exporter($grid));
 
