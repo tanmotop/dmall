@@ -131,7 +131,8 @@ class SoldoutController extends Controller
                     $form->hidden('goods_id');
                     $form->text('name', '规则名称');
                     $form->text('stock', '库存');
-                    $form->number('weight', '规则重量(克)');
+                    $form->number('weight', '计费重量(克)');
+                    $form->number('show_weight', '显示重量(克)');
                     $form->text('price', '零售价');
                     $form->number('pv', 'PV值');
                     $form->hidden('user_prices')->attribute(['data-up' => '1']);;

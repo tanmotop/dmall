@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GoodsAttr extends Model
 {
-    protected $fillable = ['name', 'price', 'stock', 'weight', 'pv', 'user_prices', 'created_at', 'updated_at'];
+    protected $fillable = ['name', 'price', 'stock', 'weight', 'show_weight', 'pv', 'user_prices', 'created_at', 'updated_at'];
 
 	/**
      * @var string

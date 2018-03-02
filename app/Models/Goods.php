@@ -43,6 +43,7 @@ class Goods extends Model
             'goods_attrs.name as attr_name',
             'goods_attrs.stock',
             'goods_attrs.weight',
+            'goods_attrs.show_weight',
         ];
         $query = $this->join('goods_attrs', 'goods.id', '=', 'goods_attrs.goods_id')
             ->where('goods.status', '=', 1)
