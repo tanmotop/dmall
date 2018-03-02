@@ -347,7 +347,11 @@
                 var html = ''
                 for (var i in data) {
                     var item = data[i]
-                    var buyPrice = item.user_prices['level_' + myLevel]
+                    var buyPrice = item.user_prices['level_' + myLevel];
+                    var price = '';
+                    @foreach(array_reverse($userLevels, true) as $key => $levelName)
+                        price += "<li><p>{{ $levelName }}价：￥{{ $goods->user_prices['level_'.$key] }}</p></li>";
+                    @endforeach
                     html += ""
                         + '<div class="sp-list-bottom goods-item" data-attr-id="' + item.attr_id + '">'
                         + '    <div class="up">'
@@ -368,6 +372,7 @@
                         + '        </div>'
                         + '        <div class="down-right">'
                         + '            <ul>'
+                        + price
                         + '                <li><p>零售价：<em><del>￥' + item.price + '</del></em></p></li>'
                         + '                <li><p>购买价：<em>￥' + buyPrice + '</em></p></li>'
                         + '                <li><p>' + item.attr_name + '：' + item.show_weight + '克</p></li>'
