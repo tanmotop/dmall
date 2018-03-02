@@ -364,7 +364,7 @@
                         + '    </div>'
                         + '    <div class="down">'
                         + '        <div class="down-left">'
-                        + '            <img src="/Public/Uploads/images/goods/logo/2017-05-24/mid_59252e977f2c1.jpg">'
+                        + '            <img src="{{env('APP_URL')}}' + '/uploads/' + item.logo + '">'
                         + '        </div>'
                         + '        <div class="down-right">'
                         + '            <ul>'
