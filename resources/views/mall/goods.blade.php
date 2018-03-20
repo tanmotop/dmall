@@ -160,7 +160,6 @@
                     </div>
                 </div>
              @empty
-                <div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>暂无数据</span></div>
             @endforelse
         </div>
     </div>
@@ -324,35 +323,38 @@
 
     <script src="/plugins/dropload/dropload.min.js"></script>
     <script type="text/javascript">
+        var currentPage = parseInt('{{ $goodsList->currentPage() }}');
+        var lastPage = parseInt('{{ $goodsList->lastPage() }}');
         $('.zc-body').dropload({
             scrollArea:window,
             loadDownFn:function (me) {
+                console.log('loadDownFn');
                 getMoreGoods(me);
             }
         });
 
-        var currentPage = parseInt('{{ $goodsList->currentPage() }}');
-        var lastPage = parseInt('{{ $goodsList->lastPage() }}');
         function getMoreGoods(me)
         {
             if (currentPage == lastPage) {
-                return false;
+                me.lock();
+                me.noData();
             }
 
             $.get('{{ route('goods') }}', {
                 page: currentPage + 1,
                 dataType: 'json',
-                keyword: '{{ $keyword }}'
+                keyword: '{{ $keyword }}',
+                cat_id:'{{ $catId }}'
             }, function(json) {
                 currentPage = json.current_page;
                 var data = json.data;
                 var html = '';
                 for (var i in data) {
-                    var item = data[i]
+                    var item = data[i];
                     var buyPrice = item.user_prices['level_' + myLevel];
                     var price = '';
                     @foreach(array_reverse($userLevels, true) as $key => $levelName)
-                        price += "<li><p>{{ $levelName }}价：￥{{ $goods->user_prices['level_'.$key] }}</p></li>";
+                        price += "<li><p>{{ $levelName }}价：￥"+item.user_prices['level_'+ {{$key}}]+"</p></li>";
                     @endforeach
                     html += ""
                         + '<div class="sp-list-bottom goods-item" data-attr-id="' + item.attr_id + '">'
