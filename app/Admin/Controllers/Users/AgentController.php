@@ -166,17 +166,14 @@ class AgentController extends Controller
                 'on' => ['value' => 1, 'text' => '激活', 'color' => 'primary'],
                 'off' => ['value' => 0, 'text' => '未激活', 'color' => 'danger']
             ]);
-            $form->ignore(['repasswd']);
+            $form->ignore(['password', 'repasswd']);
             $form->image('avatar', '头像');
             
             $form->saving(function (Form $form) {
                 ///
-                $pwd = $form->input('password');
+                $pwd = request('password');
                 if (!empty($pwd)) {
                     $form->password = md5($pwd);
-                }
-                else {
-                    unset($form->password);
                 }
 
                 ///

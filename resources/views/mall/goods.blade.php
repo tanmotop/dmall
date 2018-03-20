@@ -3,6 +3,7 @@
 @section('styles')
 	<link href="/assets/css/sp.css" rel="stylesheet" />
 	<link href="/plugins/bootstrap/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+	<link href="/plugins/dropload/dropload.css" rel="stylesheet">
 	<style type="text/css">
         /* 加载动画 */
         .sk-spinner-double-bounce.sk-spinner {
@@ -162,9 +163,6 @@
                 <div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>暂无数据</span></div>
             @endforelse
         </div>
-        @if ($goodsList->currentPage() != $goodsList->lastPage())
-            <div align="center" onclick="getMoreGoods()" class="sp-list-bottom tips"><span>上拉/点击获取更多邀请码</span></div>
-        @endif
     </div>
     <br/><br/><br/><br/>
     <footer>
@@ -323,28 +321,32 @@
             }
         }
     </script>
+
+    <script src="/plugins/dropload/dropload.min.js"></script>
     <script type="text/javascript">
-        $(window).scroll(function() {
-            if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-                getMoreGoods();
+        $('.zc-body').dropload({
+            scrollArea:window,
+            loadDownFn:function (me) {
+                getMoreGoods(me);
             }
         });
-        var currentPage = parseInt('{{ $goodsList->currentPage() }}')
-        var lastPage = parseInt('{{ $goodsList->lastPage() }}')
-        function getMoreGoods()
+
+        var currentPage = parseInt('{{ $goodsList->currentPage() }}');
+        var lastPage = parseInt('{{ $goodsList->lastPage() }}');
+        function getMoreGoods(me)
         {
             if (currentPage == lastPage) {
                 return false;
             }
-            $('.tips span').html('正在获取 <i class="fa fa-spinner fa-spin"></i>');
+
             $.get('{{ route('goods') }}', {
                 page: currentPage + 1,
                 dataType: 'json',
-                keyword: '{{ $keyword }}',
+                keyword: '{{ $keyword }}'
             }, function(json) {
-                currentPage = json.current_page
-                var data = json.data
-                var html = ''
+                currentPage = json.current_page;
+                var data = json.data;
+                var html = '';
                 for (var i in data) {
                     var item = data[i]
                     var buyPrice = item.user_prices['level_' + myLevel];
@@ -384,17 +386,17 @@
                         + '    </div>'
                         + '</div>'
                 }
-                setTimeout(function() {
-                    $('#goods-list').append(html)
-                    if (json.current_page == json.last_page) {
-                        $('.tips').remove();
-                        $('#goods-list').append('<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多了</span></div>');
-                    } else {
-                        $('.tips span').html('上拉/点击获取更多邀请码');
-                    }
-                },500)
+
+                $('#goods-list').append(html);
+                if (json.current_page == json.last_page) {
+                    me.lock();
+                    me.noData();
+                }
+
+                me.resetload();
             });
         }
+
         $('.search-btn').on('click', function() {
             var val = $('.search-value').val()
             window.location = '{{ route('goods') }}?keyword=' + val
