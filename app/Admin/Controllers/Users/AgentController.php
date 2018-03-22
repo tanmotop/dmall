@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers\Users;
 
 use App\Admin\Extensions\Exporter\ExcelExporter;
+use App\Jobs\InviteUser;
 use Carbon\Carbon;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -179,7 +180,12 @@ class AgentController extends Controller
                 ///
                 $user = $form->model();
                 if ($user->status == 0 && $form->status == 'on') {
+                    $this->dispatch(new InviteUser($user));
                     $user->actived_at = Carbon::now();
+                }
+
+                if ($user->level == User::$LEVEL_VIP && $form->level == User::$LEVEL_DEALER) {
+                    $this->dispatch(new InviteUser($user));
                 }
             });
 

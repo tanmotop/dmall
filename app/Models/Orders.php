@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\ConfirmOrder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -168,8 +169,11 @@ class Orders extends Model
         $order->user->pv = $order->user->pv + $totalPv;
         $order->user->save();
 
+        /// 确认订单后续处理
+        dispatch(new ConfirmOrder($order));
+
         /// 更新奖金表的personal_pv字段
-        (new UserBonus())->savePv($order->user_id, $totalPv);
+//        (new UserBonus())->savePv($order->user_id, $totalPv);
 
         return true;
     }

@@ -30,35 +30,91 @@ class UserBonus extends Model
 
     /**
      * @param $userId
-     * @param $pv
-     * @return bool
+     * @param $money
      */
-    public function savePv($userId, $pv)
+    public function saveActualSales($userId, $money)
+    {
+        $this->saveData($userId, 'actual_sales', $money);
+    }
+
+    /**
+     * @param $userId
+     * @param $money
+     */
+    public function saveLevelMoney($userId, $money)
+    {
+        $this->saveData($userId, 'level_money', $money);
+    }
+
+    /**
+     * @param $userId
+     * @param $pv
+     */
+    public function savePersonalPv($userId, $pv)
+    {
+        $this->saveData($userId, 'personal_pv', $pv);
+    }
+
+    /**
+     * @param $userId
+     * @param $money
+     */
+    public function saveInviteMoney($userId, $money)
+    {
+        $this->saveData($userId, 'invite_money', $money);
+    }
+
+    /**
+     * @param $userId
+     * @param $money
+     */
+    public function saveRetailMoney($userId, $money)
+    {
+        $this->saveData($userId, 'retail_money', $money);
+    }
+
+    /**
+     * @param $userId
+     * @param $pv
+     */
+    public function saveTeamsPv($userId, $pv)
+    {
+        $this->saveData($userId, 'teams_pv', $pv);
+    }
+
+    /**
+     * @param $userId
+     * @param $key
+     * @param $value
+     */
+    protected function saveData($userId, $key, $value)
     {
         $date = date('Y-m-d');
-
-        $userBonus = $this->where([
-            ['user_id', $userId],
-            ['date', $date]
-        ])->first();
+        $userBonus = $this->exists($userId, $date);
 
         if (empty($userBonus)) {
             $this->create([
                 'user_id' => $userId,
-                'personal_pv' => $pv,
-                'date' => $date
+                'date' => $date,
+                $key => $value
             ]);
         }
         else {
-            $userBonus->personal_pv = $userBonus->personal_pv + $pv;
+            $userBonus->$key += $value;
             $userBonus->save();
         }
-
-        return true;
     }
 
-    public function getTeamsPv($uid)
+    /**
+     * @param $userId
+     * @param $date
+     * @return mixed
+     */
+    protected function exists($userId, $date)
     {
-
+        return $this->where([
+            ['user_id', $userId],
+            ['date', $date]
+        ])->first();
     }
 }

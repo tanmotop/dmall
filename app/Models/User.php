@@ -19,6 +19,14 @@ class User extends Model
     use ModelTree, AdminBuilder;
 
     /**
+     * 等级
+     * @var int
+     */
+    public static $LEVEL_DIAMOND = 1;
+    public static $LEVEL_DEALER = 2;
+    public static $LEVEL_VIP = 3;
+
+    /**
      * @var string
      */
     protected $table = 'users';

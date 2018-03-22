@@ -14,7 +14,6 @@ use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Models\Orders;
 use App\Models\Pv;
 use App\Models\User;
-use App\Models\UserBonus;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
@@ -36,10 +35,11 @@ class BonusController
             $pvConf = $pvModel->getPvConf();
             $grid->rows(function (&$item, $key) use ($pvModel, $pvConf) {
                 $user = User::find($item->id);
+                $item->column('actual_sales', $user->bonus()->sum('actual_sales'));
                 $item->column('level_money', $user->bonus()->sum('level_money'));
                 $item->column('invite_money', $user->bonus()->sum('invite_money'));
                 $item->column('retail_money', $user->bonus()->sum('retail_money'));
-                $item->column('teams_pv', $user->getTeamsPv($item->id));
+                $item->column('teams_pv', $user->bonus()->sum('teams_pv'));
                 $item->column('personal_pv', $user->bonus()->sum('personal_pv'));
                 $item->column('personal_pv_bonus', $pvModel->getBonus($pvConf, $item->personal_pv));
                 $item->column('teams_pv_bonus', $pvModel->getBonus($pvConf, $item->teams_pv));
@@ -55,14 +55,7 @@ class BonusController
 
                 return $this->parent_id > 0 ? $parent->realname : '不二大山';
             });
-            $grid->column('实际销售额')->display(function () {
-                $totalPrice = Orders::where([
-                    ['user_id', $this->id],
-                    ['status', 2]
-                ])->sum('total_price');
-
-                return $totalPrice;
-            });
+            $grid->actual_sales('实际销售额');
             $grid->level_money('级别差价');
             $grid->invite_money('邀代奖金');
             $grid->retail_money('个人零售利润');
