@@ -129,13 +129,13 @@
                     <div class="mysale-btn">
                         余额：{{ $order->money }}
                         @if ($order->status == 0)
-                            <button onclick="cancel_order({{ $order->id }})" type="button" class="btn left-btn">取消订单</button>
+                            <button onclick="cancel_order('{{ $order->id }}')" type="button" class="btn left-btn">取消订单</button>
                         @elseif ($order->status == 1)
-                            <button onclick="order_express({{ $order->id }})" type="button" class="btn left-btn">查看物流</button>
-                            <button onclick="confirm_receipt({{ $order->id }})" type="button" class="btn">确认收货</button>
+                            <button onclick="order_express('{{ $order->id }}')" type="button" class="btn left-btn">查看物流</button>
+                            <button onclick="confirm_receipt('{{ $order->id }}')" type="button" class="btn">确认收货</button>
                         @endif
                         @if ($order->status != 1)
-                            <button onclick="order_detail({{ $order->id }})" type="button" class="btn">查看订单</button>
+                            <button onclick="order_detail('{{ $order->id }}')" type="button" class="btn">查看订单</button>
                         @endif
                     </div>
                 </div>
