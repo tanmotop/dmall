@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finances;
 
+use App\Models\Pv;
 use App\Models\UserBonus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,6 +22,8 @@ class BonusController extends Controller
         }
 
         ///
+        $pvModel = new Pv();
+        $pvConf = $pvModel->getPvConf();
         $select = DB::raw(
             'sum(level_money) as level_money,
             sum(invite_money) as invite_money,
@@ -28,6 +31,9 @@ class BonusController extends Controller
             sum(personal_pv) as personal_pv,
             sum(teams_pv) as teams_pv');
         $data = UserBonus::select($select)->where('user_id', $userId)->whereBetween('created_at', $between)->first();
+        $data->personal_pv_bonus = $pvModel->getBonus($pvConf, $data->personal_pv);
+        $data->teams_pv_bonus = $pvModel->getBonus($pvConf, $data->teams_pv);
+        $data->total_bonus = $data->level_money + $data->invite_money + $data->personal_pv_bonus;
 
         return view('finances/bonus', ['title' => '奖金查询', 'data' => $data]);
     }

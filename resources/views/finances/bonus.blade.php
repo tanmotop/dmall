@@ -147,14 +147,14 @@
         <div id="member_list">
             <div class="zc-bottom">
                 <ul id="list">
-                    <li>当月奖金合计：<input style="width: 50%" readonly type="text" value="￥0"></li>
+                    <li>当月奖金合计：<input style="width: 50%" readonly type="text" value="￥{{ $data->total_bonus }}"></li>
                     <li>个人业绩合计：<input style="width: 50%" readonly type="text" value="{{ $data->personal_pv ?? 0 }}"></li>
                     <li>团队业绩合计：<input style="width: 50%" readonly type="text" value="{{ $data->teams_pv  ?? 0 }}"></li>
-                    <li>业绩奖金收入：<input style="width: 50%" readonly type="text" value="￥0"></li>
+                    <li>业绩奖金收入：<input style="width: 50%" readonly type="text" value="￥{{ $data->personal_pv_bonus }}"></li>
                     <li>级别差价收入：<input style="width: 50%" readonly type="text" value="￥{{ $data->level_money ?? 0 }}"></li>
                     <li>邀代奖金收入：<input style="width: 50%" readonly type="text" value="￥{{ $data->invite_money ?? 0 }}"></li>
                     <li>个人零售利润：<input style="width: 50%" readonly type="text" value="￥{{ $data->retail_money ?? 0 }}"></li>
-                    <li>团队业绩抽成：<input style="width: 50%" readonly type="text" value="￥0"></li>
+                    <li>团队业绩抽成：<input style="width: 50%" readonly type="text" value="￥{{ $data->teams_pv_bonus }}"></li>
                 </ul>
             </div>
         </div>

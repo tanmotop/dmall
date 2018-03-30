@@ -71,16 +71,7 @@ class BonusController
                 $filter->disableIdFilter();
                 $filter->equal('id', '代理商编号');
                 $filter->like('realname', '真实姓名');
-                $filter->where(function ($query) {
-                    $query->whereHas('bonus', function ($query) {
-                        $query->where('created_at', '>=', $this->input);
-                    });
-                }, '开始时间')->date();
-                $filter->where(function ($query) {
-                    $query->whereHas('bonus', function ($query) {
-                        $query->where('created_at', '<=', $this->input);
-                    });
-                }, '结束时间')->date();
+                $filter->between('bonus.created_at', '时间')->date();
             });
         });
 
