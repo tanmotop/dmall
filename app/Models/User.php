@@ -69,7 +69,7 @@ class User extends Model
 
     public function userLevel()
     {
-        return $this->hasOne(UserLevel::class, 'level');
+        return $this->hasOne(UserLevel::class, 'level', 'level');
     }
 
     /**
