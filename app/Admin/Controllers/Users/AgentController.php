@@ -4,6 +4,7 @@ namespace App\Admin\Controllers\Users;
 
 use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Jobs\InviteUser;
+use App\Models\RechargeLog;
 use Carbon\Carbon;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -146,6 +147,11 @@ class AgentController extends Controller
             $form->display('username', '用户名称');
             $form->display('created_at', '注册时间');
             $form->display('actived_at', '激活时间');
+            $form->display('money', '余额');
+            $form->display('recharge', '累计充值')->with(function () {
+                $money = RechargeLog::where('uid', $this->id)->sum('money');
+                return $money;
+            });
             $form->password('password', '密码');
             $form->password('repasswd', '确认密码')->rules('same:password', [
                 'same' => '两次密码不一致',
