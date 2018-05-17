@@ -147,7 +147,10 @@ class AgentController extends Controller
             $form->display('username', '用户名称');
             $form->display('created_at', '注册时间');
             $form->display('actived_at', '激活时间');
-            $form->display('money', '余额');
+            $form->number('money', '余额')->rules('required|regex:/^\d+(\.\d+)?$/', [
+                'required' => '余额不能为空',
+                'regex' => '余额不能为负数',
+            ]);
             $form->display('recharge', '累计充值')->with(function () {
                 $money = RechargeLog::where('uid', $this->id)->sum('money');
                 return $money;
