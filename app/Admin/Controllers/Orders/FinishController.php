@@ -177,7 +177,7 @@ class FinishController extends Controller
                 $order = Orders::find($item['id']);
                 $order->orderGoods->map(function ($orderGoods) use (&$count, &$goods) {
                     $count += $orderGoods->count;
-                    $goods[] = $orderGoods->goodsAttr->name . '*' . $orderGoods->count;
+                    $goods[] = $orderGoods->goodsAttr->goods->name . '*' . $orderGoods->count;
                 });
 
                 $row[] = $item['sn'];
