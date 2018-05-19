@@ -181,8 +181,8 @@ class DeliverController extends Controller
                 $user = User::find($item['user_id']);
                 $order = Orders::find($item['id']);
                 $order->orderGoods->map(function ($orderGoods) use (&$count, &$goods) {
-                    $count += $orderGoods->count;
-                    $goods[] = $orderGoods->goodsAttr->name . '*' . $orderGoods->count;
+                    $count += $orderGoods->count; 
+                    $goods[] = $orderGoods->goodsAttr->goods->name . '*' . $orderGoods->count;
                 });
 
                 $row[] = $item['sn'];
