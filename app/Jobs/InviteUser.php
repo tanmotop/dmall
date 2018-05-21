@@ -35,7 +35,7 @@ class InviteUser implements ShouldQueue
      * @param UserBonus $userBonus
      * @param RechargeLog $rechargeLog
      */
-    public function handle(InviteBonus $inviteBonus, UserBonus $userBonus, RechargeLog $rechargeLog)
+    public function handle(InviteBonus $inviteBonus, UserBonus $userBonus)
     {
         /// 计算邀代奖金
         $parent = User::find($this->user->parent_id);
@@ -44,10 +44,13 @@ class InviteUser implements ShouldQueue
 
         foreach ($bonuses as $userId => $money) {
             $userBonus->saveInviteMoney($userId, $money);
-            $user = User::find($userId);
-            $rechargeLog->addLog($user, $money, '邀代奖励');
-            $user->money += $money;
-            $user->save();
+
+            ///取消自动添加邀带奖金到余额并且不生成充值记录
+
+            //$user = User::find($userId);
+            //$rechargeLog->addLog($user, $money, '邀代奖励');
+            //$user->money += $money;
+            //$user->save();
         }
     }
 }
