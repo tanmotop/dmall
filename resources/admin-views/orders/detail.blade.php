@@ -17,7 +17,7 @@
                 </tr>
                 <tr>
                     <th width="120px">订单总价</th>
-                    <td>{{ $order->total_price }}</td>
+                    <td>&yen;{{ $order->total_price }}(含运费&yen;{{$order->freight}})</td>
                     <th width="120px">详细地址</th>
                     <td>{{ $order->user_address }}</td>
                 </tr>

@@ -64,24 +64,25 @@ class FinishController extends Controller
     {
         $grid = Admin::grid(Orders::class, function (Grid $grid) {
             $grid->sn('订单号');
-            $grid->column('商品')->expand(function () {
+            $data=$grid->column('商品')->expand(function () {
                 $headers = ['商品名称', '商品图片', '商品规格', '商品数量', '商品单价'];
+                ///添加订单备注
+                $order=Orders::find($this->orderGoods->first()['order_id']);
+                $remarks=$order['remarks'];
 
                 $rows = $this->orderGoods->map(function ($item, $key) {
                     $src = env('APP_URL') . '/uploads/' . $item->goodsAttr->goods->logo;
-
                     $data = [
                         $item->goodsAttr->goods->name,
                         "<img src='{$src}' width='50' height='50'>",
                         $item->goodsAttr->name,
                         $item->count,
-                        $item->goodsAttr->price
+                        $item->goodsAttr->price,
                     ];
 
                     return $data;
                 });
-
-                return (new Box('订单详情', (new Table($headers, $rows->all()))))->style('primary')->solid();
+                return (new Box('订单详情(备注:'.$remarks.')', (new Table($headers, $rows->all()))))->style('primary')->solid();
             }, '详情');
             $grid->user()->realname('下单代理商');
             $grid->user_name('买家');
