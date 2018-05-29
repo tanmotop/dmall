@@ -109,6 +109,12 @@ class DeliverController extends Controller
             });
             $grid->filter(function (Grid\Filter $filter) {
                 $couriers = (new Courier)->getIdNameArray();
+                $post_ways = [
+                    '0' => '请选择',
+                    '1' => '快递配送',
+                    '2' => '到店自提',
+                ];
+                $filter->equal('post_way','配送方式')->select($post_ways);
                 $filter->equal('courier_id', '快递')->select($couriers);
                 $filter->between('created_at', '下单/支付时间')->date();
                 $filter->equal('sn', '订单号');
