@@ -205,7 +205,7 @@
                         + '        <p>手机：'+item.user_phone+'</p>'
                         + '        <p>收货地区：'+item.user_province+' '+item.user_city+' '+item.user_area+'</p>'
                         + '        <p>详细地址：'+item.user_address+'</p>'
-                        + '        <p>订单时间：'+item.user_created_at+'</p>'
+                        + '        <p>订单时间：'+item.created_at+'</p>'
                         + '    </div>'
                         + '    <div class="mysale-btn">'
                         + '        <button onclick="cancel_order('+item.id+')" type="button" class="btn left-btn">取消订单</button>'
