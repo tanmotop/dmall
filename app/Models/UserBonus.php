@@ -117,4 +117,15 @@ class UserBonus extends Model
             ['date', $date]
         ])->first();
     }
+
+
+    public function delInviteMoney($userId, $money, $actived_at)
+    {
+        $userBonus = $this->exists($userId, $actived_at);
+        
+        if($userBonus) {
+            $userBonus->invite_money -= $money;
+            $userBonus->save();
+        }
+    }
 }

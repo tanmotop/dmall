@@ -109,3 +109,5 @@ Route::group(['middleware' => ['auth:user']], function () {
 /// 邀请码
 Route::get('/inviteCode', 'UserController@makeInviteCode')->name('makeInviteCode');
 Route::post('/inviteCode', 'UserController@grantInviteCode')->name('grantInviteCode');
+
+//Route::get('/showMoney','UserController@showMoney')->name('showMoney');
