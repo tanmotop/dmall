@@ -66,7 +66,10 @@ class CancelController extends Controller
             $grid->sn('订单号');
             $grid->column('商品')->expand(function () {
                 $headers = ['商品名称', '商品图片', '商品规格', '商品数量', '商品单价'];
-
+                ///添加订单备注
+                $order=Orders::find($this->orderGoods->first()['order_id']);
+                $remarks=$order['remarks'];
+                
                 $rows = $this->orderGoods->map(function ($item, $key) {
                     $src = env('APP_URL') . '/uploads/' . $item->goodsAttr->goods->logo;
 
@@ -81,7 +84,7 @@ class CancelController extends Controller
                     return $data;
                 });
 
-                return (new Box('订单详情', (new Table($headers, $rows->all()))))->style('primary')->solid();
+                return (new Box('订单详情(备注:'.$remarks.')', (new Table($headers, $rows->all()))))->style('primary')->solid();
             }, '详情');
             $grid->user()->realname('下单代理商');
             $grid->user_name('买家');
@@ -106,6 +109,12 @@ class CancelController extends Controller
             });
             $grid->filter(function (Grid\Filter $filter) {
                 $couriers = (new Courier())->getIdNameArray();
+                $post_ways = [
+                    '0' => '请选择',
+                    '1' => '快递配送',
+                    '2' => '到店自提',
+                ];
+                $filter->equal('post_way','配送方式')->select($post_ways);
                 $filter->equal('courier_id', '快递')->select($couriers);
                 $filter->between('created_at', '下单/支付时间')->date();
                 $filter->equal('sn', '订单号');

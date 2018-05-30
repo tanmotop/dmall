@@ -28,7 +28,7 @@ class RechargeLog extends Model
         'way',
         'describe',
         'remark'
-    ];
+    ]; 
 
     public function getMembersRecharge($uid)
     {

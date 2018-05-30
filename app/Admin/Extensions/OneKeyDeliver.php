@@ -55,27 +55,37 @@ $('.grid-row-one-key').on('click', function () {
             swal.showInputError("请输入快递单号！");
             return false 
         } 
-      
-        $.ajax({
-            url: '/admin/api/orders/deliver',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                id:id,
-                postid:inputValue,
-                _token:LA.token
-            },
-            success: function (data) {
-                $.pjax.reload('#pjax-container');
-                
-                if (typeof data === 'object') {
-                    if(data.status) {
-                        swal(data.message, '', 'success');
-                    } else {
-                        swal(data.message, '', 'error');
+        swal({
+            title: "确认快递单号",
+            text: inputValue,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "是的,没错!",
+            cancelButtonText: '取消',
+            closeOnConfirm: false
+        },function(){
+            $.ajax({
+                url: '/admin/api/orders/deliver',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id:id,
+                    postid:inputValue,
+                    _token:LA.token
+                },
+                success: function (data) {
+                    $.pjax.reload('#pjax-container');
+                    
+                    if (typeof data === 'object') {
+                        if(data.status) {
+                            swal(data.message, '', 'success');
+                        } else {
+                            swal(data.message, '', 'error');
+                        }
                     }
                 }
-            }
+            });
         });
     });
 });
@@ -90,7 +100,7 @@ SCRIPT;
         return <<<TAG
 <a href="javascript:void(0);" data-id="{$this->id}" data-sn="{$this->sn}" class="grid-row-one-key">
     <i class="fa fa-paper-plane"></i>
-</a>
+</a>&nbsp;
 TAG;
 
     }
