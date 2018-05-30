@@ -41,6 +41,7 @@ class LoginController extends Controller
         if(!$user) {
             return 0;
         }
+
         if (md5($password) == $user->password) {
             unset($user->password);
             session(['auth_user' => $user]);
