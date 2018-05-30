@@ -115,7 +115,7 @@ class ExcelExporter extends AbstractExporter
                 $count = count($this->header);
                 $columnsWidth = [];
                 for ($i = 0; $i < $count; $i++) {
-                    $columnsWidth[$this->cellKey[$i]] = 20;
+                    $columnsWidth[$this->cellKey[$i]] = 15;
                 }
                 $sheet->setWidth($columnsWidth);
 

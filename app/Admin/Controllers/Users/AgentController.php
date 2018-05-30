@@ -4,6 +4,7 @@ namespace App\Admin\Controllers\Users;
 
 use App\Admin\Extensions\Exporter\ExcelExporter;
 use App\Jobs\InviteUser;
+use App\Jobs\DelInviteUser;
 use App\Models\RechargeLog;
 use Carbon\Carbon;
 use Encore\Admin\Form;
@@ -147,7 +148,10 @@ class AgentController extends Controller
             $form->display('username', '用户名称');
             $form->display('created_at', '注册时间');
             $form->display('actived_at', '激活时间');
-            $form->display('money', '余额');
+            $form->number('money', '余额')->rules('required|regex:/^\d+(\.\d+)?$/', [
+                'required' => '余额不能为空',
+                'regex' => '余额不能为负数',
+            ]);
             $form->display('recharge', '累计充值')->with(function () {
                 $money = RechargeLog::where('uid', $this->id)->sum('money');
                 return $money;
@@ -186,13 +190,28 @@ class AgentController extends Controller
                 ///
                 $user = $form->model();
                 if ($user->status == 0 && $form->status == 'on') {
-                    $this->dispatch(new InviteUser($user));
+                    if($form->level != User::$LEVEL_VIP) {
+                        $this->dispatch(new InviteUser($user));
+                    }
                     $user->actived_at = Carbon::now();
                 }
 
-                if ($user->level == User::$LEVEL_VIP && $form->level == User::$LEVEL_DEALER) {
-                    $this->dispatch(new InviteUser($user));
+                else if($user->status == 1 && $form->status == 'off' && $user->level != User::$LEVEL_VIP) {
+                    $this->dispatch(new DelInviteUser($user,$user->level));
                 }
+
+                else if ($user->status == 1 && $form->status == 'on') {
+                    if($user->level == User::$LEVEL_VIP && $form->level != User::$LEVEL_VIP) {
+                        $this->dispatch(new InviteUser($user));
+                        $user->actived_at = Carbon::now();
+                    }
+                    else if($user->level != User::$LEVEL_VIP && $form->level == User::$LEVEL_VIP) {
+                        $this->dispatch(new DelInviteUser($user,$user->level));
+                    }
+                }
+
+                
+
             });
 
             $form->saved(function (Form $form) {
