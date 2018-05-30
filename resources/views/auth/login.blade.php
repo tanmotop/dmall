@@ -60,6 +60,14 @@
                 alert('密码不能为空');
                 return false;
             }
+            if($('#remember').is(":checked")) {
+                $.cookie('name',username,{ expires: 7 });
+                $.cookie('password',$.base64.encode(password),{ expires: 7 });
+            }
+            else {
+                $.cookie('name','',{ expires: -1 });
+                $.cookie('password','',{ expires: -1 });
+            }
             var _token = '{{ csrf_token() }}';
             $.post('{{ route('login_submit') }}', {
                 username: username,
@@ -73,5 +81,13 @@
                 }
             })
         }
+        $('document').ready(function()
+        {
+            if($.cookie('name') && $.cookie('password')){
+                $('#username').val($.cookie('name'));
+                $('#password').val($.base64.decode($.cookie('password')));
+                $('#remember').prop('checked',true);
+            }
+        });
     </script>
 @endsection
