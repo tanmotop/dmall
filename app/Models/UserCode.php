@@ -77,7 +77,7 @@ class UserCode extends Model
 
         $codes->each(function ($item, $i) {
             if ($item->use_uid) {
-                $item->use_uname = $item->useUser->username;
+                $item->use_uname = optional($item->useUser)->username;
                 $item->stat = 1; // 已使用
             } else {
                 $item->stat = $item->expired_at < \Carbon\Carbon::now() ? 2 : 3; // 2已过期 3未使用
