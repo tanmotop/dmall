@@ -184,6 +184,9 @@
                     for (var i in item.logos) {
                         imgs += '<img src="/uploads/'+item.logos[i]+'">'
                     }
+                    if(!item.remarks){
+                        item.remarks='';
+                    }
                     html += '<div class="sp-list-bottom">'
                         + '    <div class="up">'
                         + '        <h4>订单号：'+item.sn+'</h4>'
@@ -205,11 +208,11 @@
                         + '        <p>手机：'+item.user_phone+'</p>'
                         + '        <p>收货地区：'+item.user_province+' '+item.user_city+' '+item.user_area+'</p>'
                         + '        <p>详细地址：'+item.user_address+'</p>'
-                        + '        <p>订单时间：'+item.created_at+'</p>'
+                        + '        <p>订单时间：'+item.id+'</p>'
                         + '    </div>'
                         + '    <div class="mysale-btn">'
-                        + '        <button onclick="cancel_order('+item.id+')" type="button" class="btn left-btn">取消订单</button>'
-                        + '        <button onclick="order_detail('+item.id+')" type="button" class="btn">查看订单</button>'
+                        + '        <button onclick="cancel_order('+parseInt(item.id)+')" type="button" class="btn left-btn">取消订单</button>'
+                        + '        <button onclick="order_detail('+parseInt(item.id)+')" type="button" class="btn">查看订单</button>'
                         + '    </div>'
                         + '</div>'
                 }
