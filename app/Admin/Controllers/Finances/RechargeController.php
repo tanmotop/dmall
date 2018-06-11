@@ -72,7 +72,7 @@ class RechargeController extends Controller
 
         ///
         $grid->filter(function (Grid\Filter $filter) {
-            $filter->equal('sn', '充值单号');
+            $filter->like('sn', '充值单号');
             $filter->like('realname', '姓名');
             $filter->equal('status', '充值状态')->select([
                 1 => '充值成功',

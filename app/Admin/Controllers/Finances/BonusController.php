@@ -69,7 +69,7 @@ class BonusController
 
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->disableIdFilter();
-                $filter->equal('id', '代理商编号');
+                $filter->like('id', '代理商编号');
                 $filter->like('realname', '真实姓名');
                 $filter->between('bonus.created_at', '时间')->date();
             });

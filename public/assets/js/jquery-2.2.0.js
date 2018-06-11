@@ -4757,7 +4757,7 @@ jQuery.event = {
 
 		// Support (at least): Chrome, IE9
 		// Find delegate handlers
-		// Black-hole SVG <use> instance trees (#13180)
+		// Black-hole SVG <use> instance Trees (#13180)
 		//
 		// Support: Firefox<=42+
 		// Avoid non-left-click in FF but don't block IE radio events (#3861, gh-2343)

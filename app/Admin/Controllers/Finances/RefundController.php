@@ -60,8 +60,8 @@ class RefundController extends Controller
         });
 
         $grid->filter(function (Grid\Filter $filter) {
-            $filter->equal('sn', '退款单号');
-            $filter->equal('uid', '代理商编号');
+            $filter->like('sn', '退款单号');
+            $filter->like('uid', '代理商编号');
             $filter->like('realname', '姓名');
             $filter->between('created_at', '退款时间')->datetime();
         });

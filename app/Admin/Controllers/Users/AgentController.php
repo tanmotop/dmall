@@ -115,7 +115,7 @@ class AgentController extends Controller
 
         $grid->filter(function($filter){
             $filter->disableIdFilter(); // 去掉默认的id过滤器
-            $filter->equal('username', '用户名');
+            $filter->like('username', '用户名');
             $filter->like('realname', '真实姓名'); // 在这里添加字段过滤器
             // 设置created_at字段的范围查询
             $filter->equal('status', '激活状态')->select([
