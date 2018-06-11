@@ -20,7 +20,6 @@ class Courier extends Model
     public function getIdNameArray()
     {
        $curs = $this->get();
-        $arr = ['0' => '请选择'];
         foreach ($curs as $cur) {
             $arr[$cur->id] = $cur->name;
         }

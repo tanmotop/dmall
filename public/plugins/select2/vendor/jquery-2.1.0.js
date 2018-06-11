@@ -4395,7 +4395,7 @@
                 cur = event.target;
 
             // Find delegate handlers
-            // Black-hole SVG <use> instance trees (#13180)
+            // Black-hole SVG <use> instance Trees (#13180)
             // Avoid non-left-click bubbling in Firefox (#3861)
             if ( delegateCount && cur.nodeType && (!event.button || event.type !== "click") ) {
 

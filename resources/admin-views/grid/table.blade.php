@@ -12,7 +12,8 @@
         <span>
             {!! $grid->renderHeaderTools() !!}
         </span>
-
+        
+        </div>
     </div>
     <!-- /.box-header -->
     <div class="box-body table-responsive no-padding">

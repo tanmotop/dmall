@@ -55,8 +55,8 @@ class TeamsController extends Controller
             $grid->filter(function (Grid\Filter $filter) {
                 $userLevel = (new UserLevel())->getLevelNameArray();
                 $filter->disableIdFilter();
-                $filter->equal('realname', '姓名');
-                $filter->equal('phone', '手机');
+                $filter->like('realname', '姓名');
+                $filter->like('phone', '手机');
 
                 $filter->where(function (Builder $query) {
                     $query->whereHas('orders', function (Builder $query) {

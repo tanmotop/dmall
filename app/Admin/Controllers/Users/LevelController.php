@@ -93,7 +93,7 @@ class LevelController extends Controller
         $grid->paginate(10);
 
         $grid->filter(function($filter){
-            $filter->disableIdFilter(); // 去掉默认的id过滤器
+             // 去掉默认的id过滤器
             $filter->like('name', 'name'); // 在这里添加字段过滤器
         });
 
