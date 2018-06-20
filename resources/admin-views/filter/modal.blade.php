@@ -31,3 +31,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#filter-modal .submit").on('click', function () {
+            $("#filter-modal").modal('toggle');
+            $('body').removeClass('modal-open');
+            $(".modal-backdrop").remove();
+        });
+    });
+</script>
