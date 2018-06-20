@@ -63,7 +63,7 @@ $('.grid-row-one-key').on('click', function () {
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "是的,没错!",
             cancelButtonText: '取消',
-            closeOnConfirm: false
+            closeOnConfirm: true,
         },function(){
             $.ajax({
                 url: '/admin/api/orders/deliver',
@@ -75,15 +75,15 @@ $('.grid-row-one-key').on('click', function () {
                     _token:LA.token
                 },
                 success: function (data) {
-                    $.pjax.reload('#pjax-container');
-                    
-                    if (typeof data === 'object') {
-                        if(data.status) {
-                            swal(data.message, '', 'success');
-                        } else {
-                            swal(data.message, '', 'error');
-                        }
-                    }
+//                    $.pjax.reload('#pjax-container');
+                    location.reload();
+//                    if (typeof data === 'object') {
+//                        if(data.status) {
+//                            swal(data.message, '', 'success');
+//                        } else {
+//                            swal(data.message, '', 'error');
+//                        }
+//                    }
                 }
             });
         });
