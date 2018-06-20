@@ -43,3 +43,20 @@
     </div>
     <!-- /.box-body -->
 </div>
+<script>
+    $(document).ready(function () {
+        $('.grid-expand').on('click', function () {
+            if ($(this).data('inserted') == '0') {
+                var key = $(this).data('key');
+                var row = $(this).closest('tr');
+                var html = $('template.grid-expand-'+key).html();
+
+                row.after("<tr><td colspan='"+row.find('td').length+"' style='padding:0 !important; border:0px;'>"+html+"</td></tr>");
+
+                $(this).data('inserted', 1);
+            }
+
+            $("i", this).toggleClass("fa-caret-right fa-caret-down");
+        });
+    })
+</script>

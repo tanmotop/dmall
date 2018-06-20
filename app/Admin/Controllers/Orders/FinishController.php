@@ -106,7 +106,7 @@ class FinishController extends Controller
                 $actions->disableDelete();
             });
             $grid->filter(function (Grid\Filter $filter) {
-                $filter->disableIdFilter();s
+                $filter->disableIdFilter();
                 $couriers = (new Courier())->getIdNameArray();
                 $post_ways = [
                     '1' => '快递配送',
