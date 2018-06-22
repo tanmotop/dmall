@@ -145,11 +145,31 @@ class User extends Model
      */
     public function getMemberCount($uid)
     {
-        $count = $this->where([
+        $ids = $this->where([
             ['parent_id', '=', $uid],
             ['status', '=', 1]
-        ])->count();
+        ])->pluck('id')->toArray();
+        $count = count($ids)+1;
+        $count += $this->getChildren($ids);
 
+        return $count;
+    }
+
+    /**
+     * @param $ids
+     * @return int
+     */
+    protected function getChildren($ids)
+    {
+        static $count = 0;
+        foreach($ids as $id) {
+            $ids=$this->where([
+                ['parent_id', '=', $id],
+                ['status', '=', 1]
+            ])->pluck('id')->toArray();
+            $count += count($ids);
+            $this->getChildren($ids);
+        }
         return $count;
     }
 
