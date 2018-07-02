@@ -150,4 +150,16 @@ class OrdersController extends Controller
             'tab'   => $tab,
         ]);
     }
+
+    /**
+     * 查询物流信息
+     *
+     */
+    public function queryPostNumber(){
+        $id = request()->get('id');
+        $tmp = Orders::select( 'postid' )->where('id','=',$id)->first()->toArray();
+        if( $tmp['postid'] != '' ){
+            exit( getPostNumber( $tmp['postid'] ) );
+        }
+    }
 }

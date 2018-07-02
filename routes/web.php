@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth:user']], function () {
 		Route::post('orders/submit', 'OrdersController@submit')->name('orders_submit');
 		Route::post('orders/cancel', 'OrdersController@cancel')->name('orders_cancel');
 		Route::post('orders/confirm', 'OrdersController@confirm')->name('orders_confirm');
+        Route::post('orders/queryPostNumber', 'OrdersController@queryPostNumber')->name('orders_query');
 
 		// 购物车
 		Route::get('carts', 'CartsController@index')->name('carts');

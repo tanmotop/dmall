@@ -75,7 +75,7 @@
         @if ($order->postid)
             <div class="zc-bottom">
                 <ul>
-                    <li onclick="get_post( this )" style="text-align: center;height: 36px;padding-top: 8px;" data-id="{$data.id}" class="get_post">点击获取</li>
+                    <li onclick="get_post( this )" style="text-align: center;height: 36px;padding-top: 8px;" data-id="{{$order->id}}" class="get_post">点击获取</li>
                     <li>快递单号：<input readonly type="text" value="{{ $order->postid }}"></li>
                     <li style="border-bottom: none;">物流跟踪：</li>
                     <li>
@@ -103,5 +103,109 @@
         $('.order-part').hide();
         $('#' + part).show();
     })
+    /* 手动获取 */
+
+    function get_post( li ) {
+
+        var id = $( li ).attr( 'data-id' );
+
+        var info = $( '.get_post' );
+
+        info.html( '正在获取 <i class="fa fa-spinner fa-spin"></i>' );
+
+        $.ajax({
+
+            url: "{{ route('orders_query') }}",
+
+            type: 'POST',
+
+            data: {
+                'id': id,
+                '_token':'{{csrf_token()}}'
+            },
+
+            dataType: 'json',
+
+            success: function ( json ){
+
+                if( json != '' ){
+
+                    if( json.code == 'OK' ){
+
+                        var html = '';
+
+                        var div = $( '#post' );
+
+                        var flash = '';
+
+                        var fa = '';
+
+                        var result = json.list;
+
+                        if( result ){
+
+                            html += '<p>' +
+
+                                '<i class="fa fa-truck"></i> ' +
+
+                                '<span>' + json.name + '</span>  ' +
+
+                                '<span>' + json.phone + '</span>' +
+
+                                '</p>';
+
+                            $.each( json.list, function ( k, v ){
+
+                                if( k == 0 ){
+
+                                    if( json.state == 3 ){
+
+                                        flash = '';
+
+                                        fa = 'fa-check';
+
+                                    }else{
+
+                                        flash = 'fa-spin';
+
+                                        fa = 'fa-refresh';
+
+                                    }
+
+                                }else{
+
+                                    flash = '';
+
+                                    fa = 'fa-refresh';
+
+                                }
+
+                                html += '<p>' +
+
+                                    '<i class="fa ' + fa + ' ' + flash + '"></i> ' +
+
+                                    '<span style="color: #B58F62">' + v.time + '</span> ' +
+
+                                    '<span>' + v.content + '</span>' +
+
+                                    '</p>'
+
+                            } );
+
+                            div.html( html );
+
+                            info.html( '获取成功！' );
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
 </script>
 @endsection
