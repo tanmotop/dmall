@@ -155,10 +155,15 @@
 <script type="text/javascript">
         /* 获取更多订单 */
         $(document).ready(function() {
+            var lock =1;
             $(window).scroll(function() {
                 if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-                    console.log('here');
+                    if(lock == 0) return;
+                    console.log(lock);
+                    lock =0;
                     getMoreOrders();
+                    console.log(lock);
+                    setTimeout(lock = 1,2000);
                 }
             });
         });
@@ -184,7 +189,7 @@
                 for (var i in data) {
                 // for (var i=0;i<data.length;i++) {
                     var item = data[i];
-                    console.log(i);
+                    // console.log(i);
                     var imgs = '';
                     for (var j in item.logos) {
                     // for (var j=0;j<item.logos.length;j++) {
