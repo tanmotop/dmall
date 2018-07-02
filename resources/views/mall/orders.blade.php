@@ -158,12 +158,11 @@
             var lock =1;
             $(window).scroll(function() {
                 if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-                    if(lock == 0) return;
-                    console.log(lock);
-                    lock =0;
-                    getMoreOrders();
-                    console.log(lock);
-                    setTimeout(lock = 1,2000);
+                    if(lock){
+                        lock = 0;
+                        setTimeout(getMoreOrders(),2000);
+                        lock = 1;
+                    }
                 }
             });
         });
@@ -236,6 +235,7 @@
                         $('.tips span').html('上拉/点击获取更多邀请码');
                     }
                 },500)
+
             });
         }
 
