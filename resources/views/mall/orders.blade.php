@@ -161,7 +161,7 @@
                 if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
                     flags_lock = false;
                     getMoreOrders();
-                    setTimeout("unlock()",4000);
+                    setTimeout("unlock()",500);
                 }
             });
         });
