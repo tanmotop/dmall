@@ -165,13 +165,17 @@
         var currentPage = parseInt('{{ $orderList->currentPage() }}')
         var lastPage = parseInt('{{ $orderList->lastPage() }}')
         var status = parseInt('{{ $status }}')
+
         function getMoreOrders()
         {
+            var random = Math.random().toString(36).substr(2);
+            var get_url = "{{ route('orders', ['status' => $status]) }}"+ '?random=' + Math.random().toString(36).substr(2);
+            console.log(get_url);
             if (currentPage == lastPage) {
                 return false;
             }
             $('.tips span').html('正在获取 <i class="fa fa-spinner fa-spin"></i>')
-            $.get('{{ route('orders', ['status' => $status]) }}', {
+            $.get(get_url, {
                 page: currentPage + 1,
                 dataType: 'json'
             }, function(json) {
