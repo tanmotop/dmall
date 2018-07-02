@@ -157,11 +157,11 @@
         $(document).ready(function() {
             $(window).scroll(function() {
                 if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                    console.log('here');
                     getMoreOrders();
                 }
             });
         });
-
         var currentPage = parseInt('{{ $orderList->currentPage() }}')
         var lastPage = parseInt('{{ $orderList->lastPage() }}')
         var status = parseInt('{{ $status }}')
@@ -178,19 +178,17 @@
                 page: currentPage + 1,
                 dataType: 'json'
             }, function(json) {
-
                 currentPage = json.current_page;
                 var data = json.data;
-
-                var html = ''
-                // for (var i in data) {
-                for (var i=0;i<data.length;i++) {
-                    var item = data[i]
+                var html = '';
+                for (var i in data) {
+                // for (var i=0;i<data.length;i++) {
+                    var item = data[i];
                     console.log(i);
-                    var imgs = ''
-                    // for (var j in item.logos) {
-                    for (var j=0;j<item.logos.length;j++) {
-                        imgs += '<img src="/uploads/'+item.logos[j]+'">'
+                    var imgs = '';
+                    for (var j in item.logos) {
+                    // for (var j=0;j<item.logos.length;j++) {
+                        imgs += '<img src="/uploads/'+item.logos[j]+'">';
                     }
                     if(!item.remarks){
                         item.remarks='';
@@ -223,9 +221,9 @@
                         + '        <button onclick="order_detail('+parseInt(item.id)+')" type="button" class="btn">查看订单</button>'
                         + '    </div>'
                         + '</div>'
-                }
+                };
                 setTimeout(function() {
-                    $('#order-list').append(html)
+                    $('#order-list').append(html);
                     if (json.current_page == json.last_page) {
                         $('.tips').remove();
                         $('#order-list').append('<div align="center" style="background: #E9EFF0" class="sp-list-bottom"><span>没有更多了</span></div>');
