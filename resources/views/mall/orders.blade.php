@@ -170,7 +170,7 @@
         {
             var random = Math.random().toString(36).substr(2);
             var get_url = "{{ route('orders', ['status' => $status]) }}"+ '?random=' + Math.random().toString(36).substr(2);
-            console.log(get_url);
+            // console.log(get_url);
             if (currentPage == lastPage) {
                 return false;
             }
@@ -179,14 +179,19 @@
                 page: currentPage + 1,
                 dataType: 'json'
             }, function(json) {
-                currentPage = json.current_page
-                var data = json.data
+
+                currentPage = json.current_page;
+                var data = json.data;
+
                 var html = ''
                 for (var i in data) {
+                // for (var i=0;i<data.length;i++) {
                     var item = data[i]
+                    console.log(i);
                     var imgs = ''
-                    for (var i in item.logos) {
-                        imgs += '<img src="/uploads/'+item.logos[i]+'">'
+                    for (var j in item.logos) {
+                    // for (var j=0;j<item.logos.length;j++) {
+                        imgs += '<img src="/uploads/'+item.logos[j]+'">'
                     }
                     if(!item.remarks){
                         item.remarks='';
