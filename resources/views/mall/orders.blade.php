@@ -168,9 +168,8 @@
 
         function getMoreOrders()
         {
-            var random = Math.random().toString(36).substr(2);
-            var get_url = "{{ route('orders', ['status' => $status]) }}"+ '?random=' + Math.random().toString(36).substr(2);
-            // console.log(get_url);
+            // var random = Math.random().toString(36).substr(2);
+            var get_url = "{{ route('orders', ['status' => $status]) }}";
             if (currentPage == lastPage) {
                 return false;
             }
@@ -184,13 +183,13 @@
                 var data = json.data;
 
                 var html = ''
-                for (var i in data) {
-                // for (var i=0;i<data.length;i++) {
+                // for (var i in data) {
+                for (var i=0;i<data.length;i++) {
                     var item = data[i]
                     console.log(i);
                     var imgs = ''
-                    for (var j in item.logos) {
-                    // for (var j=0;j<item.logos.length;j++) {
+                    // for (var j in item.logos) {
+                    for (var j=0;j<item.logos.length;j++) {
                         imgs += '<img src="/uploads/'+item.logos[j]+'">'
                     }
                     if(!item.remarks){
