@@ -154,25 +154,25 @@
 @section('scripts')
 <script type="text/javascript">
         /* 获取更多订单 */
+        var flags_lock = true;
         $(document).ready(function() {
-            var lock =1;
             $(window).scroll(function() {
+                if (!flags_lock) return;
                 if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
-                    if(lock){
-                        lock = 0;
-                        setTimeout(getMoreOrders(),2000);
-                        lock = 1;
-                    }
+                    flags_lock = false;
+                    getMoreOrders();
+                    setTimeout("unlock()",4000);
                 }
             });
         });
         var currentPage = parseInt('{{ $orderList->currentPage() }}')
         var lastPage = parseInt('{{ $orderList->lastPage() }}')
         var status = parseInt('{{ $status }}')
-
+        function unlock() {
+            flags_lock = true;
+        }
         function getMoreOrders()
         {
-            // var random = Math.random().toString(36).substr(2);
             var get_url = "{{ route('orders', ['status' => $status]) }}";
             if (currentPage == lastPage) {
                 return false;
@@ -186,12 +186,9 @@
                 var data = json.data;
                 var html = '';
                 for (var i in data) {
-                // for (var i=0;i<data.length;i++) {
                     var item = data[i];
-                    // console.log(i);
                     var imgs = '';
                     for (var j in item.logos) {
-                    // for (var j=0;j<item.logos.length;j++) {
                         imgs += '<img src="/uploads/'+item.logos[j]+'">';
                     }
                     if(!item.remarks){
