@@ -28,6 +28,5 @@ function getPostNumber( $nu, $com = 'HTKY' ){
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
     }
     $res = curl_exec($curl);
-    file_put_contents('res.txt',var_export($res,1)."\r\n",FILE_APPEND);
     return $res;
 }
