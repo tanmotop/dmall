@@ -20,10 +20,15 @@ use Encore\Admin\Layout\Content;
 
 class BonusController
 {
+    protected $start = '';
+    protected $end = '';
+
     public function index()
     {
         return Admin::content(function (Content $content) {
             $content->header('奖金查询');
+            $this->start = request()->get('bonus')['created_at']['start'];
+            $this->end = request()->get('bonus')['created_at']['end'];
             $content->body($this->grid());
         });
     }
@@ -35,15 +40,28 @@ class BonusController
             $pvConf = $pvModel->getPvConf();
             $grid->rows(function (&$item, $key) use ($pvModel, $pvConf) {
                 $user = User::find($item->id);
-                $item->column('actual_sales', $user->bonus()->sum('actual_sales'));
-                $item->column('level_money', $user->bonus()->sum('level_money'));
-                $item->column('invite_money', $user->bonus()->sum('invite_money'));
-                $item->column('retail_money', $user->bonus()->sum('retail_money'));
-                $item->column('teams_pv', $user->bonus()->sum('teams_pv'));
-                $item->column('personal_pv', $user->bonus()->sum('personal_pv'));
-                $item->column('personal_pv_bonus', $pvModel->getBonus($pvConf, $item->personal_pv));
-                $item->column('teams_pv_bonus', $pvModel->getBonus($pvConf, $item->teams_pv));
-                $item->column('total_bonus', $item->personal_pv_bonus + $item->invite_money + $item->level_money);
+                if($this->start && $this->end) {
+                    $item->column('actual_sales', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('actual_sales'));
+                    $item->column('level_money', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('level_money'));
+                    $item->column('invite_money', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('invite_money'));
+                    $item->column('retail_money', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('retail_money'));
+                    $item->column('teams_pv', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('teams_pv'));
+                    $item->column('personal_pv', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('personal_pv'));
+                    $item->column('personal_pv_bonus', $pvModel->getBonus($pvConf, $item->personal_pv));
+                    $item->column('teams_pv_bonus', $pvModel->getBonus($pvConf, $item->teams_pv));
+                    $item->column('total_bonus', $item->personal_pv_bonus + $item->invite_money + $item->level_money);
+                }
+                else {
+                    $item->column('actual_sales', $user->bonus()->sum('actual_sales'));
+                    $item->column('level_money', $user->bonus()->sum('level_money'));
+                    $item->column('invite_money', $user->bonus()->sum('invite_money'));
+                    $item->column('retail_money', $user->bonus()->sum('retail_money'));
+                    $item->column('teams_pv', $user->bonus()->sum('teams_pv'));
+                    $item->column('personal_pv', $user->bonus()->sum('personal_pv'));
+                    $item->column('personal_pv_bonus', $pvModel->getBonus($pvConf, $item->personal_pv));
+                    $item->column('teams_pv_bonus', $pvModel->getBonus($pvConf, $item->teams_pv));
+                    $item->column('total_bonus', $item->personal_pv_bonus + $item->invite_money + $item->level_money);
+                }
             });
             $grid->id('代理商编号');
             $grid->realname('姓名');
@@ -92,15 +110,29 @@ class BonusController
 
             $excelExporter->rowHandle(function (array $item) {
                 $user = User::find($item['id']);
-                $row[] = $item['id'];
-                $row[] = $item['realname'];
-                $row[] = $user->bonus->sum('teams_pv');
-                $row[] = $user->bonus->sum('personal_pv');
-                $row[] = $user->bonus->sum('level_money');
-                $row[] = $user->bonus->sum('invite_money');
-                $row[] = 0;
-                $row[] = $user->bonus->sum('retail_money');
-                $row[] = 0;
+                if($this->start && $this->end) {
+                    $row[] = $item['id'];
+                    $row[] = $item['realname'];
+                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('teams_pv');
+                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('personal_pv');
+                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('level_money');
+                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('invite_money');
+                    $row[] = 0;
+                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('retail_money');
+                    $row[] = 0;
+                }
+                else {
+                    $row[] = $item['id'];
+                    $row[] = $item['realname'];
+                    $row[] = $user->bonus->sum('teams_pv');
+                    $row[] = $user->bonus->sum('personal_pv');
+                    $row[] = $user->bonus->sum('level_money');
+                    $row[] = $user->bonus->sum('invite_money');
+                    $row[] = 0;
+                    $row[] = $user->bonus->sum('retail_money');
+                    $row[] = 0;
+                }
+
 
                 return $row;
             });
