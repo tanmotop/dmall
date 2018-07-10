@@ -40,13 +40,14 @@ class BonusController
             $pvConf = $pvModel->getPvConf();
             $grid->rows(function (&$item, $key) use ($pvModel, $pvConf) {
                 $user = User::find($item->id);
-                if($this->start && $this->end) {
-                    $item->column('actual_sales', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('actual_sales'));
-                    $item->column('level_money', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('level_money'));
-                    $item->column('invite_money', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('invite_money'));
-                    $item->column('retail_money', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('retail_money'));
-                    $item->column('teams_pv', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('teams_pv'));
-                    $item->column('personal_pv', $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('personal_pv'));
+                $condition = $this->timerCondition();
+                if($condition) {
+                    $item->column('actual_sales', $user->bonus()->where($condition)->sum('actual_sales'));
+                    $item->column('level_money', $user->bonus()->where($condition)->sum('level_money'));
+                    $item->column('invite_money', $user->bonus()->where($condition)->sum('invite_money'));
+                    $item->column('retail_money', $user->bonus()->where($condition)->sum('retail_money'));
+                    $item->column('teams_pv', $user->bonus()->where($condition)->sum('teams_pv'));
+                    $item->column('personal_pv', $user->bonus()->where($condition)->sum('personal_pv'));
                     $item->column('personal_pv_bonus', $pvModel->getBonus($pvConf, $item->personal_pv));
                     $item->column('teams_pv_bonus', $pvModel->getBonus($pvConf, $item->teams_pv));
                     $item->column('total_bonus', $item->personal_pv_bonus + $item->invite_money + $item->level_money);
@@ -110,15 +111,16 @@ class BonusController
 
             $excelExporter->rowHandle(function (array $item) {
                 $user = User::find($item['id']);
-                if($this->start && $this->end) {
+                $condition = $this->timerCondition();
+                if($condition) {
                     $row[] = $item['id'];
                     $row[] = $item['realname'];
-                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('teams_pv');
-                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('personal_pv');
-                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('level_money');
-                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('invite_money');
+                    $row[] = $user->bonus()->where($condition)->sum('teams_pv');
+                    $row[] = $user->bonus()->where($condition)->sum('personal_pv');
+                    $row[] = $user->bonus()->where($condition)->sum('level_money');
+                    $row[] = $user->bonus()->where($condition)->sum('invite_money');
                     $row[] = 0;
-                    $row[] = $user->bonus()->whereBetween('created_at',[$this->start,$this->end])->sum('retail_money');
+                    $row[] = $user->bonus()->where($condition)->sum('retail_money');
                     $row[] = 0;
                 }
                 else {
@@ -137,5 +139,17 @@ class BonusController
                 return $row;
             });
         });
+    }
+
+    protected function timerCondition() {
+        $condition = [];
+        if($this->start) {
+            $condition[] = ['created_at','>=',$this->start];
+        }
+        if($this->end) {
+            $condition[] = ['created_at','<=',$this->end];
+        }
+
+        return $condition;
     }
 }
