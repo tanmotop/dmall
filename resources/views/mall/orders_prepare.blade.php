@@ -283,6 +283,7 @@
     });
     // 提交订单
     $('.btn-submit').on('click', function() {
+        $('.btn-submit').prop('disabled',true);
         var data = {
             user_province : $('#province').val(),
             user_city: $('#city').val(),
@@ -344,6 +345,7 @@
                     notice.css( {'display': 'block', 'color': 'red' } ).html(errors[i][0]);
                     break;
                 }
+                $('.btn-submit').prop('disabled',false);
             }
         });
     })
