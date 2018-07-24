@@ -34,6 +34,9 @@
 
 <script>
     $(document).ready(function () {
+        $('body').removeClass('modal-open');
+        $(".modal-backdrop").remove();
+
         $("#filter-modal .submit").on('click', function () {
             $("#filter-modal").modal('toggle');
             $('body').removeClass('modal-open');
