@@ -175,27 +175,27 @@
                 $( '#time' ).val( new_time );
             }
         } );
-    //    function ajaxfresh(){
-    //        var html='';
-    //        $.ajax({
-    //            url:"__URL__/ajax_query",
-    //            type:"post",
-    //            success:function(data){
-    //                $("#list").html('');
-    //                html= '<li>当月奖金合计：<input style="width: 50%" readonly type="text" value="'+data.all+'"></li>'+
-    //                '<li>个人业绩合计：<input style="width: 50%" readonly type="text" value="'+data.self_pv+'"></li>'+
-    //                '<li>团队业绩合计：<input style="width: 50%" readonly type="text" value="'+data.all_pv+'"></li>'+
-    //                '<li>业绩奖金收入：<input style="width: 50%" readonly type="text" value="'+data.pv_income+'"></li>'+
-    //                '<li>级别差价收入：<input style="width: 50%" readonly type="text" value="'+data.level_income+'"></li>'+
-    //                '<li>邀代奖金收入：<input style="width: 50%" readonly type="text" value="'+data.invitation_income+'"></li>'
-    //                $("#list").append(html);
-    //                setTimeout(function(){
-    //                    ajaxfresh();
-    //                },2000)
-    //            }
-    //        })
-    //    }
-    //    ajaxfresh();
+       // function ajaxfresh(){
+       //     var html='';
+       //     $.ajax({
+       //         url:"__URL__/ajax_query",
+       //         type:"post",
+       //         success:function(data){
+       //             $("#list").html('');
+       //             html= '<li>当月奖金合计：<input style="width: 50%" readonly type="text" value="'+data.all+'"></li>'+
+       //             '<li>个人业绩合计：<input style="width: 50%" readonly type="text" value="'+data.self_pv+'"></li>'+
+       //             '<li>团队业绩合计：<input style="width: 50%" readonly type="text" value="'+data.all_pv+'"></li>'+
+       //             '<li>业绩奖金收入：<input style="width: 50%" readonly type="text" value="'+data.pv_income+'"></li>'+
+       //             '<li>级别差价收入：<input style="width: 50%" readonly type="text" value="'+data.level_income+'"></li>'+
+       //             '<li>邀代奖金收入：<input style="width: 50%" readonly type="text" value="'+data.invitation_income+'"></li>'
+       //             $("#list").append(html);
+       //             setTimeout(function(){
+       //                 ajaxfresh();
+       //             },2000)
+       //         }
+       //     })
+       // }
+       // ajaxfresh();
 
 
         /* 时间控件 */
