@@ -99,14 +99,15 @@ class RegionController extends Controller
     {
         return Admin::form(Region::class, function (Form $form) {
             $regions = (new Region())->getRegionByLevel(2);
+           // $level = (new Region())->getLevelById($regions);
             $form->display('id', '地区ID');
             $form->select('parent_id', '上级地区')->options($regions);
             $form->text('name', '地区标题')->rules('required');
-            $form->hidden('level');
            
             $form->saving(function (Form $form) {
                 //
                 $level = (new Region())->getLevelById($form->parent_id);
+                $form->hidden('level',$level);
             });
 
             $form->saved(function (Form $form) {
