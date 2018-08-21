@@ -321,6 +321,7 @@
                         '</div>' +
                         '<div class="modal-back fade in"></div>';
                     $('#add_dialog').html(html);
+                    $('.btn-submit').prop('disabled',false);
                 }else if (json.code == 10003) {
                     var html = '<div class="modal fade in" tabindex="-1" role="dialog" id="MyShare" aria-hidden="false" style="display: block;">' +
                                 '<div class="modal-dialog">' +
@@ -335,8 +336,10 @@
                                 '</div>' +
                                 '<div class="modal-back fade in"></div>';
                         $('#add_dialog').html( html );
+                        $('.btn-submit').prop('disabled',false);
                 } else {
                     notice.css( {'display': 'block', 'color': 'red' } ).html( json.msg );
+                    $('.btn-submit').prop('disabled',false);
                 }
             },
             error: function(json) {
