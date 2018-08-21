@@ -68,28 +68,30 @@ class Orders extends Model
 
     public function generate($data)
     {
-        $data['user_id'] = session('auth_user')->id;
-        $data['sn'] = sprintf('SH%s%s%s', date('YmdHi'), $data['user_id'], rand(10, 99));
-        if ($order = $this->create($data)) {
-            // 更新商品订单信息
-            (new \App\Models\OrderGoods)->createOrderGoods($order['id']);
-            // 更新用户账户表，并删除购物车记录
-            $user = User::find($data['user_id']);
-            $money = $user->money - $data['total_price'];
-            $user->money = $money;
-            $user->save();
+        return DB::transaction(function () use ($data) {
+            $data['user_id'] = session('auth_user')->id;
+            $data['sn'] = sprintf('SH%s%s%s', date('YmdHi'), $data['user_id'], rand(10, 99));
+            if ($order = $this->create($data)) {
+                // 更新商品订单信息
+                (new \App\Models\OrderGoods)->createOrderGoods($order['id']);
+                // 更新用户账户表，并删除购物车记录
+                $user = User::find($data['user_id']);
+                $money = $user->money - $data['total_price'];
+                $user->money = $money;
+                $user->save();
 
-            //
-            $order->money = $money;
-            $order->save();
+                //
+                $order->money = $money;
+                $order->save();
 
-            // 清空session
-            session()->forget('carts_prepare');
+                // 清空session
+                session()->forget('carts_prepare');
 
-            return ['code' => 10000, 'msg' => '下单成功', 'money' => $money];
-        }
+                return ['code' => 10000, 'msg' => '下单成功', 'money' => $money];
+            }
 
-        return ['code' => 10001];
+            return ['code' => 10001];
+        });
     }
 
     /**
